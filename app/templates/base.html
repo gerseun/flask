@@ -1,12 +1,46 @@
 <html>
     <head>
-      {% if title %}
-      <title>{{ title }} - Microblog</title>
-      {% else %}
-      <title>Welcome to Microblog</title>
-      {% endif %}
+      <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+      <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+      <title>LAVORAZIONI sam&mago 2.0</title>
     </head>
     <body>
+      <div class="title" style="padding-left:16px">
+        <h1>PROGRESSO LAVORAZIONI</h1>
+        <h3>Vers: 2.0.0 pre alpha developers only
+      </div>
+      <div class="topnav" id="myTopnav">
+        <a id="home" class="active" href="/index">Home</a>
+        <div class="dropdown">
+          <button class="dropbtn">Ufficio tecnico
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a id="newArticolo">Inserimento articolo</a>
+            <a id="newComponente">Inserimento componente</a>
+            <a id="newImpegno">Inserimento impegno</a>
+          </div>
+        </div>
+        <a id="about">About</a>
+        <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+        <div class="login-container">
+        <div>
+          <input type="text" placeholder="Username" name="username" class="login_name">
+          <input type="text" placeholder="Password" name="psw" class="login_password">
+          <button type="" class="login">Login</button>
+        </div>
+      </div>
+      </div>
+
+      {% if title %}
+      <p>{{ title }}</p>
+      {% else %}
+      <p>News: On year 2020 vers: 2.0.1 for beta tester.</p>
+      {% endif %}
+
+      <br>
+      <br>
         <div>Microblog: <a href="/index">Home</a></div>
         <hr>
         {% block content %}{% endblock %}
