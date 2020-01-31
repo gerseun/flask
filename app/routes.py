@@ -15,4 +15,20 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    return render_template('index.html', title='asd', user=user, posts=posts)
+    return render_template('index.html', user=user, posts=posts)
+
+@app.route('/NuovoArticolo')
+def NuovoArticolo():
+    return render_template('NuovoArticolo.html', title='CREAZIONE ARTICOLO - CILINDRO')
+
+@app.route('/NuovoComponente')
+def NuovoComponente():
+    return render_template('NuovoComponente.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
+
+@app.route('/NuovoImpegno')
+def NuovoImpegno():
+    return render_template('NuovoImpegno.html', title='CREAZIONE IMPEGNO')
+
+@app.route('/About')
+def About():
+    return render_template('About.html')
