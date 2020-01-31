@@ -1,6 +1,6 @@
 from flask import render_template
 from app import app
-import app.static.funz.dbFunction
+from app import dbFunction as f
 
 @app.route('/')
 @app.route('/index')
@@ -15,9 +15,8 @@ def index():
             'author': {'username': 'Susan'},
             'body': 'The Avengers movie was so cool!'
         }
-
     ]
-    my_function()
+    f.my_function()
     return render_template('index.html', user=user, posts=posts)
 
 @app.route('/NuovoArticolo')
