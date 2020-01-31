@@ -16,7 +16,7 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    f.my_function()
+    f.testDB()
     return render_template('index.html', user=user, posts=posts)
 
 @app.route('/NuovoArticolo')
