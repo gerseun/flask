@@ -1,6 +1,7 @@
-from flask import render_template, flash, redirect
+from flask import render_template, flash, redirect, request, jsonify
+import ast
 from app import app
-from app import dbFunction as f
+#from app import dbFunction as f
 from app.forms import LoginForm
 
 @app.route('/')
@@ -17,12 +18,22 @@ def index():
             'body': 'The Avengers movie was so cool!'
         }
     ]
-    f.testDB()
+    #f.testDB()
     return render_template('index.html', user=user, posts=posts)
 
-@app.route('/NuovoArticolo')
+@app.route('/NuovoArticolo', methods=['GET', 'POST'])
 def NuovoArticolo():
-    return render_template('NuovoArticolo.html', title='CREAZIONE ARTICOLO - CILINDRO')
+    print('func')
+    if request.method == 'POST':
+        data = request.form['new']
+        dic = ast.literal_eval(data)
+        print (dic['asd'])
+        #print (request.is_json)
+        #content = request.get_json()
+        #print (content)
+        return ('ok')
+    else:
+        return render_template('NuovoArticolo.html', title='CREAZIONE ARTICOLO - CILINDRO')
 
 @app.route('/NuovoComponente')
 def NuovoComponente():

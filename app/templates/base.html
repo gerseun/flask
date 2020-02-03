@@ -11,22 +11,22 @@
         <h3>Vers: 2.0.0 pre alpha developers only
       </div>
       <div class="topnav" id="myTopnav">
-        <a id="home" class="active" href="/index">Home</a>
+        <a id="home" class="active" href="{{ url_for('index') }}">Home</a>
         <div class="dropdown">
           <button class="dropbtn">Ufficio tecnico
             <i class="fa fa-caret-down"></i>
           </button>
           <div class="dropdown-content">
-            <a id="newArticolo" href="NuovoArticolo">Inserimento articolo</a>
-            <a id="newComponente" href="NuovoComponente">Inserimento componente</a>
-            <a id="newImpegno" href="NuovoImpegno">Inserimento impegno</a>
+            <a id="newArticolo" href="{{ url_for('NuovoArticolo') }}">Inserimento articolo</a>
+            <a id="newComponente" href="{{ url_for('NuovoComponente') }}">Inserimento componente</a>
+            <a id="newImpegno" href="{{ url_for('NuovoImpegno') }}">Inserimento impegno</a>
           </div>
         </div>
         <a id="about">About</a>
-        <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="myFunction()">&#9776;</a>
+        
         <div class="login-container">
         <div>
-          <a class="login" href="login">Login</a>
+          <a class="login" href="{{ url_for('login') }}">Login</a>
         </div>
       </div>
       </div>
@@ -39,7 +39,14 @@
 
       <br>
       <br>
-        <hr>
-        {% block content %}{% endblock %}
+      <hr>
+      {% block content %}{% endblock %}
+      <br>
+      <button id="export_btn">Export Data</button>
+      <p id='output_text'></p>
+      <hr>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <script src="{{ url_for('static', filename='js/functions.js') }}"></script>
     </body>
 </html>
