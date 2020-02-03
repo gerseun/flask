@@ -3,10 +3,16 @@ import ast
 from app import app
 #from app import dbFunction as f
 from app.forms import LoginForm
+import ast
 
 @app.route('/')
 @app.route('/index')
 def index():
+    #stampa = f.getIDarticolo("1AAA00100")
+    #creo file di INSERIMENTO
+    #test2 = '{"newArticolo":{"t_art":[{"cod_art":"1ABC00100","desc_art":"cilindro","cli_art":"Asd","cod_cli_art":"123456","id_art":"1"}],"t_comp":[{"cod_comp":"1ABC00102","desc_comp":"camicia","dim_comp":"100","mat_comp":"S355","qt_comp":"1","id_comp":"1"}]}}'
+    #f.newArticolo(ast.literal_eval(test2))
+
     user = {'username': 'Mago'}
     posts = [
         {
@@ -15,10 +21,15 @@ def index():
         },
         {
             'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
+            'body': stampa
         }
     ]
+<<<<<<< HEAD
     #f.testDB()
+=======
+
+
+>>>>>>> 429f3889ecd89c49b73a1c90e172c16308f85461
     return render_template('index.html', user=user, posts=posts)
 
 @app.route('/NuovoArticolo', methods=['GET', 'POST'])
