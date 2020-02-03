@@ -6,6 +6,7 @@ from app.forms import LoginForm
 @app.route('/')
 @app.route('/index')
 def index():
+    stampa = f.first_call()
     user = {'username': 'Mago'}
     posts = [
         {
@@ -14,10 +15,11 @@ def index():
         },
         {
             'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
+            'body': stampa
         }
     ]
-    f.testDB()
+
+
     return render_template('index.html', user=user, posts=posts)
 
 @app.route('/NuovoArticolo')
