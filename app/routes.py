@@ -24,12 +24,7 @@ def index():
             'body': stampa
         }
     ]
-<<<<<<< HEAD
-    #f.testDB()
-=======
 
-
->>>>>>> 429f3889ecd89c49b73a1c90e172c16308f85461
     return render_template('index.html', user=user, posts=posts)
 
 @app.route('/NuovoArticolo', methods=['GET', 'POST'])
