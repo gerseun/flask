@@ -31,10 +31,6 @@ def index():
             'author': {'username': 'Susan'},
             'body': stampa
         },
-        {
-            'author': {'username': 'John'},
-            'body': 'Did you have 104?'
-        }
     ]
 
     return render_template('index.html', user=user, posts=posts)
