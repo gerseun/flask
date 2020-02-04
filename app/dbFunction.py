@@ -17,6 +17,13 @@ def first_call():
     arrRisultato = {"first_call": arrCodici}
     return arrRisultato
 
+#inserimento nuovo componente
+def newComponente(assieme):
+    #INSERISCO I COMPONENTI SINGOLI
+    $componenti = $assieme["t_comp"];
+    $varDB->setCompSingolo($componenti);
+
+#inserimento nuovo articolo 
 def newArticolo(assieme):
     #CREAZIONE NUOVO ARTICOLO - CILINDRO
     #echo "<br>REPORT NEW ARTICOLO:<br>";
@@ -32,6 +39,7 @@ def newArticolo(assieme):
     setArticolo(codArticolo, descrizione, cliente, codCliente)
     #vado a salvare le componenti del cilindro
     setComponenteInArticolo(codArticolo, componenti)
+    return True
 
 '''
 FUNZIONI CHE RIUTILIZZO IN QUESTA PAGINA
@@ -128,7 +136,7 @@ def getIDarticolo(art):
       return idart
     #non esiste
     mydb.close()
-    return false
+    return ""
 
 #ricerco ID COMPONENTE
 def getIDcomponente(comp):
@@ -136,7 +144,7 @@ def getIDcomponente(comp):
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
     #istruzione query string
-    mioDB.execute("SELECT id_comp FROM componente WHERE cod_comp='".$comp."';")
+    mioDB.execute("SELECT id_comp FROM componente WHERE cod_comp='" + comp + "';")
     result = mioDB.fetchall()
     #controllo se componente già salvato
     for x in result:
@@ -146,7 +154,34 @@ def getIDcomponente(comp):
       return idcomp
     #non esiste
     mydb.close()
-    return false
+    return ""
+
+#SALVO I COMPONENTI SINGOLI AL DI FUORI DELL' ASSIEME
+def setCompSingolo(codComponenti):
+    #ricevo un array di componenti, devo ciclarli ed inserirli uno alla volta
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #variabili per la formattazione delle DATE da salvare
+    now = datetime.datetime.now()
+    dataOra = now.strftime("%Y/%m/%d") #("Y-m-d") data odierna
+    #ciclo tutti i componenti
+    for componente in codComponenti:
+        #ciclo tutti i componenti
+        codComp = componente["cod_comp"];
+        desc = componente["desc_comp"];
+        dim = componente["dim_comp"];
+        mat = componente["mat_comp"];
+        #query per inserire il componente nella tabella componenti
+        sql = "INSERT INTO componente (cod_comp, desc_comp, dim_comp, mat_comp, pos_comp, data_comp) VALUES (%s, %s, %s, %s, %s, %s)"
+        val = (codComp, desc, dim, mat, "0", dataOra)
+        mioDB.execute(sql, val)
+        mydb.commit()
+        #prendo l' indice di componente
+        idComp = mioDB.lastrowid
+        print("1 comp inserted, ID:", idComp)
+    #disconnessione
+    mydb.close()
 
 #SETTO UN NUOVO ARTICOLO
 def setArticolo(codArt, desc, cli, codCli):
@@ -172,13 +207,13 @@ def setComponenteInArticolo(codArt, codComponenti):
     now = datetime.datetime.now()
     dataOra = now.strftime("%Y/%m/%d") #("Y-m-d") data odierna
     #prendo l' indice di articolo
-    idArt = varDB->getIDarticolo(codArt)
+    idArt = getIDarticolo(codArt)
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
     #ciclo tutti i componenti
     cont = 0
-    foreach(codComponenti as componente){
+    for componente in codComponenti:
         #echo "<br>".$cont."<br>";
         #salvo variabili del componente
         codComp = componente["cod_comp"]
@@ -188,40 +223,26 @@ def setComponenteInArticolo(codArt, codComponenti):
         qt = componente["qt_comp"]
         #controllo se l' anagrafica componente esiste già
         flag_anag_comp = getIDcomponente(codComp)
-        if flag_anag_comp == false:
+        if flag_anag_comp == "":
             #salvo il codice componente nell' anagrafica componente
-            #inserisco la riga componente
+            #inserisco la nuova riga componente
             sql = "INSERT INTO componente (cod_comp, desc_comp, dim_comp, mat_comp, pos_comp, data_comp) VALUES (%s, %s, %s, %s, %s, %s)"
             val = (codComp, desc, dim, mat, "0", dataOra)
             mioDB.execute(sql, val)
             mydb.commit()
             #prendo l' indice di componente
             idComp = mioDB.lastrowid
-            print("1 record inserted, ID:", idComp)
+            print("1 comp inserted, ID:", idComp)
+        else:
+            idComp = flag_anag_comp
         #salvo la riga nella tabella articolo_componenti
-        
-'''
-
-
-  //salvo la riga nella tabella articolo_componenti
-  $istruzione = "INSERT INTO `articolo_componenti` (`id_art`, `id_comp`, `qt_comp`)
-                VALUES ('".$idArt."','".$idComp."','".$qt."')
-                ON DUPLICATE KEY UPDATE qt_comp = '".$qt."';";
-  if (mysqli_query($connessione,$istruzione)) {
-    echo $codComp.": inserito nella descrizione articolo ".$codArt."<br>";
-  }
-  else {
-    echo "Errore inserimento descrizione articolo: ".$codComp." - ". $connessione->error."<br>";
-  }
-  //incremento il contatore
-  $cont = $cont +1;
-}
-//disconnessione
-mysqli_close($connessione);
-return true;
-}
-else{
-return false;
-}
-}
-'''
+        sql = "INSERT INTO articolo_componenti (id_art, id_comp, qt_comp) VALUES (%s, %s, %s)"
+        val = (idArt, idComp, qt)
+        print(sql, val)
+        mioDB.execute(sql, val)
+        idArtIns = mioDB.lastrowid
+        print("1 art inserted, ID:", idArtIns)
+        #incremento il contatore
+        cont = cont + 1
+        #disconnessione
+        mydb.close()
