@@ -16,17 +16,9 @@ def index():
         },
         {
             'author': {'username': 'Susan'},
-<<<<<<< HEAD
             'body': 'stampa'
-=======
-<<<<<<< HEAD
-            'body': 'stampa'
-        }
-=======
-            'body': stampa
->>>>>>> 0bf1be7b86f90638d13bdad7145c6945be0053e4
         },
->>>>>>> ddc675772c4d78bd7794cc937db509f3f49d652a
+
     ]
 
     '''
