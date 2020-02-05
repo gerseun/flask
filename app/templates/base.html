@@ -3,6 +3,9 @@
       <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+
+
       <title>LAVORAZIONI sam&mago 2.0</title>
     </head>
     <body>
@@ -23,30 +26,30 @@
           </div>
         </div>
         <a id="about">About</a>
-        
+
         <div class="login-container">
         <div>
           <a class="login" href="{{ url_for('login') }}">Login</a>
         </div>
       </div>
       </div>
+      <div style="padding:0px 16px 0px 16px">
+        {% if title %}
+        <h3>{{ title }}</h3>
+        {% else %}
+        <p>News: On year 2020 vers: 2.0.1 for beta tester.</p>
+        {% endif %}
 
-      {% if title %}
-      <p>{{ title }}</p>
-      {% else %}
-      <p>News: On year 2020 vers: 2.0.1 for beta tester.</p>
-      {% endif %}
-
-      <br>
-      <br>
-      <hr>
-      {% block content %}{% endblock %}
-      <br>
-      <button id="export_btn">Export Data</button>
-      <p id='output_text'></p>
-      <hr>
+        {% block content %}{% endblock %}
+        <br>
+        <button id="export_btn">Export Data</button>
+        <button id="load_btn">Load Data</button>
+        <p id='output_text'></p>
+        <hr>
+      </div>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-      <script src="{{ url_for('static', filename='js/functions.js') }}"></script>
+      <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
     </body>
 </html>
