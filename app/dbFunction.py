@@ -20,8 +20,9 @@ def first_call():
 #inserimento nuovo componente
 def newComponente(assieme):
     #INSERISCO I COMPONENTI SINGOLI
-    componenti = assieme["t_comp"]
-    setCompSingolo(componenti)
+    componenti = assieme
+    #idComp = setCompSingolo(componenti)
+    #return assieme
 
 #inserimento nuovo articolo
 def newArticolo(assieme):
@@ -29,17 +30,12 @@ def newArticolo(assieme):
     #echo "<br>REPORT NEW ARTICOLO:<br>";
     articolo = assieme["newArticolo"]["t_art"]
     componenti = assieme["newArticolo"]["t_comp"]
-    #variabili del cilindro per settarlo
-    codArticolo = articolo[0]["cod_art"]
-    descrizione = articolo[0]["desc_art"]
-    cliente = articolo[0]["cli_art"]
-    codCliente = articolo[0]["cod_cli_art"]
-    #echo "<br>".$codArticolo."<br>";
     #setto l' articolo
-    setArticolo(codArticolo, descrizione, cliente, codCliente)
+    idArt = setArticolo(articolo[0])
+
     #salvo i componenti e li vado a collegare all' articolo
-    setComponenteInArticolo(codArticolo, componenti)
-    return True
+    #setComponenteInArticolo(codArticolo, componenti)
+    return idArt
 
 #inserimento nuovo impegno
 def newImpegno(assieme):
@@ -63,10 +59,22 @@ def search_comp(ricercaComp):
     #RICERCO IL CODICE COMPONENTE ED INVIO I DATI
     componente = getComponente(ricercaComp)
     #creo array di risposta
-    artComp = {"t_comp": componente}
+    comp = {"t_comp": componente}
+    risposta = {"search_comp": comp}
     #consegno il pacco
-    return artComp
+    return risposta
 
+#ricerca articolo gia inserito con i relativi componenti
+def search_art(ricercaArt):
+    #RICERCO IL CODICE ARTICOLO ED I DATI
+    articolo = getArticolo(ricercaArt)
+    #ricerco i comp contenuti nell' articolo
+    componenti = getCompInArticolo(articolo["id_art"])
+    #creo array di risposta
+    artComp = {"t_art": articolo, "t_comp": componenti}
+    risposta = {"search_art": artComp}
+    #consegno il pacco
+    return risposta
 
 '''
 FUNZIONI CHE RIUTILIZZO IN QUESTA PAGINA
@@ -86,16 +94,54 @@ def getComponente(ricComponente):
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
-    #istruzione query string -> seleziono tutti i componenti inseriti
+    #istruzione query string -> seleziono il componente ricercato
     mioDB.execute("SELECT * FROM componente WHERE cod_comp='" + ricComponente + "'")
     row = mioDB.fetchone()
     if row:
-        #salvo i dati articolo
+        #salvo i dati componente
         arrayComp = {"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"]}
     else:
         arrayComp = {"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": ""}
     mydb.close()
     return arrayComp
+
+#RICERCA ARTICOLO INSERITO
+def getArticolo(ricArticolo):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #istruzione query string -> seleziono articolo ricercato
+    mioDB.execute("SELECT * FROM articolo WHERE cod_art='" + ricArticolo + "'")
+    row = mioDB.fetchone()
+    if row:
+        #salvo i dati articolo
+        arrayArt = {"id_art": row["id_art"], "cod_art": row["cod_art"],"desc_art": row["desc_art"],"cli_art": row["cli_art"],"cod_cli_art": row["cod_cli_art"]}
+    else:
+        arrayArt = {"id_art": "", "cod_art": "","desc_art": "","cli_art": "","cod_cli_art": ""}
+    mydb.close()
+    return arrayArt
+
+#RICERCA I COMPONENTI INSERITI IN UN DATO ID_ARTICOLO
+def getCompInArticolo(ric_id_articolo):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #seleziono gli id_componenti dell' articolo ricercato
+    mioDB.execute("SELECT * FROM articolo_componenti INNER JOIN componente ON componente.ID_comp=articolo_componenti.ID_comp  WHERE articolo_componenti.id_art = '" + str(ric_id_articolo) + "'")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI
+    arr_Componenti = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        arr_Componenti.append({"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"]})
+    #se non aveva componenti passo stringa vuota
+    if flag == False:
+        arr_Componenti.append({"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": "","qt_comp": ""})
+    #chiusura
+    mydb.close()
+    return arr_Componenti
 
 #RICEVO TUTTI I CODICI IMPEGNO
 def getCodImpegni():
@@ -106,14 +152,14 @@ def getCodImpegni():
     mioDB.execute("SELECT cod_imp FROM impegno")
     result = mioDB.fetchall()
     #ricevo tutte le righe
-    cont = 0
+    flag = False
     arr_Impegno = []
     for x in result:
         #salvo l' array codici impegni
         arr_Impegno.append(x["cod_imp"])
-        cont = cont + 1
+        flag = True
     #se non sono presenti righe, passo casella VUOTA
-    if cont == 0:
+    if flag == False:
         arr_Impegno.append("")
     #chiudo la connessione al DB e passo i dati
     mydb.close()
@@ -128,14 +174,14 @@ def getCodComponenti():
     mioDB.execute("SELECT cod_comp FROM componente")
     result = mioDB.fetchall()
     #ricevo tutte le righe
-    cont = 0
+    flag = False
     arr_Componente = []
     for x in result:
         #salvo l' array codici componente
         arr_Componente.append(x["cod_comp"])
-        cont = cont + 1
+        flag = True
     #se non sono presenti righe, passo casella VUOTA
-    if cont == 0:
+    if flag == False:
         arr_Componente.append("")
     #chiudo la connessione al DB e passo i dati
     mydb.close()
@@ -150,14 +196,14 @@ def getCodArticoli():
     mioDB.execute("SELECT cod_art FROM articolo")
     result = mioDB.fetchall()
     #ricevo tutte le righe
-    cont = 0
+    flag = False
     arr_Articolo = []
     for x in result:
         #salvo l' array codici articoli
         arr_Articolo.append(x["cod_art"])
-        cont = cont + 1
+        flag = True
     #se non sono presenti righe, passo casella VUOTA
-    if cont == 0:
+    if flag == False:
         arr_Articolo.append("")
     #chiudo la connessione al DB e passo i dati
     mydb.close()
@@ -190,6 +236,9 @@ def getIDcomponente(comp):
     mioDB.execute("SELECT id_comp FROM componente WHERE cod_comp='" + comp + "';")
     result = mioDB.fetchall()
     #controllo se componente già salvato
+    '''
+    MODIFICARE CON FETCHONE
+    '''
     for x in result:
       #componente gia inserito -> salvo i dati componente
       idcomp = x["id_comp"]
@@ -225,23 +274,29 @@ def setCompSingolo(codComponenti):
         print("1 comp inserted, ID:", idComp)
     #disconnessione
     mydb.close()
+    return idComp
 
 #SETTO UN NUOVO ARTICOLO
-def setArticolo(codArt, desc, cli, codCli):
+def setArticolo(articolo):
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
     #variabili per la formattazione delle DATE da salvare
     now = datetime.datetime.now()
     dataOra = now.strftime("%Y/%m/%d") #("Y-m-d") data odierna
+    #variabili del cilindro per settarlo
+    codArt = articolo["cod_art"]
+    desc = articolo["desc_art"]
+    cli = articolo["cli_art"]
+    codCli = articolo["cod_cli_art"]
     #inserisco la riga articolo oppure aggiorno
     sql = "INSERT INTO articolo (cod_art, desc_art, cli_art, cod_cli_art, kit_art, data_art) VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE desc_art = %s, cli_art = %s, cod_cli_art = %s, kit_art = %s"
     val = (codArt, desc, cli, codCli, "0", dataOra, desc, cli, codCli, "0")
     mioDB.execute(sql, val)
     id_art = mioDB.lastrowid
     mydb.commit()
-    print("1 record inserted, ID:", id_art)
     mydb.close()
+    #restituisco l' ID dell'articolo appena salvato
     return id_art
 
 #INSERISCO I COMPONENTI NELLA TABELLA DELL' ARTICOLO
@@ -292,7 +347,7 @@ def setComponenteInArticolo(codArt, codComponenti):
         #disconnessione
         mydb.close()
 
-#CREO LA RIGA IMPEGNO
+#CREO LA RIGA IMPEGNO - DA COLLAUDARE!!!!!!
 def setImpegno(assImp):
     #apro la connessione al database
     mydb = connessione()
@@ -315,6 +370,7 @@ def setImpegno(assImp):
         sql = "SELECT id_imp FROM impegno WHERE cod_imp='" + assImp["cod_imp"] + "';"
         mioDB.execute(sql)
         result = mioDB.fetchall()
+        #MODIFICARE CON LA FUNZION FETCHONE
         for x in result:
           #articolo gia inserito -> salvo i dati articolo
           idImp = x["id_imp"]
