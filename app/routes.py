@@ -8,35 +8,21 @@ from app.forms import LoginForm
 @app.route('/')
 @app.route('/index')
 def index():
+    stampa = f.search_comp("1AAA00102")
     user = {'username': 'Mago'}
     posts = [
         {
             'author': {'username': 'John'},
-            'body': 'test4'
+            'body': 'Beautiful day in Portland!'
         },
         {
             'author': {'username': 'Susan'},
-<<<<<<< HEAD
-            'body': 'stampa'
-=======
-<<<<<<< HEAD
             'body': 'stampa'
         }
-=======
-            'body': stampa
->>>>>>> 0bf1be7b86f90638d13bdad7145c6945be0053e4
-        },
->>>>>>> ddc675772c4d78bd7794cc937db509f3f49d652a
     ]
 
-    '''
+    return render_template('index.html', user=user, posts=posts)
 
-    #test4 = '{"newComponente": {"t_comp":{["cod_comp":"1ABC00110","desc_comp":"stelo","dim_comp":"50","mat_comp":"C45"], ["cod_comp":"1ABC00112","desc_comp":"stelo 2","dim_comp":"50","mat_comp":"C45"]}}}'
-
-    #test2 = '{"newArticolo":{"t_art":[{"cod_art":"1ABC00100","desc_art":"cilindro","cli_art":"Asd","cod_cli_art":"123456","id_art":"10"}],"t_comp":[{"cod_comp":"1ABC00102","desc_comp":"camicia","dim_comp":"100","mat_comp":"S355","qt_comp":"1","id_comp":"10"}]}}'
-
-    #stampa = f.newComponente(test4)
-    '''
 @app.route('/NuovoArticolo', methods=['GET', 'POST'])
 def NuovoArticolo():
     if request.method == 'POST':
