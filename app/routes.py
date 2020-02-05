@@ -1,9 +1,9 @@
-from flask import render_template, flash, redirect, request, jsonify
+from flask import render_template, flash, redirect, request
 import ast
+import json
 from app import app
 from app import dbFunction as f
 from app.forms import LoginForm
-import ast
 
 @app.route('/')
 @app.route('/index')
@@ -16,8 +16,17 @@ def index():
         },
         {
             'author': {'username': 'Susan'},
+<<<<<<< HEAD
             'body': 'stampa'
+=======
+<<<<<<< HEAD
+            'body': 'stampa'
+        }
+=======
+            'body': stampa
+>>>>>>> 0bf1be7b86f90638d13bdad7145c6945be0053e4
         },
+>>>>>>> ddc675772c4d78bd7794cc937db509f3f49d652a
     ]
 
     '''
@@ -30,15 +39,18 @@ def index():
     '''
 @app.route('/NuovoArticolo', methods=['GET', 'POST'])
 def NuovoArticolo():
-    print('func')
     if request.method == 'POST':
-        data = request.form['new']
-        dic = ast.literal_eval(data)
-        print (dic['asd'])
+        print (request.form['newArticolo'])
+        #print (request.form['first_call'])
+        #data = request.form[0]
+        #dic = ast.literal_eval(data)
+        #print (dic)
         #print (request.is_json)
         #content = request.get_json()
         #print (content)
-        return ('ok')
+        arr = {'first_call':{'list_art':['1ASD00100','1ASD00200'],'list_comp':['1ASD00110','1ASD00103','1ASD00201']}}
+
+        return json.dumps(arr)
     else:
         return render_template('NuovoArticolo.html', title='CREAZIONE ARTICOLO - CILINDRO')
 
