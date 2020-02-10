@@ -44,20 +44,15 @@ def newArticolo(assieme):
 def newImpegno(assieme):
     #separo le componenti principali
     impegno = assieme["newImpegno"]["t_imp"][0]
-    #articoli = assieme["newImpegno"]["t_art"]
+    articoli = assieme["newImpegno"]["t_art"]
     #componenti = assieme["newImpegno"]["t_comp"]
     #1-> CREO LA RIGA IMPEGNO
     id_imp = setImpegno(impegno)
-
-
     #2-> CICLO GLI ARTICOLI-COMPONENTI DA INSERIRE NELL' IMPEGNO
-    #if($id_imp):
-     # #se l' impegno è stato inserito correttamente
-      ##vado ad inserire le righe articolo
-      #$varDB->setArticoloInImpegno($articoli, $id_imp);
-      ##vado ad inserire le righe componente
-      #$varDB->setComponenteInImpegno($componenti, $id_imp);
-    return id_imp
+    id_riga_imp = setArticoloInImpegno(articoli, id_imp)
+    #vado ad inserire le righe componente
+    #$varDB->setComponenteInImpegno($componenti, $id_imp);
+    return id_riga_imp
 
 #ricerca componente gia inserito
 def search_comp(ricercaComp):
@@ -351,7 +346,7 @@ def setComponenteInArticolo(idA, idC, comp):
     mydb.commit()
     mydb.close()
 
-#CREO LA RIGA IMPEGNO - DA COLLAUDARE!!!!!!
+#CREO LA RIGA IMPEGNO
 def setImpegno(assImp):
     #apro la connessione al database
     mydb = connessione()
@@ -372,7 +367,7 @@ def setImpegno(assImp):
     mioDB.execute(sql, val)
     idImp = mioDB.lastrowid
     if mioDB.lastrowid > 0:
-        #nuovo inserimento
+        #nuovo inserimento o modificato
         #prendo l' indice di componente
         idImp = mioDB.lastrowid
     else:
@@ -382,3 +377,47 @@ def setImpegno(assImp):
     #disconnessione
     mydb.close()
     return idImp
+
+def setArticoloInImpegno(artAssieme, idImp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #id righe inserite
+    id_righe = []
+    #ciclo gli articoli da inserire nell' impegno
+    cont = 0
+    for item in artAssieme:
+        #cerco id_articolo
+        idArt = getIDarticolo(item["cod_art"])
+        #query string per settare la riga nel DB
+        '''
+        - Devo controllare se la riga è già stata inserita. 1-> se è già inserita aggiorno solamente le quantità
+                                                            2-> se item["id_riga_imp"] è vuota creo la nuova riga
+                                                            3-> se viene cancellata non corrisponde l' item["id_riga_imp"]
+        '''
+        #1
+        if item["id_riga_imp"].isnumeric():
+            #aggiorno
+            sql = "UPDATE riga_imp SET qt_art = %s, data_cons_art = %s WHERE id_riga_imp = %s"
+            val = (item["qt_art"], item["data_cons_art"],  item["id_riga_imp"])
+
+        #2
+        else:
+            #inserisco
+            sql = "INSERT INTO riga_imp (id_imp, id_art, qt_art, data_cons_art) VALUES (%s, %s, %s, %s)"
+            val = (idImp, idArt, item["qt_art"], item["data_cons_art"])
+        #eseguo
+        mioDB.execute(sql, val)
+        #prendo l' indice della riga
+        if mioDB.lastrowid == 0:
+            #vecchia riga NON MODIFICATA, prendo l' ID
+            id_righe.append(item["id_riga_imp"])
+        else:
+            #nuova riga o riga modificata
+            id_righe.append(mioDB.lastrowid)
+        #incremento il contatore
+        cont = cont + 1
+    #aggiorno e chiudo il DB
+    mydb.commit()
+    mydb.close()
+    return id_righe
