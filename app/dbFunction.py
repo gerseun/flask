@@ -76,8 +76,17 @@ def search_art(ricercaArt):
     #consegno il pacco
     return risposta
 
+
+
+
+
+
+
+
 '''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 FUNZIONI CHE RIUTILIZZO IN QUESTA PAGINA
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '''
 #funzione per la connessione al database
 def connessione():
@@ -304,9 +313,9 @@ def setArticolo(articolo):
     val = (codArt, desc, cli, codCli, "0", dataOra, desc, cli, codCli, "0")
     mioDB.execute(sql, val)
     id_art = mioDB.lastrowid
-    if idArt == 0:
+    if id_art == 0:
         #se l' articolo era vecchio, ho già l'ID ART
-        idArt = articolo["id_art"]
+        id_art = articolo["id_art"]
     #aggiorno e chiudo il DB
     mydb.commit()
     mydb.close()
