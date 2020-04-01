@@ -1,9 +1,14 @@
 from flask import render_template, flash, redirect, request
 import ast
-import json
+try:
+    import simplejson as json
+except ImportError:
+    import json
 from app import app
-from app import dbFunction as f
+#from app import dbFunction as f
 from app.forms import LoginForm
+import pprint
+
 
 @app.route('/')
 @app.route('/index')
@@ -13,7 +18,7 @@ def index():
 
     test5 = {"newImpegno":{"t_imp":[{"cod_imp":"123","cliente":"asd","cod_ord_cli":"111","data_ord":"2019-12-04","id_imp":"1"}], "t_art":[{"cod_art":"1ABC00100","desc_art":"cilindro","qt_art":"3","data_cons_art":"2019-12-05","id_riga_imp":"1"}], "t_comp":[{"cod_comp":"1ABC00102","desc_comp":"camicia","qt_comp":"100","data_cons_comp":"2019-12-07","id_riga_imp_comp":"1"}, {"cod_comp":"1ABC00110","desc_comp":"stelo","qt_comp":"50","data_cons_comp":"2019-12-08","id_riga_imp_comp":"2"}]}}
 
-    #stampa = f.newImpegno(test5)
+    stampa = 'asd'#f.newImpegno(test5)
 
     user = {'username': 'Mago'}
     posts = [
@@ -23,7 +28,7 @@ def index():
         },
         {
             'author': {'username': 'Susan'},
-            #'body': stampa
+            'body': stampa
         }
     ]
 
@@ -31,18 +36,16 @@ def index():
 
 @app.route('/NuovoArticolo', methods=['GET', 'POST'])
 def NuovoArticolo():
-    if request.method == 'POST':
-        print (request.form['newArticolo'])
-        #print (request.form['first_call'])
-        #data = request.form[0]
-        #dic = ast.literal_eval(data)
-        #print (dic)
-        #print (request.is_json)
-        #content = request.get_json()
-        #print (content)
-        arr = {'first_call':{'list_art':['1ASD00100','1ASD00200'],'list_comp':['1ASD00110','1ASD00103','1ASD00201']}}
-
-        return json.dumps(arr)
+    if request.method == 'POST':    #Aspetta una richiesta POST dal client
+        content = request.get_data()    #Riceve una stringa
+        formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
+        print('Dati ricevuti:')
+        pprint.pprint(formatted_data)
+        print('Dati filtrati:')
+        print(formatted_data['newArticolo']['t_art'][0]['cod_art'])
+        #arr = {'first_call':{'list_art':['1ASD00100','1ASD00200'],'list_comp':['1ASD00110','1ASD00103','1ASD00201']}}
+        #return json.dumps(content)
+        return content  #risponde al client
     else:
         return render_template('NuovoArticolo.html', title='CREAZIONE ARTICOLO - CILINDRO')
 
