@@ -151,7 +151,7 @@ $(document).ready(function() {
       //exp_arr[page_class] = JSON.stringify(v_arr);
       //$('#output_text').text(JSON.stringify(exp_arr));
       console.log(exp_arr);
-      $.post('/NuovoArticolo', JSON.stringify(exp_arr), function(data) {
+      $.post(window.location.pathname, JSON.stringify(exp_arr), function(data) {
         $('#output_text').html(data);
       }).fail(function() {
         console.log('Function: export, Error: database connection error');
