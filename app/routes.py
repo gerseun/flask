@@ -45,15 +45,23 @@ def NuovoArticolo():
         print('Dati filtrati:')
         print(formatted_data['newArticolo']['t_art'][0]['cod_art'])
         risposta = f.newArticolo(formatted_data)
-        #arr = {'first_call':{'list_art':['1ASD00100','1ASD00200'],'list_comp':['1ASD00110','1ASD00103','1ASD00201']}}
-        #return json.dumps(content)
         return risposta  #risponde al client
     else:
         return render_template('NuovoArticolo.html', title='CREAZIONE ARTICOLO - CILINDRO')
 
-@app.route('/NuovoComponente')
+@app.route('/NuovoComponente', methods=['GET', 'POST'])
 def NuovoComponente():
-    return render_template('NuovoComponente.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
+    if request.method == 'POST':    #Aspetta una richiesta POST dal client
+        content = request.get_data()    #Riceve una stringa
+        formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
+        print('Dati ricevuti:')
+        pprint.pprint(formatted_data)
+        #print('Dati filtrati:')
+        #print(formatted_data['newComponente']['t_comp'][0]['cod_comp'])
+        risposta = f.newComponente(formatted_data)
+        return risposta  #risponde al client
+    else:
+        return render_template('NuovoComponente.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
 
 @app.route('/NuovoImpegno')
 def NuovoImpegno():
