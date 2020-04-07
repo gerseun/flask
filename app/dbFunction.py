@@ -268,6 +268,7 @@ def setComponenti(codComponenti):
     dataOra = now.strftime("%Y/%m/%d") #("Y-m-d") data odierna
     #id componenti inseriti
     idComp = []
+    contComp = 0
     #ciclo tutti i componenti
     for componente in codComponenti:
         #ciclo tutti i componenti
@@ -286,6 +287,7 @@ def setComponenti(codComponenti):
             idComp.append(componente["id_comp"])
         else:
             idComp.append(mioDB.lastrowid)
+        contComp = contComp + 1
     #disconnessione
     '''
     - se la funzione viene chiamata per inserire un solo componente, ritorna l' ID del componente inserito in un array 'singolo'
@@ -293,7 +295,7 @@ def setComponenti(codComponenti):
     - se non modifica nulla ritorna '0'
     '''
     mydb.close()
-    return idComp
+    return "Righe inserite: " + str(contComp)
 
 #SETTO UN NUOVO ARTICOLO
 def setArticolo(articolo):

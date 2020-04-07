@@ -42,7 +42,7 @@ def NuovoArticolo():
         formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
         print('Dati ricevuti:')
         pprint.pprint(formatted_data)
-        print('Dati filtrati:')
+        print('Dati filtrati newArticolo:')
         print(formatted_data['newArticolo']['t_art'][0]['cod_art'])
         risposta = f.newArticolo(formatted_data)
         return risposta  #risponde al client
@@ -56,8 +56,8 @@ def NuovoComponente():
         formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
         print('Dati ricevuti:')
         pprint.pprint(formatted_data)
-        #print('Dati filtrati:')
-        #print(formatted_data['newComponente']['t_comp'][0]['cod_comp'])
+        print('Dati filtrati newComponente:')
+        print(formatted_data['newComponente']['t_comp'][0]['cod_comp'])
         risposta = f.newComponente(formatted_data)
         return risposta  #risponde al client
     else:
