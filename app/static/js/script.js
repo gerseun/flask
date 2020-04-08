@@ -20,17 +20,45 @@ $(document).ready(function() {
             var val = ui.item.value;
             var el_class = $(this).attr('class').split(' ')[0];
             exp_arr[page_class + '_' + el_class] = val;
-            $OUTPUT.text(JSON.stringify(msg));
-            //$.post(PHP_LINK, exp_arr, function(data, textStatus, xhr) {
+            $.post(window.location.pathname, JSON.stringify(exp_arr), function(data, textStatus, xhr) {
             //console.log(data);
-            //$OUTPUT.html(data);
-            //var data2 = JSON.parse(data);
-            //fill_tables(data2, $el);
-          //});
+            $OUTPUT.html(data);
+            //var arr = JSON.parse(data);
+            //fill_tables(arr, $el);
+            });
           }
         });
-        console.log('Search added');
+        console.log('Search added to:');
+        console.log(el);
       }
+    });
+  };
+
+  function fill_table($table, arr) {
+    var table_name = $table.attr('class');
+    var headers = get_tableHeaders($table);
+    var $rows = $table.find('tr:not(:hidden)');
+    if ($rows.length < arr.length) {
+      add_row($table, arr.length - $rows.length); // Add rows is JSON has more
+    } else {
+      $rows.each(function(index, el) {
+        if (index > arr.length - 1) { // Remove rows if JSON has more
+          $(this).detach();
+        }
+      });
+    }
+    var $rows = $table.find('tr:not(:hidden)'); // Find rows
+
+    $rows.each(function(index, el) { // Pass every row and add value to table
+      var $td = $(this).find('td');
+      headers.forEach(function(h, i) {
+        if ($td.eq(i).children('input').length) {
+          $td.eq(i).children('input').val(arr[index][h]);
+        } else {
+          $td.eq(i).text(arr[index][h]);
+        }
+        make_editable($td.eq(i), false,true);
+      });
     });
   };
 
@@ -38,29 +66,32 @@ $(document).ready(function() {
     var val = {};
     var name = 'firstCall';
     val[name] = page_class;
-
-    $.post('/NuovoArticolo', val, function(data, textStatus, xhr) {
-      $('#output_text').text(JSON.stringify(data));
+    console.log(val);
+    $.post(window.location.pathname, JSON.stringify(val), function(data, textStatus, xhr) {
+    //$('#output_text').text(JSON.stringify(data));
+      console.log(data);
+      $('output_text').html(data);
     //var data = JSON.parse(test1);
     //$OUTPUT.html(JSON.stringify(data));
-      //var arr = JSON.parse(data);
-    if (data.hasOwnProperty('first_call')) {
-      if (data['first_call'].hasOwnProperty('list_art')) {
-        list_art = data['first_call']['list_art'];
-        add_search($('.search_art'), list_art);
+      var arr = JSON.parse(data);
+
+      if (arr.hasOwnProperty('firstCall')) {
+        if (arr['firstCall'].hasOwnProperty('list_art')) {
+          list_art = arr['firstCall']['list_art'];
+          add_search($('.search_art'), list_art);
+        }
+        if (arr['firstCall'].hasOwnProperty('list_comp')) {
+          list_comp = arr['firstCall']['list_comp'];
+          add_search($('.search_comp'), list_comp);
+        }
+        if (arr['firstCall'].hasOwnProperty('list_imp')) {
+          list_imp = arr['firstCall']['list_imp'];
+          add_search($('.search_imp'), list_imp);
+        }
+      } else {
+        console.log('Func: first_call, Error: json wrong structure');
       }
-      if (data['first_call'].hasOwnProperty('list_comp')) {
-        list_comp = data['first_call']['list_comp'];
-        add_search($('.search_comp'), list_comp);
-      }
-      if (data['first_call'].hasOwnProperty('list_imp')) {
-        list_imp = data['first_call']['list_imp'];
-        add_search($('.search_imp'), list_imp);
-      }
-    } else {
-      console.log('Func: first_call, Error: json wrong structure');
-    }
-  },'JSON').fail(function() {
+    }).fail(function() {
       console.log('Func: first_call, Error: server call fail');
     });
   };
