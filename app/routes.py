@@ -51,7 +51,7 @@ def NuovoArticolo():
             risposta = f.newArticolo(formatted_data)
             #risposta = 'ok'
         if 'firstCall' in formatted_data:
-            risposta = json.dumps(f.first_call(formatted_data))
+            risposta = json.dumps(f.first_call())
             #risposta = first
         if 'newArticolo_search_art' in formatted_data:
             risposta = ""
