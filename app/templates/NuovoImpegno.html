@@ -1,6 +1,94 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>IMPEGNO</h1>
+
+<div class="container" id="newImpegno">
+  <p>Per apportare modifiche contattare Simone</p>
+  <p>Inserire i dati relativi all' ordine.</p>
+  <div id="">
+    <table id="t_imp">
+      <thead class="header">
+        <th id="cod_imp">Codice Impegno</th>
+        <th id="cliente">Cliente</th>
+        <th id="cod_ord_cli">Num. ord. cliente</th>
+        <th id="data_ord">Data ordine</th>
+        <th id="id_imp">ID Impegno</th>
+      </thead>
+      <tbody class="body">
+        <tr>
+          <td contenteditable="true" class="search_imp" id="first_cell"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="false"></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br>
+
+    <p>Inserire i dati relativi al cilindro.</p>
+    <table id="t_art">
+      <thead class="header">
+        <th id="cod_art">Codice Articolo</th>
+        <th id="desc_art">Descrizione</th>
+        <th id="qt_art">Quantità</th>
+        <th id="data_cons_art">Data consegna</th>
+        <th id="id_art">ID Articolo</th>
+        <th class="control"><i class="table-add fa fa-plus"></i></th>
+      </thead>
+      <tbody class="body">
+        <tr>
+          <td contenteditable="true" class="search_art" id="first_cell"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="false"></td>
+          <td class="control"><i class="table-remove fa fa-times"></i></td>
+        </tr>
+        <tr class="hide">
+          <td contenteditable="true" class="search_art"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="false"></td>
+          <td class="control"><i class="table-remove fa fa-times"></i></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <br>
+
+    <p>Compilare le righe dei componenti.</p>
+    <table id="t_comp">
+      <thead class="header">
+        <th id="cod_comp">Codice Componente</th>
+        <th id="desc_comp">Descrizione</th>
+        <th id="qt_comp">Quantità</th>
+        <th id="data_cons_comp">Data consegna</th>
+        <th id="id_comp">ID Componente</th>
+        <th class="control"><i class="table-add fa fa-plus"></i></th>
+      </thead>
+      <tbody class="body">
+        <tr>
+          <td contenteditable="true" class="search_comp"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="false"></td>
+          <td class="control"><i class="table-remove fa fa-times"></i></td>
+        </tr>
+        <tr class="hide">
+          <td contenteditable="true" class="search_comp"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="true"></td>
+          <td contenteditable="false"></td>
+          <td class="control"><i class="table-remove fa fa-times"></i></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
 
 {% endblock %}
