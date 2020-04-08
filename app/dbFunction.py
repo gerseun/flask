@@ -15,7 +15,7 @@ def first_call():
     #concatenazione array
     arrCodici = {"list_imp": impegni, "list_art": articoli, "list_comp": componenti}
     arrRisultato = {"firstCall": arrCodici}
-    return str(arrRisultato)
+    return arrRisultato
 
 #inserimento nuovo componente
 def newComponente(assieme):
@@ -91,10 +91,10 @@ FUNZIONI CHE RIUTILIZZO IN QUESTA PAGINA
 #funzione per la connessione al database
 def connessione():
     mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="",
-    database="db_progresso"
+    host="remotemysql.com",
+    user="LsRISZ5PFW",
+    passwd="K6Qv7xehdj",
+    database="LsRISZ5PFW"
     )
     return mydb;
 
