@@ -23,8 +23,8 @@ $(document).ready(function() {
             $.post(window.location.pathname, JSON.stringify(exp_arr), function(data, textStatus, xhr) {
             //console.log(data);
             $OUTPUT.html(data);
-            //var arr = JSON.parse(data);
-            //fill_tables(arr, $el);
+            var arr = JSON.parse(data);
+            fill_tables(arr, $el);
             });
           }
         });
@@ -32,6 +32,21 @@ $(document).ready(function() {
         console.log(el);
       }
     });
+  };
+
+  function fill_tables(data, $el) {
+    if ($el.attr('id') == 'first_cell') {
+      $('.container').find('table').each(function(index, el) {
+        var table_name = $(this).attr('class');
+        fill_table($(this), data[page_class][table_name]);
+      });
+    } else {
+      var $row = $el.parent('tr');
+      var $table = $el.parents('table');
+      var table_name = $table.attr('class');
+      fill_row($row, data['search_comp'][table_name]);
+    }
+
   };
 
   function fill_table($table, arr) {
@@ -60,6 +75,36 @@ $(document).ready(function() {
         make_editable($td.eq(i), false,true);
       });
     });
+  };
+
+  function fill_row($row, arr) {
+
+    var headers = get_tableHeaders($row);
+    var $td = $row.find('td');
+    headers.forEach(function(h, i) {
+      if ($td.eq(i).children('input').length) {
+        $td.eq(i).children('input').val(arr[0][h]);
+      } else {
+        $td.eq(i).text(arr[0][h]);
+      }
+      //make_editable($td.eq(i), false,false);
+    });
+
+  };
+
+  function get_tableHeaders($el) {
+    var headers = [];
+    if ($el.is('table')) {
+      $el.find('th:not(.control)').each(function() { // Get table headers id
+        headers.push($(this).attr('id'));
+      });
+    } else {
+      var $table = $el.parents('table');
+      $table.find('th:not(.control)').each(function() { // Get table headers id
+        headers.push($(this).attr('id'));
+      });
+    }
+    return headers;
   };
 
   function first_call() {

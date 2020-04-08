@@ -53,9 +53,10 @@ def NuovoArticolo():
         if 'firstCall' in formatted_data:
             risposta = json.dumps(f.first_call())
             #risposta = first
-        if 'newArticolo_search_art' in formatted_data:
-            risposta = ""
         if 'newArticolo_search_comp' in formatted_data:
+            risposta = f.search_comp(formatted_data['newArticolo_search_art'])
+            #risposta = ""
+        if 'newArticolo_search_art' in formatted_data:
             risposta = ""
         return risposta  #risponde al client
     else:
