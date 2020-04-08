@@ -15,7 +15,7 @@ def first_call():
     #concatenazione array
     arrCodici = {"list_imp": impegni, "list_art": articoli, "list_comp": componenti}
     arrRisultato = {"firstCall": arrCodici}
-    return arrRisultato
+    return str(arrRisultato)
 
 #inserimento nuovo componente
 def newComponente(assieme):
