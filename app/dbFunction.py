@@ -5,7 +5,7 @@ import datetime
 FUNZIONI RICHIAMATE DA PAGINE ESTERNE
 '''
 #FUNZIONE CHE SCARICA I DATI SALVATI
-def first_call():
+def first_call(namePage):
     #array impegni
     impegni = getCodImpegni()
     #array componenti
@@ -14,7 +14,7 @@ def first_call():
     articoli = getCodArticoli()
     #concatenazione array
     arrCodici = {"list_imp": impegni, "list_art": articoli, "list_comp": componenti}
-    arrRisultato = {"firstCall": arrCodici}
+    arrRisultato = {"pagina": namePage,"azione": "firstCall" , "messaggio": arrCodici}
     return arrRisultato
 
 #inserimento nuovo componente
