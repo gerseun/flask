@@ -55,7 +55,10 @@ def NuovoArticolo():
             risposta = json.dumps(f.first_call())
             #risposta = first
         if 'newArticolo_search_comp' in formatted_data:
-            risposta = json.dumps(f.search_comp(formatted_data['newArticolo_search_comp']))
+            print(formatted_data['newArticolo_search_comp'])
+            risposta1 = f.search_comp(formatted_data['newArticolo_search_comp'])
+            risposta = json.dumps(risposta1)
+            print(risposta)
             #risposta = ""
         if 'newArticolo_search_art' in formatted_data:
             risposta = ""

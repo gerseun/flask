@@ -9,6 +9,7 @@ $(document).ready(function() {
 
   function add_search($el, arr) {
     $el.each(function(index, el) {
+      $element = $(this);
       if (!($(this).parent('tr').hasClass('hide'))) {
         $(this).autocomplete({
           autoFocus: true,
@@ -22,14 +23,13 @@ $(document).ready(function() {
             exp_arr[page_class + '_' + el_class] = val;
             $.post(window.location.pathname, JSON.stringify(exp_arr), function(data, textStatus, xhr) {
             //console.log(data);
-            $OUTPUT.html(data);
+            $('output_text').html(data);
             var arr = JSON.parse(data);
-            fill_tables(arr, $el);
+            fill_tables(arr, $element);
             });
           }
         });
         console.log('Search added to:');
-        console.log(el);
       }
     });
   };
@@ -37,16 +37,18 @@ $(document).ready(function() {
   function fill_tables(data, $el) {
     if ($el.attr('id') == 'first_cell') {
       $('.container').find('table').each(function(index, el) {
-        var table_name = $(this).attr('class');
+        var table_name = $(this).attr('id');
         fill_table($(this), data[page_class][table_name]);
       });
     } else {
       var $row = $el.parent('tr');
       var $table = $el.parents('table');
-      var table_name = $table.attr('class');
+      var table_name = $table.attr('id');
+      console.log(data);
+      console.log(data['search_comp']);
+      console.log(data['search_comp'][table_name]);
       fill_row($row, data['search_comp'][table_name]);
     }
-
   };
 
   function fill_table($table, arr) {
@@ -82,11 +84,14 @@ $(document).ready(function() {
     var headers = get_tableHeaders($row);
     var $td = $row.find('td');
     headers.forEach(function(h, i) {
-      if ($td.eq(i).children('input').length) {
-        $td.eq(i).children('input').val(arr[0][h]);
-      } else {
-        $td.eq(i).text(arr[0][h]);
-      }
+
+      console.log($td.eq(i));
+      //if ($td.eq(i).children('input').length) {
+        //$td.eq(i).children('input').val(arr[0][h]);
+        //$td.eq(i).children('input').val(arr[h]);
+      //} else {
+        $td.eq(i).text(arr[h]);
+      //}
       //make_editable($td.eq(i), false,false);
     });
 
@@ -114,8 +119,8 @@ $(document).ready(function() {
     console.log(val);
     $.post(window.location.pathname, JSON.stringify(val), function(data, textStatus, xhr) {
     //$('#output_text').text(JSON.stringify(data));
-      console.log(data);
-      $('output_text').html(data);
+      //console.log(data);
+      //$('output_text').html(data);
     //var data = JSON.parse(test1);
     //$OUTPUT.html(JSON.stringify(data));
       var arr = JSON.parse(data);
