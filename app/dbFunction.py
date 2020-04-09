@@ -14,7 +14,7 @@ def first_call(namePage):
     articoli = getCodArticoli()
     #concatenazione array
     arrCodici = {"list_imp": impegni, "list_art": articoli, "list_comp": componenti}
-    arrRisultato = {"pagina": namePage,"azione": "firstCall" , "messaggio": arrCodici}
+    arrRisultato = {"pagina": namePage,"azione": "first_call" , "messaggio": arrCodici}
     return arrRisultato
 
 #inserimento nuovo componente
@@ -55,31 +55,40 @@ def newImpegno(assieme):
     return id_riga_imp
 
 #ricerca componente gia inserito
-def search_comp(ricercaComp):
+def search_comp(namePage, ricercaComp):
     #RICERCO IL CODICE COMPONENTE ED INVIO I DATI
     componente = getComponente(ricercaComp)
     #creo array di risposta
     comp = {"t_comp": componente}
-    risposta = {"search_comp": comp}
+    risposta = {"pagina": namePage,"azione": "search_comp" , "messaggio": comp}
     #consegno il pacco
     return risposta
 
 #ricerca articolo gia inserito con i relativi componenti
-def search_art(ricercaArt):
+def search_art(namePage, ricercaArt):
     #RICERCO IL CODICE ARTICOLO ED I DATI
     articolo = getArticolo(ricercaArt)
     #ricerco i comp contenuti nell' articolo
     componenti = getCompInArticolo(articolo["id_art"])
     #creo array di risposta
     artComp = {"t_art": articolo, "t_comp": componenti}
-    risposta = {"search_art": artComp}
+    risposta = {"pagina": namePage,"azione": "search_art" , "messaggio": artComp}
     #consegno il pacco
     return risposta
 
-
-
-
-
+#ricerca impegno gia inserito con i relativi articolo e/o componenti
+def search_imp(namePage, ricercaImp):
+    #RICERCO IL CODICE IMPEGNO ED I DATI
+    impegno = getImpegno(ricercaImp)
+    #ricerco i comp contenuti nell' impegno
+    componenti = getCompInImpegno(impegno["id_imp"])
+    #ricerco gli articoli contenuti nell' impegno
+    articoli = getArtInImpegno(impegno["id_imp"])
+    #creo array di risposta
+    impArtComp = {"t_imp": impegno, "t_art": articolo, "t_comp": componenti}
+    risposta = {"pagina": namePage,"azione": "search_imp" , "messaggio": impArtComp}
+    #consegno il pacco
+    return risposta
 
 
 
@@ -130,6 +139,22 @@ def getArticolo(ricArticolo):
     mydb.close()
     return arrayArt
 
+#RICERCA IMPEGNO INSERITO
+def getImpegno(ricImpegno):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #istruzione query string -> seleziono impegno ricercato
+    mioDB.execute("SELECT * FROM impegno WHERE cod_imp='" + ricImpegno + "'")
+    row = mioDB.fetchone()
+    if row:
+        #salvo i dati articolo
+        arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": row["data_ord"]}
+    else:
+        arrayImp = {"id_imp": "", "cod_imp": "","cliente": "","cod_ord_cli": "","data_ord": ""}
+    mydb.close()
+    return arrayImp
+
 #RICERCA I COMPONENTI INSERITI IN UN DATO ID_ARTICOLO
 def getCompInArticolo(ric_id_articolo):
     #apro la connessione al database
@@ -151,6 +176,50 @@ def getCompInArticolo(ric_id_articolo):
     #chiusura
     mydb.close()
     return arr_Componenti
+
+#RICERCA I COMPONENTI INSERITI IN UN DATO ID_ARTICOLO
+def getCompInImpegno(ric_id_impegno):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #seleziono gli id_componenti dell' impegno ricercato
+    mioDB.execute("SELECT * FROM riga_imp_comp INNER JOIN componente ON riga_imp_comp.ID_comp=componente.ID_comp  WHERE riga_imp_comp.ID_imp = '" + str(ric_id_impegno) + "'")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI
+    arr_Componenti = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        arr_Componenti.append({"id_riga_imp_comp": row["id_riga_imp_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": row["data_cons_comp"]})
+    #se non aveva componenti passo stringa vuota
+    if flag == False:
+        arr_Componenti.append({"id_riga_imp_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
+    #chiusura
+    mydb.close()
+    return arr_Componenti
+
+#RICERCA I COMPONENTI INSERITI IN UN DATO ID_ARTICOLO
+def getArtInImpegno(ric_id_impegno):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #seleziono gli id_riga_imp dell' impegno ricercato
+    mioDB.execute("SELECT * FROM riga_imp INNER JOIN articolo ON riga_imp.ID_art=articolo.ID_art  WHERE riga_imp.ID_imp = '" + str(ric_id_impegno) + "' ORDER BY riga_imp.ID_riga_imp ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI
+    arr_Articoli = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        arr_Articoli.append({"id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": row["data_cons_art"]})
+    #se non aveva componenti passo stringa vuota
+    if flag == False:
+        arr_Articoli.append({"id_riga_imp": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
+    #chiusura
+    mydb.close()
+    return arr_Articoli
 
 #RICEVO TUTTI I CODICI IMPEGNO
 def getCodImpegni():

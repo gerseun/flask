@@ -73,21 +73,32 @@ def NuovoComponente():
         formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
         print('Dati ricevuti:')
         pprint.pprint(formatted_data)
+        print('Dati filtrati newComponente:')
+        print(formatted_data['newComponente']['t_comp'][0]['cod_comp'])
+        risposta = f.newComponente(formatted_data)
+        #risposta = 'ok'
+        return risposta  #risponde al client
+    else:
+        return render_template('NuovoComponente.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
+
+@app.route('/NuovoImpegno', methods=['GET', 'POST'])
+def NuovoImpegno():
+    return render_template('NuovoImpegno.html', title='CREAZIONE IMPEGNO')
+
+@app.route('/About')
+def About():
+    if request.method == 'POST':    #Aspetta una richiesta POST dal client
+        content = request.get_data()    #Riceve una stringa
+        formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
+        print('Dati ricevuti:')
+        pprint.pprint(formatted_data)
         #print('Dati filtrati newComponente:')
         #print(formatted_data['newComponente']['t_comp'][0]['cod_comp'])
         #risposta = f.newComponente(formatted_data)
         risposta = 'ok'
         return risposta  #risponde al client
     else:
-        return render_template('NuovoComponente.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
-
-@app.route('/NuovoImpegno')
-def NuovoImpegno():
-    return render_template('NuovoImpegno.html', title='CREAZIONE IMPEGNO')
-
-@app.route('/About')
-def About():
-    return render_template('About.html')
+        return render_template('NuovoImpegno.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
