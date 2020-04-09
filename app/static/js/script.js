@@ -72,71 +72,7 @@ $(document).ready(function() {
 
   };
 
-  function first_call() {
-    var val = {};
-    var name = 'firstCall';
-    val[name] = page_class;
-    console.log(val);
-    $.post(window.location.pathname, JSON.stringify(val), function(data, textStatus, xhr) {
-    //$('#output_text').text(JSON.stringify(data));
-      //console.log(data);
-      //$('output_text').html(data);
-    //var data = JSON.parse(test1);
-    //$OUTPUT.html(JSON.stringify(data));
-      var arr = JSON.parse(data);
 
-      if (arr.hasOwnProperty('firstCall')) {
-        if (arr['firstCall'].hasOwnProperty('list_art')) {
-          list_art = arr['firstCall']['list_art'];
-          add_search($('.search_art'), list_art);
-        }
-        if (arr['firstCall'].hasOwnProperty('list_comp')) {
-          list_comp = arr['firstCall']['list_comp'];
-          add_search($('.search_comp'), list_comp);
-        }
-        if (arr['firstCall'].hasOwnProperty('list_imp')) {
-          list_imp = arr['firstCall']['list_imp'];
-          add_search($('.search_imp'), list_imp);
-        }
-      } else {
-        console.log('Func: first_call, Error: json wrong structure');
-      }
-    }).fail(function() {
-      console.log('Func: first_call, Error: server call fail');
-    });
-  };
-
-  function add_row($table, n) {
-    for (var i = 0; i < n; i++) {
-      var $clone = $table.find('tr.hide').clone(true, true).removeClass('hide');
-      $table.append($clone);
-      //if (!$clone.find('input').hasClass('.hasDatepicker')) {
-        //add_datepicker($clone.find('input'));
-      //}
-      var $first_cell = $clone.find('td').first();
-      if ($first_cell.hasClass('search_art')) {
-        add_search($first_cell, list_art);
-      } else if ($first_cell.hasClass('search_comp')) {
-        add_search($first_cell, list_comp);
-      } else if ($first_cell.hasClass('search_imp')) {
-        add_search($first_cell, list_imp);
-      }
-    }
-  };
-
-
-
-  $('#load_btn').click(function(event) {
-    first_call();
-  });
-
-  $('.table-add').click(function() {
-    var $parent_table = $(this).parents('table');
-    add_row($parent_table, 1);
-  });
-  $('.table-remove').click(function(event) {
-    $(this).parents('tr').detach();
-  });
 
   if (!check) {
 
@@ -211,7 +147,7 @@ $(document).ready(function() {
       }
       v_arr[$(this).attr('id')] = val;
     });
-    message = JSON.stringify(v_arr);
+    var message = v_arr;
 
     var r = send_message(page, action, message, '/test');
     r.done(function(data){
@@ -234,9 +170,9 @@ $(document).ready(function() {
     var send = {};
 
     if (condition1 & condition2 & condition3) {
-      send['page'] = page;
-      send['action'] = action;
-      send['message'] = message;
+      send['pagina'] = page;
+      send['azione'] = action;
+      send['messaggio'] = message;
 
       var r = $.post(path, JSON.stringify(send))
       .fail(function() {
@@ -251,15 +187,16 @@ $(document).ready(function() {
 
   function request_list(){
     var page = $('.container').attr('id');
-    var action = 'get_list_autocomp';
+    var action = 'first_call';
     var message = '';
     var answer = '';
     var r = send_message(page, action, message, '/test');
     r.done(function(data){
       if ($.type(data) === "string") {
         data = JSON.parse(data);
-        if (data[action] == "get_list_autocomp") {
-          arr = data[message];
+        console.log(data['messaggio']);
+        if (data['azione'] == "first_call") {
+          arr = data['messaggio'];
           if (arr.hasOwnProperty('list_art')) {
             list_art = arr['list_art'];
             add_autocomp($('.search_art'), list_art);
@@ -288,16 +225,15 @@ $(document).ready(function() {
           source: arr,
           minLength: 1,
           select: function(event, ui) {
-            var exp_arr = {};
-            var msg = {};
             var val = ui.item.value;
-            var el_class = $(this).attr('class').split(' ')[0];
-            exp_arr[page_class + '_' + el_class] = val;
-            $.post(window.location.pathname, JSON.stringify(exp_arr), function(data, textStatus, xhr) {
-            //console.log(data);
-            $('output_text').html(data);
-            var arr = JSON.parse(data);
-            fill_tables(arr, $element);
+            var page = $('.container').attr('id');
+            var action = $(this).attr('class').split(' ')[0];
+            var message = val;
+            var answer = '';
+            var r = send_message(page, action, message, '/test');
+            r.done(function(data){
+              var arr = JSON.parse(data);
+              //fill_tables(arr, $element);
             });
           }
         });
@@ -305,6 +241,29 @@ $(document).ready(function() {
       }
     });
   };
+
+  function add_row($table, n) {
+    for (var i = 0; i < n; i++) {
+      var $clone = $table.find('tr.hide').clone(true, true).removeClass('hide');
+      $table.append($clone);
+      var $first_cell = $clone.find('td').first();
+      if ($first_cell.hasClass('search_art')) {
+        add_autocomp($first_cell, list_art);
+      } else if ($first_cell.hasClass('search_comp')) {
+        add_autocomp($first_cell, list_comp);
+      } else if ($first_cell.hasClass('search_imp')) {
+        add_autocomp($first_cell, list_imp);
+      }
+    }
+  };
+
+  $('.table-add').click(function() {
+    var $parent_table = $(this).parents('table');
+    add_row($parent_table, 1);
+  });
+  $('.table-remove').click(function(event) {
+    $(this).parents('tr').detach();
+  });
 
   $('#export_btn').click(export_tables);
   $('#load_btn').click(request_list);

@@ -116,5 +116,7 @@ def test():
         formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
         print('Dati ricevuti:')
         pprint.pprint(formatted_data)
-        risposta = 'ok'
+        if formatted_data['azione'] == 'first_call':
+            risposta = json.dumps(f.first_call('server'))
+        #risposta = 'ok'
         return risposta
