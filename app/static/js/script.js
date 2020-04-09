@@ -7,32 +7,7 @@ var page_class = "";
 $(document).ready(function() {
   page_class = $('.container').attr('id');
 
-  function add_search($el, arr) {
-    $el.each(function(index, el) {
-      $element = $(this);
-      if (!($(this).parent('tr').hasClass('hide'))) {
-        $(this).autocomplete({
-          autoFocus: true,
-          source: arr,
-          minLength: 1,
-          select: function(event, ui) {
-            var exp_arr = {};
-            var msg = {};
-            var val = ui.item.value;
-            var el_class = $(this).attr('class').split(' ')[0];
-            exp_arr[page_class + '_' + el_class] = val;
-            $.post(window.location.pathname, JSON.stringify(exp_arr), function(data, textStatus, xhr) {
-            //console.log(data);
-            $('output_text').html(data);
-            var arr = JSON.parse(data);
-            fill_tables(arr, $element);
-            });
-          }
-        });
-        console.log('Search added to:');
-      }
-    });
-  };
+  /*
 
   function fill_tables(data, $el) {
     if ($el.attr('id') == 'first_cell') {
@@ -97,21 +72,6 @@ $(document).ready(function() {
 
   };
 
-  function get_tableHeaders($el) {
-    var headers = [];
-    if ($el.is('table')) {
-      $el.find('th:not(.control)').each(function() { // Get table headers id
-        headers.push($(this).attr('id'));
-      });
-    } else {
-      var $table = $el.parents('table');
-      $table.find('th:not(.control)').each(function() { // Get table headers id
-        headers.push($(this).attr('id'));
-      });
-    }
-    return headers;
-  };
-
   function first_call() {
     var val = {};
     var name = 'firstCall';
@@ -164,41 +124,7 @@ $(document).ready(function() {
     }
   };
 
-  function get_table($table) {
-    var arr = [];
-    var headers_id = [];
-    var check = false;
-    $table.find('th:not(.control)').each(function(index, el) {
-      headers_id.push($(this).attr('id'));
-    });
 
-    $table.find('tr:not(:hidden)').each(function(index, el) {
-      var $td = $(this).find('td');
-      var val = {};
-      check = headers_id.some(function(h, i) {
-        var myval = "";
-        var count = 0;
-
-        //if ($td.eq(i).children('input').length) {
-          //myval = $td.eq(i).children('input').val();
-        //} else {
-          myval = $td.eq(i).text();
-        //}
-        val[h] = myval;
-        return (myval == "" && i != (headers_id.length - 1));
-
-      });
-
-      if (check) {
-        return true;
-      };
-      arr.push(val);
-    });
-    if (check) {
-      return true;
-    }
-    return (arr);
-  };
 
   $('#load_btn').click(function(event) {
     first_call();
@@ -212,13 +138,72 @@ $(document).ready(function() {
     $(this).parents('tr').detach();
   });
 
-  $('#export_btn').click(function(event) {
+  if (!check) {
+
+    //exp_arr[page_class] = JSON.stringify(v_arr);
+    //$('#output_text').text(JSON.stringify(exp_arr));
+    console.log(exp_arr);
+    $.post(window.location.pathname, JSON.stringify(exp_arr), function(data) {
+      $('#output_text').html(data);
+    }).fail(function() {
+      console.log('Function: export, Error: database connection error');
+    });
+  }
+
+
+  */
+
+  function get_table($table) {
+    var arr = [];
+    var headers_id = [];
+    var check = false;
+    headers_id = get_tableHeaders($table);
+    $table.find('tr:not(:hidden)').each(function(index, el) {
+      var $td = $(this).find('td');
+      var val = {};
+      check = headers_id.some(function(h, i) {
+        var myval = "";
+        myval = $td.eq(i).text();
+        val[h] = myval;
+        return (myval == "" && i != (headers_id.length - 1));
+      });
+      if (check) {
+        return true;
+      };
+      arr.push(val);
+    });
+    if (check) {
+      return true;
+    }
+    return (arr);
+  };
+
+  function get_tableHeaders($el) {
+    var headers = [];
+    if ($el.is('table')) {
+      $el.find('th:not(.control)').each(function() { // Get table headers id
+        headers.push($(this).attr('id'));
+      });
+    } else {
+      var $table = $el.parents('table');
+      $table.find('th:not(.control)').each(function() { // Get table headers id
+        headers.push($(this).attr('id'));
+      });
+    }
+    return headers;
+  };
+
+  function export_tables(){
+    var page = $('.container').attr('id');
+    var action = 'ins_nuovo_articolo';
+    var message = '';
+    var answer = '';
+
     var exp_arr = {};
     var v_arr = {};
     var check = false;
     $('.container').find('table').each(function(index, el) {
       var val = get_table($(this));
-
       if (typeof val === 'boolean') {
         alert('Tutte i valori devono essere completi.\nTranne l\'ID');
         check = true;
@@ -226,17 +211,101 @@ $(document).ready(function() {
       }
       v_arr[$(this).attr('id')] = val;
     });
+    message = JSON.stringify(v_arr);
 
-    if (!check) {
-      exp_arr[page_class] = v_arr;
-      //exp_arr[page_class] = JSON.stringify(v_arr);
-      //$('#output_text').text(JSON.stringify(exp_arr));
-      console.log(exp_arr);
-      $.post(window.location.pathname, JSON.stringify(exp_arr), function(data) {
-        $('#output_text').html(data);
-      }).fail(function() {
-        console.log('Function: export, Error: database connection error');
-      });
+    var r = send_message(page, action, message, '/test');
+    r.done(function(data){
+      if ($.type(data) === "string") {
+        console.log(data);
+      } else {
+        console.log('export: received message not a string');
+      }
+    });
+  };
+
+  function send_message(page, action, message, path){
+    if ($.type(path) === 'undefined') {
+        path = window.location.pathname;
     }
-  });
+    var answer = '';
+    var condition1 = $.type(page)==='string';
+    var condition2 = $.type(action)==='string';
+    var condition3 = $.type(message)==='string';
+    var send = {};
+
+    if (condition1 & condition2 & condition3) {
+      send['page'] = page;
+      send['action'] = action;
+      send['message'] = message;
+
+      var r = $.post(path, JSON.stringify(send))
+      .fail(function() {
+        console.log('send_message: sending failed');
+      });
+      return r;
+    }else{
+      console.log("send_message: not a string");
+    }
+    console.log('3 + ' + answer);
+  };
+
+  function request_list(){
+    var page = $('.container').attr('id');
+    var action = 'get_list_autocomp';
+    var message = '';
+    var answer = '';
+    var r = send_message(page, action, message, '/test');
+    r.done(function(data){
+      if ($.type(data) === "string") {
+        data = JSON.parse(data);
+        if (data[action] == "get_list_autocomp") {
+          arr = data[message];
+          if (arr.hasOwnProperty('list_art')) {
+            list_art = arr['list_art'];
+            add_autocomp($('.search_art'), list_art);
+          }
+          if (arr.hasOwnProperty('list_comp')) {
+            list_comp = arr['list_comp'];
+            add_autocomp($('.search_comp'), list_comp);
+          }
+          if (arr.hasOwnProperty('list_imp')) {
+            list_imp = arr['list_imp'];
+            add_autocomp($('.search_imp'), list_imp);
+          }
+        }
+      } else {
+        console.log('export: received message not a string');
+      }
+    });
+  };
+
+  function add_autocomp($el, arr) {
+    $el.each(function(index, el) {
+      $element = $(this);
+      if (!($(this).parent('tr').hasClass('hide'))) {
+        $(this).autocomplete({
+          autoFocus: true,
+          source: arr,
+          minLength: 1,
+          select: function(event, ui) {
+            var exp_arr = {};
+            var msg = {};
+            var val = ui.item.value;
+            var el_class = $(this).attr('class').split(' ')[0];
+            exp_arr[page_class + '_' + el_class] = val;
+            $.post(window.location.pathname, JSON.stringify(exp_arr), function(data, textStatus, xhr) {
+            //console.log(data);
+            $('output_text').html(data);
+            var arr = JSON.parse(data);
+            fill_tables(arr, $element);
+            });
+          }
+        });
+        console.log('Search added to:');
+      }
+    });
+  };
+
+  $('#export_btn').click(export_tables);
+  $('#load_btn').click(request_list);
 });

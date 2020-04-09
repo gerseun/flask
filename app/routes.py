@@ -97,3 +97,13 @@ def login():
             form.username.data, form.remember_me.data))
         return redirect('/index')
     return render_template('login.html', title='Sign In', form=form)
+
+@app.route('/test', methods=['GET', 'POST'])
+def test():
+    if request.method == 'POST':    #Aspetta una richiesta POST dal client
+        content = request.get_data()    #Riceve una stringa
+        formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
+        print('Dati ricevuti:')
+        pprint.pprint(formatted_data)
+        risposta = 'ok'
+        return risposta
