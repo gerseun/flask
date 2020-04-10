@@ -155,29 +155,27 @@ $(document).ready(function() {
     var pagina = $('.container').attr('id');
     var azione = 'first_call';
     var messaggio = '';
-    var answer = '';
-    var r = send_message(pagina, azione, messaggio, '/test');
-    r.done(function(data){
-      if ($.type(data) === "string") {
-        data = JSON.parse(data);
-        console.log(data['messaggio']);
-        if (data['azione'] == "first_call") {
-          arr = data['messaggio'];
-          if (arr.hasOwnProperty('list_art')) {
-            list_art = arr['list_art'];
-            add_autocomp($('.search_art:not(:hidden)'), list_art);
-          }
-          if (arr.hasOwnProperty('list_comp')) {
-            list_comp = arr['list_comp'];
-            add_autocomp($('.search_comp:not(:hidden)'), list_comp);
-          }
-          if (arr.hasOwnProperty('list_imp')) {
-            list_imp = arr['list_imp'];
-            add_autocomp($('.search_imp:not(:hidden)'), list_imp);
-          }
+    var path = '/test';
+    var send = {};
+    send['pagina'] = pagina;
+    send['azione'] = azione;
+    send['messaggio'] = messaggio;
+    $.post(path, JSON.stringify(send), function(data, textStatus, xhr) {
+      data = JSON.parse(data);
+      if (data['azione'] == "first_call") {
+        var arr = data['messaggio'];
+        if (arr.hasOwnProperty('list_art')) {
+          list_art = arr['list_art'];
+          add_autocomp($('.search_art:not(:hidden)'), list_art);
         }
-      } else {
-        console.log('export: received message not a string');
+        if (arr.hasOwnProperty('list_comp')) {
+          list_comp = arr['list_comp'];
+          add_autocomp($('.search_comp:not(:hidden)'), list_comp);
+        }
+        if (arr.hasOwnProperty('list_imp')) {
+          list_imp = arr['list_imp'];
+          add_autocomp($('.search_imp:not(:hidden)'), list_imp);
+        }
       }
     });
   };
@@ -236,4 +234,8 @@ $(document).ready(function() {
 
   $('#export_btn').click(export_tables);
   $('#load_btn').click(request_list);
+
+  if (['newArticolo','newComponente','newImpegno'].includes($('.container').attr('id'))) {
+    request_list();
+  }
 });

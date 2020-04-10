@@ -163,6 +163,7 @@ def getCompInArticolo(ric_id_articolo):
     #seleziono gli id_componenti dell' articolo ricercato
     mioDB.execute("SELECT * FROM articolo_componenti INNER JOIN componente ON componente.ID_comp=articolo_componenti.ID_comp  WHERE articolo_componenti.id_art = '" + str(ric_id_articolo) + "'")
     risultato = mioDB.fetchall()
+    print(risultato)
     #variabili array COMPONENTI
     arr_Componenti = []
     #ciclo tutti i componenti
