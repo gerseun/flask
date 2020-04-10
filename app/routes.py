@@ -117,6 +117,27 @@ def test():
         print('Dati ricevuti:')
         pprint.pprint(formatted_data)
         if formatted_data['azione'] == 'first_call':
-            risposta = json.dumps(f.first_call('server'))
+            risposta = json.dumps(f.first_call(formatted_data['pagina']))
+        if (formatted_data['azione'] == 'search_art') and (formatted_data['pagina'] == 'newArticolo'):
+            risposta = json.dumps(f.search_art(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'search_comp') and (formatted_data['pagina'] == 'newArticolo'):
+            risposta = json.dumps(f.search_comp(formatted_data['pagina'], formatted_data['messaggio']))
+
+        if (formatted_data['azione'] == 'search_comp') and (formatted_data['pagina'] == 'newComponente'):
+            risposta = json.dumps(f.search_comp(formatted_data['pagina'], formatted_data['messaggio']))
+
+        if (formatted_data['azione'] == 'search_imp') and (formatted_data['pagina'] == 'newImpegno'):
+            risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'search_art') and (formatted_data['pagina'] == 'newImpegno'):
+            risposta = json.dumps(f.search_art(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'search_comp') and (formatted_data['pagina'] == 'newImpegno'):
+            risposta = json.dumps(f.search_comp(formatted_data['pagina'], formatted_data['messaggio']))
+
+        if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newArticolo'):
+            risposta = f.newArticolo(formatted_data['messaggio'])
+        if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newComponente'):
+            risposta = f.newComponente(formatted_data['messaggio'])
+        if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newImpegno'):
+            risposta = f.newImpegno(formatted_data['messaggio'])
         #risposta = 'ok'
         return risposta

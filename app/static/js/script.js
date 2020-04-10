@@ -5,24 +5,23 @@ var page_class = "";
 
 
 $(document).ready(function() {
+  jQuery.fn.pop = [].pop;
+  jQuery.fn.shift = [].shift;
   page_class = $('.container').attr('id');
 
-  /*
-
   function fill_tables(data, $el) {
+    console.log(data);
+    console.log($el);
     if ($el.attr('id') == 'first_cell') {
-      $('.container').find('table').each(function(index, el) {
-        var table_name = $(this).attr('id');
-        fill_table($(this), data[page_class][table_name]);
-      });
+        $('.container').find('table').each(function(index, el) {
+          var table_name = $(this).attr('id');
+          fill_table($(this), data[table_name]);
+        });
     } else {
       var $row = $el.parent('tr');
       var $table = $el.parents('table');
       var table_name = $table.attr('id');
-      console.log(data);
-      console.log(data['search_comp']);
-      console.log(data['search_comp'][table_name]);
-      fill_row($row, data['search_comp'][table_name]);
+      fill_row($row, data[table_name]);
     }
   };
 
@@ -30,6 +29,7 @@ $(document).ready(function() {
     var table_name = $table.attr('class');
     var headers = get_tableHeaders($table);
     var $rows = $table.find('tr:not(:hidden)');
+    $rows.shift();
     if ($rows.length < arr.length) {
       add_row($table, arr.length - $rows.length); // Add rows is JSON has more
     } else {
@@ -40,54 +40,32 @@ $(document).ready(function() {
       });
     }
     var $rows = $table.find('tr:not(:hidden)'); // Find rows
+    $rows.shift();
 
     $rows.each(function(index, el) { // Pass every row and add value to table
       var $td = $(this).find('td');
-      headers.forEach(function(h, i) {
-        if ($td.eq(i).children('input').length) {
-          $td.eq(i).children('input').val(arr[index][h]);
-        } else {
-          $td.eq(i).text(arr[index][h]);
-        }
-        make_editable($td.eq(i), false,true);
+      headers.forEach((h, i) => {
+        $td.eq(i).text(arr[index][h]);
       });
     });
   };
 
   function fill_row($row, arr) {
-
     var headers = get_tableHeaders($row);
     var $td = $row.find('td');
+    //console.log($td.eq(0));
     headers.forEach(function(h, i) {
-
-      console.log($td.eq(i));
+      //console.log($td.eq(i).text());
       //if ($td.eq(i).children('input').length) {
         //$td.eq(i).children('input').val(arr[0][h]);
         //$td.eq(i).children('input').val(arr[h]);
       //} else {
-        $td.eq(i).text(arr[h]);
+        $td.eq(i).text(arr[0][h]);
       //}
       //make_editable($td.eq(i), false,false);
     });
-
   };
 
-
-
-  if (!check) {
-
-    //exp_arr[page_class] = JSON.stringify(v_arr);
-    //$('#output_text').text(JSON.stringify(exp_arr));
-    console.log(exp_arr);
-    $.post(window.location.pathname, JSON.stringify(exp_arr), function(data) {
-      $('#output_text').html(data);
-    }).fail(function() {
-      console.log('Function: export, Error: database connection error');
-    });
-  }
-
-
-  */
 
   function get_table($table) {
     var arr = [];
@@ -130,11 +108,8 @@ $(document).ready(function() {
   };
 
   function export_tables(){
-    var page = $('.container').attr('id');
-    var action = 'ins_nuovo_articolo';
-    var message = '';
-    var answer = '';
-
+    var pagina = $('.container').attr('id');
+    var azione = 'ins_nuovo';
     var exp_arr = {};
     var v_arr = {};
     var check = false;
@@ -147,9 +122,9 @@ $(document).ready(function() {
       }
       v_arr[$(this).attr('id')] = val;
     });
-    var message = v_arr;
+    var messaggio = v_arr;
 
-    var r = send_message(page, action, message, '/test');
+    var r = send_message(pagina, azione, messaggio,'/test');
     r.done(function(data){
       if ($.type(data) === "string") {
         console.log(data);
@@ -159,38 +134,29 @@ $(document).ready(function() {
     });
   };
 
-  function send_message(page, action, message, path){
+  function send_message(pagina, azione, messaggio, path){
     if ($.type(path) === 'undefined') {
         path = window.location.pathname;
     }
     var answer = '';
-    var condition1 = $.type(page)==='string';
-    var condition2 = $.type(action)==='string';
-    var condition3 = $.type(message)==='string';
     var send = {};
+    send['pagina'] = pagina;
+    send['azione'] = azione;
+    send['messaggio'] = messaggio;
 
-    if (condition1 & condition2 & condition3) {
-      send['pagina'] = page;
-      send['azione'] = action;
-      send['messaggio'] = message;
-
-      var r = $.post(path, JSON.stringify(send))
+    var r = $.post(path, JSON.stringify(send))
       .fail(function() {
         console.log('send_message: sending failed');
       });
-      return r;
-    }else{
-      console.log("send_message: not a string");
-    }
-    console.log('3 + ' + answer);
+    return r;
   };
 
   function request_list(){
-    var page = $('.container').attr('id');
-    var action = 'first_call';
-    var message = '';
+    var pagina = $('.container').attr('id');
+    var azione = 'first_call';
+    var messaggio = '';
     var answer = '';
-    var r = send_message(page, action, message, '/test');
+    var r = send_message(pagina, azione, messaggio, '/test');
     r.done(function(data){
       if ($.type(data) === "string") {
         data = JSON.parse(data);
@@ -199,15 +165,15 @@ $(document).ready(function() {
           arr = data['messaggio'];
           if (arr.hasOwnProperty('list_art')) {
             list_art = arr['list_art'];
-            add_autocomp($('.search_art'), list_art);
+            add_autocomp($('.search_art:not(:hidden)'), list_art);
           }
           if (arr.hasOwnProperty('list_comp')) {
             list_comp = arr['list_comp'];
-            add_autocomp($('.search_comp'), list_comp);
+            add_autocomp($('.search_comp:not(:hidden)'), list_comp);
           }
           if (arr.hasOwnProperty('list_imp')) {
             list_imp = arr['list_imp'];
-            add_autocomp($('.search_imp'), list_imp);
+            add_autocomp($('.search_imp:not(:hidden)'), list_imp);
           }
         }
       } else {
@@ -218,22 +184,25 @@ $(document).ready(function() {
 
   function add_autocomp($el, arr) {
     $el.each(function(index, el) {
-      $element = $(this);
       if (!($(this).parent('tr').hasClass('hide'))) {
         $(this).autocomplete({
           autoFocus: true,
           source: arr,
           minLength: 1,
           select: function(event, ui) {
+            $element = this;
             var val = ui.item.value;
-            var page = $('.container').attr('id');
-            var action = $(this).attr('class').split(' ')[0];
-            var message = val;
-            var answer = '';
-            var r = send_message(page, action, message, '/test');
-            r.done(function(data){
+            var pagina = $('.container').attr('id');
+            var azione = $(this).attr('class').split(' ')[0];
+            var messaggio = val;
+            var path = '/test';
+            var send = {};
+            send['pagina'] = pagina;
+            send['azione'] = azione;
+            send['messaggio'] = messaggio;
+            $.post(path, JSON.stringify(send), function(data, textStatus, xhr) {
               var arr = JSON.parse(data);
-              //fill_tables(arr, $element);
+              fill_tables(arr['messaggio'], $el);
             });
           }
         });

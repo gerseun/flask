@@ -20,7 +20,7 @@ def first_call(namePage):
 #inserimento nuovo componente
 def newComponente(assieme):
     #INSERISCO I COMPONENTI SINGOLI / IL COMPONENTE SINGOLO
-    componenti = assieme["newComponente"]["t_comp"]
+    componenti = assieme["t_comp"]
     idComp = setComponenti(componenti)
     return idComp
 
@@ -28,8 +28,8 @@ def newComponente(assieme):
 def newArticolo(assieme):
     #CREAZIONE NUOVO ARTICOLO - CILINDRO
     #echo "<br>REPORT NEW ARTICOLO:<br>";
-    articolo = assieme["newArticolo"]["t_art"][0]
-    componenti = assieme["newArticolo"]["t_comp"]
+    articolo = assieme["t_art"][0]
+    componenti = assieme["t_comp"]
     #setto l' articolo
     idArt = setArticolo(articolo)
     #setto i componenti
@@ -43,8 +43,8 @@ def newArticolo(assieme):
 #inserimento nuovo impegno
 def newImpegno(assieme):
     #separo le componenti principali
-    impegno = assieme["newImpegno"]["t_imp"][0]
-    articoli = assieme["newImpegno"]["t_art"]
+    impegno = assieme["t_imp"][0]
+    articoli = assieme["t_art"]
     #componenti = assieme["newImpegno"]["t_comp"]
     #1-> CREO LA RIGA IMPEGNO
     id_imp = setImpegno(impegno)
@@ -59,7 +59,7 @@ def search_comp(namePage, ricercaComp):
     #RICERCO IL CODICE COMPONENTE ED INVIO I DATI
     componente = getComponente(ricercaComp)
     #creo array di risposta
-    comp = {"t_comp": componente}
+    comp = {"t_comp": [componente]}
     risposta = {"pagina": namePage,"azione": "search_comp" , "messaggio": comp}
     #consegno il pacco
     return risposta
@@ -71,7 +71,7 @@ def search_art(namePage, ricercaArt):
     #ricerco i comp contenuti nell' articolo
     componenti = getCompInArticolo(articolo["id_art"])
     #creo array di risposta
-    artComp = {"t_art": articolo, "t_comp": componenti}
+    artComp = {"t_art": [articolo], "t_comp": componenti}
     risposta = {"pagina": namePage,"azione": "search_art" , "messaggio": artComp}
     #consegno il pacco
     return risposta
@@ -85,7 +85,7 @@ def search_imp(namePage, ricercaImp):
     #ricerco gli articoli contenuti nell' impegno
     articoli = getArtInImpegno(impegno["id_imp"])
     #creo array di risposta
-    impArtComp = {"t_imp": impegno, "t_art": articolo, "t_comp": componenti}
+    impArtComp = {"t_imp": [impegno], "t_art": articoli, "t_comp": componenti}
     risposta = {"pagina": namePage,"azione": "search_imp" , "messaggio": impArtComp}
     #consegno il pacco
     return risposta
