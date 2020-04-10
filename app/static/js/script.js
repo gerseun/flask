@@ -45,7 +45,10 @@ $(document).ready(function() {
     $rows.each(function(index, el) { // Pass every row and add value to table
       var $td = $(this).find('td');
       headers.forEach((h, i) => {
-        $td.eq(i).text(arr[index][h]);
+        if (arr[index].hasOwnProperty(h)) {
+          $td.eq(i).text(arr[index][h]);
+          $td.eq(i).attr('contenteditable', 'false');
+        }
       });
     });
   };
@@ -55,14 +58,10 @@ $(document).ready(function() {
     var $td = $row.find('td');
     //console.log($td.eq(0));
     headers.forEach(function(h, i) {
-      //console.log($td.eq(i).text());
-      //if ($td.eq(i).children('input').length) {
-        //$td.eq(i).children('input').val(arr[0][h]);
-        //$td.eq(i).children('input').val(arr[h]);
-      //} else {
+      if (arr[0].hasOwnProperty(h)) {
         $td.eq(i).text(arr[0][h]);
-      //}
-      //make_editable($td.eq(i), false,false);
+        $td.eq(i).attr('contenteditable', 'false');
+      }
     });
   };
 
@@ -110,6 +109,7 @@ $(document).ready(function() {
   function export_tables(){
     var pagina = $('.container').attr('id');
     var azione = 'ins_nuovo';
+    var path = '/test'
     var exp_arr = {};
     var v_arr = {};
     var check = false;
@@ -123,14 +123,12 @@ $(document).ready(function() {
       v_arr[$(this).attr('id')] = val;
     });
     var messaggio = v_arr;
-
-    var r = send_message(pagina, azione, messaggio,'/test');
-    r.done(function(data){
-      if ($.type(data) === "string") {
-        console.log(data);
-      } else {
-        console.log('export: received message not a string');
-      }
+    var send = {};
+    send['pagina'] = pagina;
+    send['azione'] = azione;
+    send['messaggio'] = messaggio;
+    $.post(path, JSON.stringify(send), function(data, textStatus, xhr) {
+      console.log(data);
     });
   };
 

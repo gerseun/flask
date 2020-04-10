@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  font-family: Arial
+  font-family: Arial;
 }
 
 .topnav {
@@ -180,6 +180,10 @@ td, th {
   border: 1px solid #dddddd;
   text-align: left;
   padding: 8px;
+}
+
+td[contenteditable="false"] {
+  color:grey;
 }
 
 .hide {
