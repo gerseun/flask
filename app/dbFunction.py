@@ -22,7 +22,7 @@ def newComponente(assieme):
     #INSERISCO I COMPONENTI SINGOLI / IL COMPONENTE SINGOLO
     componenti = assieme["t_comp"]
     idComp = setComponenti(componenti)
-    return idComp
+    return "Inserito"
 
 #inserimento nuovo articolo
 def newArticolo(assieme):
@@ -365,7 +365,7 @@ def setComponenti(codComponenti):
     - se non modifica nulla ritorna '0'
     '''
     mydb.close()
-    return "Righe inserite: " + str(contComp)
+    return idComp
 
 #SETTO UN NUOVO ARTICOLO
 def setArticolo(articolo):
