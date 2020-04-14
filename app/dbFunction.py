@@ -439,7 +439,7 @@ def setImpegno(assImp):
     cod_imp = assImp["cod_imp"]
     cliente = assImp["cliente"]
     cod_ord_cli = assImp["cod_ord_cli"]
-    data_ord = assImp["data_ord"]
+    data_ord = datetime.datetime.strptime(assImp["data_ord"], '%d/%m/%y').date()
     #inserisco la riga nuovo impegno
     #query per inserire il componente nella tabella componenti
     sql = "INSERT INTO impegno (cod_imp, cliente, cod_ord_cli, data_ord, data_comp) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE cliente = %s, cod_ord_cli = %s, data_ord = %s"
