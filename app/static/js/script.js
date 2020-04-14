@@ -65,29 +65,44 @@ $(document).ready(function() {
 
   function get_table($table) {
     var arr = [];
-    var headers_id = [];
+    var headers = [];
     var check = false;
-    headers_id = get_tableHeaders($table);
+    headers = get_tableHeaders($table);
     $rows = $table.find('tr:not(:hidden)');
     $rows.shift();
     $rows.each(function(index, el) {
       var $td = $(this).find('td');
       var val = {};
-      check = headers_id.some(function(h, i) {
-        var myval = "";
+      headers.forEach((item, i) => {
         myval = $td.eq(i).text();
-        val[h] = myval;
-        return (myval == "" && i != (headers_id.length - 1));
+        val[item] = myval;
       });
-      if (check) {
-        return true;
-      };
       arr.push(val);
     });
-    if (check) {
-      return true;
-    }
-    return (arr);
+    return ([headers, arr]);
+  };
+
+  function check_array(headers, arr){
+    var dataRGEX = /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])[\/\-]\d{4}$/;
+    var check = true;
+    headers.forEach((item, i) => {
+      if (!['id_comp','id_art','id_imp'].includes(item)){
+        var value = arr[0][item]
+        if (value == ""){
+          check = false;
+          alert('Tutti i valori devono essere completi.\nTranne l\'ID');
+          return false;
+        }
+        if (['data_ord','data_cons_art','data_cons_comp'].includes(item)){
+          if (!dataRGEX.test(value)) {
+            check = false;
+            alert('La data deve avere formato:\n01\/01\/2000');
+            return false;
+          }
+        }
+      }
+    });
+    return check;
   };
 
   function get_tableHeaders($el) {
@@ -111,24 +126,28 @@ $(document).ready(function() {
     var path = '/test'
     var exp_arr = {};
     var v_arr = {};
-    var check = false;
+    var check = true;
     $('.container').find('table').each(function(index, el) {
       var val = get_table($(this));
-      if (typeof val === 'boolean') {
-        alert('Tutti i valori devono essere completi.\nTranne l\'ID');
-        check = true;
-        return;
+      if (val[1].length > 0) {
+        if (check_array(val[0],val[1])) {
+          v_arr[$(this).attr('id')] = val[1];
+        }else{
+          check = false;
+          return false;
+        }
       }
-      v_arr[$(this).attr('id')] = val;
     });
-    var messaggio = v_arr;
-    var send = {};
-    send['pagina'] = pagina;
-    send['azione'] = azione;
-    send['messaggio'] = messaggio;
-    $.post(path, JSON.stringify(send), function(data, textStatus, xhr) {
-      console.log(data);
-    });
+    if (check) {
+      var messaggio = v_arr;
+      var send = {};
+      send['pagina'] = pagina;
+      send['azione'] = azione;
+      send['messaggio'] = messaggio;
+      $.post(path, JSON.stringify(send), function(data, textStatus, xhr) {
+        console.log(data);
+      });
+    }
   };
 
   function send_message(pagina, azione, messaggio, path){
