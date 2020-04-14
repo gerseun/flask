@@ -48,11 +48,12 @@ def newImpegno(assieme):
     #componenti = assieme["newImpegno"]["t_comp"]
     #1-> CREO LA RIGA IMPEGNO
     id_imp = setImpegno(impegno)
+    print("Impegno: " + str(id_imp))
     #2-> CICLO GLI ARTICOLI-COMPONENTI DA INSERIRE NELL' IMPEGNO
     id_riga_imp = setArticoloInImpegno(articoli, id_imp)
     #vado ad inserire le righe componente
     #$varDB->setComponenteInImpegno($componenti, $id_imp);
-    return id_riga_imp
+    return "INSERITO CORRETTAMENTE"
 
 #ricerca componente gia inserito
 def search_comp(namePage, ricercaComp):
@@ -439,7 +440,7 @@ def setImpegno(assImp):
     cod_imp = assImp["cod_imp"]
     cliente = assImp["cliente"]
     cod_ord_cli = assImp["cod_ord_cli"]
-    data_ord = datetime.datetime.strptime(assImp["data_ord"], '%d/%m/%y').date()
+    data_ord = datetime.datetime.strptime(assImp["data_ord"], '%d/%m/%Y').date()
     #inserisco la riga nuovo impegno
     #query per inserire il componente nella tabella componenti
     sql = "INSERT INTO impegno (cod_imp, cliente, cod_ord_cli, data_ord, data_comp) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE cliente = %s, cod_ord_cli = %s, data_ord = %s"
@@ -471,28 +472,15 @@ def setArticoloInImpegno(artAssieme, idImp):
         #cerco id_articolo
         idArt = getIDarticolo(item["cod_art"])
         #query string per settare la riga nel DB
-        '''
-        - Devo controllare se la riga è già stata inserita. 1-> se è già inserita aggiorno solamente le quantità
-                                                            2-> se item["id_riga_imp"] è vuota creo la nuova riga
-                                                            3-> se viene cancellata non corrisponde l' item["id_riga_imp"]
-        '''
-        #1
-        if item["id_riga_imp"].isnumeric():
-            #aggiorno
-            sql = "UPDATE riga_imp SET qt_art = %s, data_cons_art = %s WHERE id_riga_imp = %s"
-            val = (item["qt_art"], item["data_cons_art"],  item["id_riga_imp"])
+        data_cons = datetime.datetime.strptime(item["data_cons_art"], '%d/%m/%Y').date()
+        sql = "INSERT INTO riga_imp (id_imp, id_art, qt_art, data_cons_art) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_art=%s, data_cons_art=%s"
+        val = (idImp, idArt, item["qt_art"], data_cons, item["qt_art"], data_cons)
 
-        #2
-        else:
-            #inserisco
-            sql = "INSERT INTO riga_imp (id_imp, id_art, qt_art, data_cons_art) VALUES (%s, %s, %s, %s)"
-            val = (idImp, idArt, item["qt_art"], item["data_cons_art"])
-        #eseguo
         mioDB.execute(sql, val)
         #prendo l' indice della riga
         if mioDB.lastrowid == 0:
             #vecchia riga NON MODIFICATA, prendo l' ID
-            id_righe.append(item["id_riga_imp"])
+            id_righe.append(item["id_art"])
         else:
             #nuova riga o riga modificata
             id_righe.append(mioDB.lastrowid)
@@ -501,4 +489,4 @@ def setArticoloInImpegno(artAssieme, idImp):
     #aggiorno e chiudo il DB
     mydb.commit()
     mydb.close()
-    return id_righe
+    return "id_righe"
