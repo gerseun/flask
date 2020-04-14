@@ -10,8 +10,6 @@ $(document).ready(function() {
   page_class = $('.container').attr('id');
 
   function fill_tables(data, $el) {
-    console.log(data);
-    console.log($el);
     if ($el.attr('id') == 'first_cell') {
         $('.container').find('table').each(function(index, el) {
           var table_name = $(this).attr('id');
@@ -65,13 +63,14 @@ $(document).ready(function() {
     });
   };
 
-
   function get_table($table) {
     var arr = [];
     var headers_id = [];
     var check = false;
     headers_id = get_tableHeaders($table);
-    $table.find('tr:not(:hidden)').each(function(index, el) {
+    $rows = $table.find('tr:not(:hidden)');
+    $rows.shift();
+    $rows.each(function(index, el) {
       var $td = $(this).find('td');
       var val = {};
       check = headers_id.some(function(h, i) {
@@ -116,7 +115,7 @@ $(document).ready(function() {
     $('.container').find('table').each(function(index, el) {
       var val = get_table($(this));
       if (typeof val === 'boolean') {
-        alert('Tutte i valori devono essere completi.\nTranne l\'ID');
+        alert('Tutti i valori devono essere completi.\nTranne l\'ID');
         check = true;
         return;
       }
@@ -222,18 +221,21 @@ $(document).ready(function() {
     }
   };
 
-  $('.table-add').click(function() {
-    var $parent_table = $(this).parents('table');
-    add_row($parent_table, 1);
-  });
-  $('.table-remove').click(function(event) {
-    $(this).parents('tr').detach();
-  });
-
-  $('#export_btn').click(export_tables);
   $('#load_btn').click(request_list);
 
   if (['newArticolo','newComponente','newImpegno'].includes($('.container').attr('id'))) {
+    request_list();
+    $('#export_btn').click(export_tables);
+    $('.table-add').click(function() {
+      var $parent_table = $(this).parents('table');
+      add_row($parent_table, 1);
+    });
+    $('.table-remove').click(function(event) {
+      $(this).parents('tr').detach();
+    });
+  }
+
+  if (['listaTaglio'].includes($('.container').attr('id'))){
     request_list();
   }
 });
