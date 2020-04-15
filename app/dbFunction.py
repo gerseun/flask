@@ -45,7 +45,7 @@ def newImpegno(assieme):
     #separo le componenti principali
     impegno = assieme["t_imp"][0]
     articoli = assieme["t_art"]
-    componenti = assieme["newImpegno"]["t_comp"]
+    componenti = assieme["t_comp"]
     #1-> CREO LA RIGA IMPEGNO
     id_imp = setImpegno(impegno)
     #2-> CICLO GLI ARTICOLI-COMPONENTI DA INSERIRE NELL' IMPEGNO

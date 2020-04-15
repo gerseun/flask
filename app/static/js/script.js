@@ -123,7 +123,7 @@ $(document).ready(function() {
             send['messaggio'] = ui.item.value;
             $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
               var arr = JSON.parse(data);
-              console.log(arr);
+              //console.log(arr);
               if ($cell.attr('id') == 'first_cell') {
                 fill_tables(arr['messaggio']);
               } else {
