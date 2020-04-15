@@ -48,7 +48,6 @@ def newImpegno(assieme):
     #componenti = assieme["newImpegno"]["t_comp"]
     #1-> CREO LA RIGA IMPEGNO
     id_imp = setImpegno(impegno)
-    print("Impegno: " + str(id_imp))
     #2-> CICLO GLI ARTICOLI-COMPONENTI DA INSERIRE NELL' IMPEGNO
     id_riga_imp = setArticoloInImpegno(articoli, id_imp)
     #vado ad inserire le righe componente
@@ -447,7 +446,6 @@ def setImpegno(assImp):
     val = (cod_imp, cliente, cod_ord_cli, data_ord, dataOra, cliente, cod_ord_cli, data_ord)
     #provo ad eseguire l' inserimento
     mioDB.execute(sql, val)
-    idImp = mioDB.lastrowid
     if mioDB.lastrowid > 0:
         #nuovo inserimento o modificato
         #prendo l' indice di componente
@@ -460,33 +458,52 @@ def setImpegno(assImp):
     mydb.close()
     return idImp
 
+#CREO LE RIGHE ARTICOLO IN IMPEGNO
 def setArticoloInImpegno(artAssieme, idImp):
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
     #id righe inserite
-    id_righe = []
+    id_riga = 0
     #ciclo gli articoli da inserire nell' impegno
     cont = 0
     for item in artAssieme:
-        #cerco id_articolo
-        idArt = getIDarticolo(item["cod_art"])
+        #idArt non può essere null, filtro su inserimento dati
         #query string per settare la riga nel DB
         data_cons = datetime.datetime.strptime(item["data_cons_art"], '%d/%m/%Y').date()
         sql = "INSERT INTO riga_imp (id_imp, id_art, qt_art, data_cons_art) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_art=%s, data_cons_art=%s"
-        val = (idImp, idArt, item["qt_art"], data_cons, item["qt_art"], data_cons)
-
+        val = (idImp, item["id_art"], item["qt_art"], data_cons, item["qt_art"], data_cons)
         mioDB.execute(sql, val)
         #prendo l' indice della riga
         if mioDB.lastrowid == 0:
             #vecchia riga NON MODIFICATA, prendo l' ID
-            id_righe.append(item["id_art"])
+            id_riga = item["id_riga_art"]
         else:
             #nuova riga o riga modificata
-            id_righe.append(mioDB.lastrowid)
+            id_riga = mioDB.lastrowid
         #incremento il contatore
         cont = cont + 1
+        #SETTO LA PRODUZIONE DELL' ARTICOLO INSERITO
+        setProduzioneArt(id_riga, item["id_art"], item["qt_art"])    
     #aggiorno e chiudo il DB
     mydb.commit()
     mydb.close()
-    return "id_righe"
+    return cont
+
+#CREO LA PRODUZIONE DEGLI ARTICOLI IN IMPEGNO
+def setProduzioneArt(idRiga, idArt, qtArt):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #ricevo dalla tabella articolo_componenti le righe da mettere in produzione
+    arrayComp = getCompInArticolo(idArt)
+    #ciclo le righe componente e vado a settar la produzione
+    for comp in arrayComp:
+        qtImp = comp["qt_comp"] * qtArt
+        sql = "INSERT INTO riga_dett (id_riga_imp, id_comp, qt_comp, id_produzione) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_comp=%s"
+        val = (idRiga, comp["id_comp"], qtImp, "0", qtImp)
+        mioDB.execute(sql, val)
+
+    #aggiorno e chiudo il DB
+    mydb.commit()
+    mydb.close()
