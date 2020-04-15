@@ -149,7 +149,9 @@ def getImpegno(ricImpegno):
     row = mioDB.fetchone()
     if row:
         #salvo i dati articolo
-        arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": row["data_ord"]}
+        #elaboro la data
+        data = row["data_ord"].strftime("%d/%m/%Y")
+        arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": data}
     else:
         arrayImp = {"id_imp": "", "cod_imp": "","cliente": "","cod_ord_cli": "","data_ord": ""}
     mydb.close()
@@ -192,7 +194,8 @@ def getCompInImpegno(ric_id_impegno):
     flag = False
     for row in risultato:
         flag = True
-        arr_Componenti.append({"id_riga_imp_comp": row["id_riga_imp_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": row["data_cons_comp"]})
+        data = row["data_cons_comp"].strftime("%d/%m/%Y")
+        arr_Componenti.append({"id_riga_imp_comp": row["id_riga_imp_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data})
     #se non aveva componenti passo stringa vuota
     if flag == False:
         arr_Componenti.append({"id_riga_imp_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
@@ -214,7 +217,8 @@ def getArtInImpegno(ric_id_impegno):
     flag = False
     for row in risultato:
         flag = True
-        arr_Articoli.append({"id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": row["data_cons_art"]})
+        data = row["data_cons_art"].strftime("%d/%m/%Y")
+        arr_Articoli.append({"id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data})
     #se non aveva componenti passo stringa vuota
     if flag == False:
         arr_Articoli.append({"id_riga_imp": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
@@ -521,8 +525,8 @@ def setComponenteInImpegno(compAssieme, idImp):
         #idArt non può essere null, filtro su inserimento dati
         #query string per settare la riga nel DB
         data_cons = datetime.datetime.strptime(item["data_cons_comp"], '%d/%m/%Y').date()
-        sql = "INSERT INTO riga_imp_comp (id_imp, id_comp, qt_comp, data_cons_comp) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_comp=%s, data_cons_comp=%s"
-        val = (idImp, item["id_comp"], item["qt_comp"], data_cons, item["qt_comp"], data_cons)
+        sql = "INSERT INTO riga_imp_comp (id_imp, id_comp, qt_comp, data_cons_comp, id_produzione) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_comp=%s, data_cons_comp=%s"
+        val = (idImp, item["id_comp"], item["qt_comp"], data_cons, item["qt_comp"], "0", data_cons)
         mioDB.execute(sql, val)
         #prendo l' indice della riga
         if mioDB.lastrowid == 0:
