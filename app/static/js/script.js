@@ -227,7 +227,7 @@ $(document).ready(function() {
     });
   };
 
-  $('#load_btn').click(request_list);
+  $('#load_btn').click();
 /*
   if (['newArticolo','newComponente','newImpegno'].includes($('.container').attr('id'))) {
     request_list();
