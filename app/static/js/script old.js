@@ -9,77 +9,6 @@ $(document).ready(function() {
   jQuery.fn.shift = [].shift;
   page_class = $('.container').attr('id');
 
-  function add_row($table, n) {
-    for (var i = 0; i < n; i++) {
-      var $clone = $table.find('tr.hide').clone(true, true).removeClass('hide');
-      $table.append($clone);
-    }
-  };
-
-  $('.table-add').click(function() {
-    var $parent_table = $(this).parents('table');
-    add_row($parent_table, 1);
-  });
-
-  $('.table-remove').click(function(event) {
-    $(this).parents('tr').detach();
-  });
-
-  function get_table($table) {
-    var t_arr = [];
-    $table.find('tr:not(:hidden)').each(function(index, el) {
-      if (index > 0) {
-        var r_arr = {};
-       $(this).find('td:not(.control)').each(function(index, el) {
-         r_arr[$(this).attr('headers')] = $(this).text();
-       });
-       t_arr.push(r_arr);
-      }
-    });
-    return t_arr;
-  };
-
-  function check_array(arr){
-    var dataRGEX = /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])[\/\-]\d{4}$/;
-    var bool = true;
-    $.each(arr, function(index, el) {
-      $.each(el, function(i, e) {
-        if (!['id_comp','id_art','id_imp'].includes(i)) {
-          if (e == ""){
-            bool = false;
-            alert('Tutti i valori devono essere completi.\nTranne l\'ID');
-            return false;
-          }
-          if (['data_ord','data_cons_art','data_cons_comp'].includes(i)){
-            if (!dataRGEX.test(e)) {
-              bool = false;
-              alert('La data deve avere formato:\n01\/01\/2000');
-              return false;
-            }
-          }
-        }
-      });
-      if (!bool) {
-        return false
-      }
-    });
-    return bool;
-  };
-
-  $('#export_btn').click(function(){
-    var page_arr = {};
-    $('.container').find('table').each(function(index, el) {
-      var t_arr = get_table($(this));
-      if (check_array(t_arr)){
-        page_arr[$(this).attr('id')] = t_arr;
-      } else {
-        return false;
-      }
-    });
-    console.log(page_arr);
-  });
-
-/*
   function fill_tables(data, $el) {
     if ($el.attr('id') == 'first_cell') {
         $('.container').find('table').each(function(index, el) {
@@ -412,5 +341,5 @@ $(document).ready(function() {
       //$('#dialog').attr('hidden', 'false');
       dialog_box.dialog( "open" );
     });
-  }*/
+  }
 });

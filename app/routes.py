@@ -100,6 +100,18 @@ def About():
     else:
         return render_template('NuovoImpegno.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
 
+@app.route('/ListaTaglio')
+def ListaTaglio():
+    if request.method == 'POST':    #Aspetta una richiesta POST dal client
+        content = request.get_data()    #Riceve una stringa
+        formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
+        print('Dati ricevuti:')
+        pprint.pprint(formatted_data)
+        risposta = 'ok'
+        return risposta  #risponde al client
+    else:
+        return render_template('ListaTaglio.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
@@ -139,5 +151,8 @@ def test():
             risposta = f.newComponente(formatted_data['messaggio'])
         if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newImpegno'):
             risposta = f.newImpegno(formatted_data['messaggio'])
+
+        if (formatted_data['azione'] == 'search_imp') and (formatted_data['pagina'] == 'listaTaglio'):
+            risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
         #risposta = 'ok'
         return risposta

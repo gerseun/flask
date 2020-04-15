@@ -243,16 +243,9 @@ $(document).ready(function() {
     });
   }
 */
+
   if (['listaTaglio'].includes($('.container').attr('id'))){
     request_list_lt();
-    $('.table-add').click(function() {
-      var $parent_table = $(this).parents('table');
-      var $clone = $parent_table.find('tr.hide').clone(true, true).removeClass('hide');
-      $parent_table.append($clone);
-    });
-    $('.table-remove').click(function(event) {
-      $(this).parents('tr').detach();
-    });
 
     dialog_box = $('#dialog').dialog({
       autoOpen: false,
@@ -269,7 +262,7 @@ $(document).ready(function() {
         }
       }
     });
-    $('#test_btn').click(function(event) {
+    $('.open-dialog').click(function(event) {
       //$('#dialog').attr('hidden', 'false');
       dialog_box.dialog( "open" );
     });

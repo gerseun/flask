@@ -16,7 +16,7 @@
           <th id="data_ord">Data ordine</th>
         </tr>
         <tr>
-          <td headers="cod_imp" contenteditable="true" class="search_imp"></td>
+          <td headers="cod_imp" contenteditable="true" class="search_imp" id="first_cell_lt"></td>
           <td headers="cliente" contenteditable="false"></td>
           <td headers="cod_ord_cli" contenteditable="false"></td>
           <td header="data_ord" contenteditable="false"></td>
@@ -34,17 +34,9 @@
           <th id="qt_art">Quantità</th>
           <th class="control"><i class="table-add fa fa-plus"></i></th>
         </tr>
-        <tr>
-          <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
-          <td headers="cod_art" contenteditable="false" class=></td>
-          <td headers="desc_art" contenteditable="false"></td>
-          <td headers="data_cons_art" contenteditable="false"></td>
-          <td headers="qt_art" contenteditable="true"></td>
-          <td class="control"><i class="table-remove fa fa-times"></i></td>
-        </tr>
         <tr class="hide">
           <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
-          <td headers="cod_art" contenteditable="false" class=></td>
+          <td headers="cod_art" contenteditable="true" class=></td>
           <td headers="desc_art" contenteditable="false"></td>
           <td headers="data_cons_art" contenteditable="false"></td>
           <td headers="qt_art" contenteditable="true"></td>
@@ -53,7 +45,7 @@
       </table>
     </div>
     <br>
-    <div id="dialog" title="Stampa liste taglio-ordine">
+    <div id="dialog" title="Stampa liste taglio-ordine" class="hide">
       <p>
         <table class="t_art">
           <tr>
@@ -63,7 +55,7 @@
             <th id="qt_art">Quantità</th>
           </tr>
           <tr>
-            <td headers="cod_art" contenteditable="false" class=></td>
+            <td headers="cod_art" contenteditable="false" class=""></td>
             <td headers="desc_art" contenteditable="false"></td>
             <td headers="data_cons_art" contenteditable="false"></td>
             <td headers="qt_art" contenteditable="true"></td>
