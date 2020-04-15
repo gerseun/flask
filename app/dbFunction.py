@@ -45,13 +45,13 @@ def newImpegno(assieme):
     #separo le componenti principali
     impegno = assieme["t_imp"][0]
     articoli = assieme["t_art"]
-    #componenti = assieme["newImpegno"]["t_comp"]
+    componenti = assieme["newImpegno"]["t_comp"]
     #1-> CREO LA RIGA IMPEGNO
     id_imp = setImpegno(impegno)
     #2-> CICLO GLI ARTICOLI-COMPONENTI DA INSERIRE NELL' IMPEGNO
     id_riga_imp = setArticoloInImpegno(articoli, id_imp)
     #vado ad inserire le righe componente
-    #$varDB->setComponenteInImpegno($componenti, $id_imp);
+    id_riga_imp_comp = setComponenteInImpegno(componenti, id_imp)
     return "INSERITO CORRETTAMENTE"
 
 #ricerca componente gia inserito
@@ -484,7 +484,7 @@ def setArticoloInImpegno(artAssieme, idImp):
         #incremento il contatore
         cont = cont + 1
         #SETTO LA PRODUZIONE DELL' ARTICOLO INSERITO
-        setProduzioneArt(id_riga, item["id_art"], item["qt_art"])    
+        setProduzioneArt(id_riga, item["id_art"], item["qt_art"])
     #aggiorno e chiudo il DB
     mydb.commit()
     mydb.close()
@@ -507,3 +507,33 @@ def setProduzioneArt(idRiga, idArt, qtArt):
     #aggiorno e chiudo il DB
     mydb.commit()
     mydb.close()
+
+#CREO LE RIGHE COMPONENTE IN IMPEGNO
+def setComponenteInImpegno(compAssieme, idImp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #id righe inserite
+    id_riga = 0
+    #ciclo gli articoli da inserire nell' impegno
+    cont = 0
+    for item in compAssieme:
+        #idArt non può essere null, filtro su inserimento dati
+        #query string per settare la riga nel DB
+        data_cons = datetime.datetime.strptime(item["data_cons_comp"], '%d/%m/%Y').date()
+        sql = "INSERT INTO riga_imp_comp (id_imp, id_comp, qt_comp, data_cons_comp) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_comp=%s, data_cons_comp=%s"
+        val = (idImp, item["id_comp"], item["qt_comp"], data_cons, item["qt_comp"], data_cons)
+        mioDB.execute(sql, val)
+        #prendo l' indice della riga
+        if mioDB.lastrowid == 0:
+            #vecchia riga NON MODIFICATA, prendo l' ID
+            id_riga = item["id_riga_comp"]
+        else:
+            #nuova riga o riga modificata
+            id_riga = mioDB.lastrowid
+        #incremento il contatore
+        cont = cont + 1
+    #aggiorno e chiudo il DB
+    mydb.commit()
+    mydb.close()
+    return cont
