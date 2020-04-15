@@ -72,6 +72,11 @@ $(document).ready(function() {
     $.each(arr, function(index, el) {
       var $cell = $row.find('td[headers="'+index+'"]');
       $cell.text(el);
+      if ($('.container').attr('id') == 'newImpegno') {
+        if (['qt_comp', 'qt_art'].includes(index)) {
+          return true;
+        }
+      }
       $cell.attr('contenteditable', 'false');
     });
   };
@@ -170,7 +175,9 @@ $(document).ready(function() {
     });
   });
 
-  first_call();
+  if (['newArticolo','newComponente','newImpegno', 'listaTaglio'].includes($('.container').attr('id'))) {
+    first_call();
+  }
 
   function request_list_lt(){
     var pagina = $('.container').attr('id');
