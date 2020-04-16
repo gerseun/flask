@@ -83,9 +83,9 @@ $(document).ready(function() {
         if (['qt_comp', 'qt_art'].includes(index)) {
           return true;
         }
-      }else {
-        $cell.attr('contenteditable', 'false');
       }
+      $cell.attr('contenteditable', 'false');
+      
 
     });
   };
@@ -113,7 +113,7 @@ $(document).ready(function() {
   };
 
   function add_autocomp($div) {
-    $div.find('.search_art:not(.ui-autocomplete-input), .search_comp:not(.ui-autocomplete-input), .search_imp:not(.ui-autocomplete-input)').each(function(index, el) {
+    $div.find('.search_art, .search_comp, .search_imp').filter(':not(.ui-autocomplete-input)').each(function(index, el) {
       $cell = $(this);
       var arr = [];
       if ($(this).hasClass('search_art')) {
