@@ -195,10 +195,10 @@ def getCompInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_comp"].strftime("%d/%m/%Y")
-        arr_Componenti.append({"id_riga_imp_comp": row["id_riga_imp_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data})
+        arr_Componenti.append({"id_riga_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data})
     #se non aveva componenti passo stringa vuota
     if flag == False:
-        arr_Componenti.append({"id_riga_imp_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
+        arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
     #chiusura
     mydb.close()
     return arr_Componenti
@@ -218,10 +218,10 @@ def getArtInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_art"].strftime("%d/%m/%Y")
-        arr_Articoli.append({"id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data})
+        arr_Articoli.append({"id_riga_art": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data})
     #se non aveva componenti passo stringa vuota
     if flag == False:
-        arr_Articoli.append({"id_riga_imp": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
+        arr_Articoli.append({"id_riga_art": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
     #chiusura
     mydb.close()
     return arr_Articoli
@@ -473,18 +473,24 @@ def setArticoloInImpegno(artAssieme, idImp):
     cont = 0
     for item in artAssieme:
         #idArt non può essere null, filtro su inserimento dati
-        #query string per settare la riga nel DB
-        data_cons = datetime.datetime.strptime(item["data_cons_art"], '%d/%m/%Y').date()
-        sql = "INSERT INTO riga_imp (id_imp, id_art, qt_art, data_cons_art) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_art=%s, data_cons_art=%s"
-        val = (idImp, item["id_art"], item["qt_art"], data_cons, item["qt_art"], data_cons)
-        mioDB.execute(sql, val)
-        #prendo l' indice della riga
-        if mioDB.lastrowid == 0:
-            #vecchia riga NON MODIFICATA, prendo l' ID
-            id_riga = item["id_riga_art"]
-        else:
-            #nuova riga o riga modificata
+        #1 -> ID_RIGA_ART NULL, NUOVO INSERIMENTO
+        if item["id_riga_art"] == "":
+            #query string per settare la riga nel DB
+            data_cons = datetime.datetime.strptime(item["data_cons_art"], '%d/%m/%Y').date()
+            sql = "INSERT INTO riga_imp (id_imp, id_art, qt_art, data_cons_art) VALUES (%s, %s, %s, %s)"
+            val = (idImp, item["id_art"], item["qt_art"], data_cons)
+            mioDB.execute(sql, val)
+            #nuova riga
             id_riga = mioDB.lastrowid
+        #2 -> ID_RIGA_ART NUMERICO, MODIFICO LE QUANTITA
+        else:
+            #query string per settare la riga nel DB
+            data_cons = datetime.datetime.strptime(item["data_cons_art"], '%d/%m/%Y').date()
+            sql = "UPDATE riga_imp SET qt_art = %s WHERE id_riga_imp = %s"
+            val = (item["qt_art"], item["id_riga_art"])
+            mioDB.execute(sql, val)
+            #nuova riga
+            id_riga = item["id_riga_art"]
         #incremento il contatore
         cont = cont + 1
         #SETTO LA PRODUZIONE DELL' ARTICOLO INSERITO
@@ -503,11 +509,10 @@ def setProduzioneArt(idRiga, idArt, qtArt):
     arrayComp = getCompInArticolo(idArt)
     #ciclo le righe componente e vado a settar la produzione
     for comp in arrayComp:
-        qtImp = comp["qt_comp"] * qtArt
+        qtImp = int(comp["qt_comp"]) * int(qtArt)
         sql = "INSERT INTO riga_dett (id_riga_imp, id_comp, qt_comp, id_produzione) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_comp=%s"
         val = (idRiga, comp["id_comp"], qtImp, "0", qtImp)
         mioDB.execute(sql, val)
-
     #aggiorno e chiudo il DB
     mydb.commit()
     mydb.close()
@@ -522,20 +527,27 @@ def setComponenteInImpegno(compAssieme, idImp):
     #ciclo gli articoli da inserire nell' impegno
     cont = 0
     for item in compAssieme:
-        #idArt non può essere null, filtro su inserimento dati
-        #query string per settare la riga nel DB
-        data_cons = datetime.datetime.strptime(item["data_cons_comp"], '%d/%m/%Y').date()
-        sql = "INSERT INTO riga_imp_comp (id_imp, id_comp, qt_comp, data_cons_comp, id_produzione) VALUES (%s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE qt_comp=%s, data_cons_comp=%s"
-        val = (idImp, item["id_comp"], item["qt_comp"], data_cons, item["qt_comp"], "0", data_cons)
-        mioDB.execute(sql, val)
-        #prendo l' indice della riga
-        if mioDB.lastrowid == 0:
-            #vecchia riga NON MODIFICATA, prendo l' ID
-            id_riga = item["id_riga_comp"]
-        else:
-            #nuova riga o riga modificata
+        #1 -> ID_RIGA_COMP NULL, NUOVO INSERIMENTO
+        if item["id_riga_comp"] == "":
+            #idArt non può essere null, filtro su inserimento dati
+            #query string per settare la riga nel DB
+            data_cons = datetime.datetime.strptime(item["data_cons_comp"], '%d/%m/%Y').date()
+            sql = "INSERT INTO riga_imp_comp (id_imp, id_comp, qt_comp, data_cons_comp, id_produzione) VALUES (%s, %s, %s, %s, %s)"
+            val = (idImp, item["id_comp"], item["qt_comp"], data_cons, "0")
+            mioDB.execute(sql, val)
+            #prendo l' indice della riga
             id_riga = mioDB.lastrowid
-        #incremento il contatore
+        #1 -> ID_RIGA_COMP NUMERICO, AGGIORNO INSERIMENTO
+        else:
+            #idArt non può essere null, filtro su inserimento dati
+            #query string per settare la riga nel DB
+            data_cons = datetime.datetime.strptime(item["data_cons_comp"], '%d/%m/%Y').date()
+            sql = "UPDATE riga_imp_comp SET qt_comp = %s WHERE id_riga_imp_comp = %s"
+            val = (item["qt_comp"], item["id_riga_comp"])
+            mioDB.execute(sql, val)
+            #prendo l' indice della riga
+            id_riga = item["id_riga_comp"]
+        #incremento
         cont = cont + 1
     #aggiorno e chiudo il DB
     mydb.commit()
