@@ -154,5 +154,13 @@ def test():
 
         if (formatted_data['azione'] == 'search_imp') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
+
+        if (formatted_data['azione'] == 'search_imp_lt') and (formatted_data['pagina'] == 'listaTaglio'):
+            risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'search_art') and (formatted_data['pagina'] == 'listaTaglio'):
+            risposta = json.dumps(f.search_art(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'search_comp') and (formatted_data['pagina'] == 'listaTaglio'):
+            risposta = json.dumps(f.search_comp(formatted_data['pagina'], formatted_data['messaggio']))
+
         #risposta = 'ok'
         return risposta

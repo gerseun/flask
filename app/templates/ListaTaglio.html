@@ -6,108 +6,93 @@
   <p>Per apportare modifiche contattare Simone</p>
   <p>Inserire i dati relativi al componente singolo.</p>
 
-  <div id="">
-    <div class="">
-      <table id="t_imp">
-        <tr>
-          <th id="cod_imp">Codice Impegno</th>
-          <th id="cliente">Cliente</th>
-          <th id="cod_ord_cli">Num. ord. cliente</th>
-          <th id="data_ord">Data ordine</th>
-        </tr>
-        <tr>
-          <td headers="cod_imp" contenteditable="true" class="search_imp" id="first_cell_lt"></td>
-          <td headers="cliente" contenteditable="false"></td>
-          <td headers="cod_ord_cli" contenteditable="false"></td>
-          <td header="data_ord" contenteditable="false"></td>
-        </tr>
-      </table>
-    </div>
-    <br>
-    <div class="">
+  <div class="">
+    <table class="t_imp">
+      <tr>
+        <th id="cod_imp">Codice Impegno</th>
+        <th id="cliente">Cliente</th>
+        <th id="cod_ord_cli">Num. ord. cliente</th>
+        <th id="data_ord">Data ordine</th>
+      </tr>
+      <tr>
+        <td headers="cod_imp" contenteditable="true" class="search_imp_lt" id="first_cell"></td>
+        <td headers="cliente" contenteditable="false"></td>
+        <td headers="cod_ord_cli" contenteditable="false"></td>
+        <td headers="data_ord" contenteditable="false"></td>
+      </tr>
+    </table>
+  </div>
+  <br>
+  <div class="">
+    <table class="t_art t_comp">
+      <tr>
+        <th></th>
+        <th id="cod_art">Codice Articolo</th>
+        <th id="desc_art">Descrizione</th>
+        <th id="data_cons_art">Data consegna</th>
+        <th id="qt_art">Quantità</th>
+        <th class="control"><i class="table-add-lt fa fa-plus"></i></th>
+      </tr>
+      <tr class="hide">
+        <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
+        <td headers="cod_art cod_comp" contenteditable="true"></td>
+        <td headers="desc_art desc_comp" contenteditable="false"></td>
+        <td headers="data_cons_art data_cons_comp" contenteditable="false"></td>
+        <td headers="qt_art qt_comp" contenteditable="true"></td>
+        <td class="control"><i class="table-remove fa fa-times"></i></td>
+      </tr>
+    </table>
+  </div>
+</div>
+<br>
+<div id="box">
+  <div id="dialog0" title="Stampa liste taglio-ordine" class="hide">
+    <p>
       <table class="t_art">
         <tr>
-          <th></th>
           <th id="cod_art">Codice Articolo</th>
           <th id="desc_art">Descrizione</th>
           <th id="data_cons_art">Data consegna</th>
           <th id="qt_art">Quantità</th>
+        </tr>
+        <tr>
+          <td headers="cod_art cod_comp" contenteditable="false" class=""></td>
+          <td headers="desc_art desc_comp" contenteditable="false"></td>
+          <td headers="data_cons_art data_cons_comp" contenteditable="false"></td>
+          <td headers="qt_art qt_comp" contenteditable="true"></td>
+        </tr>
+      </table>
+      <table class="t_comp">
+        <tr>
+          <th id="cod_comp">Codice Componente</th>
+          <th id="desc_comp">Descrizione</th>
+          <th id="dim_comp">Dimensione</th>
+          <th id="mat_comp">Materiale</th>
+          <th id="qt_comp">Qt Componente</th>
+          <th id="stato_comp">Azione</th>
           <th class="control"><i class="table-add fa fa-plus"></i></th>
         </tr>
         <tr class="hide">
-          <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
-          <td headers="cod_art" contenteditable="true" class=></td>
-          <td headers="desc_art" contenteditable="false"></td>
-          <td headers="data_cons_art" contenteditable="false"></td>
-          <td headers="qt_art" contenteditable="true"></td>
+          <td headers="cod_comp" contenteditable="true" class="search_comp"></td>
+          <td headers="desc_comp" contenteditable="false"></td>
+          <td headers="dim_comp" contenteditable="false"></td>
+          <td headers="mat_comp" contenteditable="false"></td>
+          <td headers="qt_comp" contenteditable="true"></td>
+          <td headers="stato_comp" class="control">
+            <select class="action" name="">
+              <option value="1">Da ordinare</option>
+              <option value="2">Da Tagliare</option>
+              <option value="3">Ordinato</option>
+              <option value="4">Tagliato</option>
+            </select>
+          </td>
           <td class="control"><i class="table-remove fa fa-times"></i></td>
         </tr>
       </table>
-    </div>
-    <br>
-    <div id="dialog" title="Stampa liste taglio-ordine" class="hide">
-      <p>
-        <table class="t_art">
-          <tr>
-            <th id="cod_art">Codice Articolo</th>
-            <th id="desc_art">Descrizione</th>
-            <th id="data_cons_art">Data consegna</th>
-            <th id="qt_art">Quantità</th>
-          </tr>
-          <tr>
-            <td headers="cod_art" contenteditable="false" class=""></td>
-            <td headers="desc_art" contenteditable="false"></td>
-            <td headers="data_cons_art" contenteditable="false"></td>
-            <td headers="qt_art" contenteditable="true"></td>
-          </tr>
-        </table>
-        <table id="t_comp">
-          <tr>
-            <th id="cod_comp">Codice Componente</th>
-            <th id="desc_comp">Descrizione</th>
-            <th id="dim_comp">Dimensione</th>
-            <th id="mat_comp">Materiale</th>
-            <th id="qt_comp">Qt Componente</th>
-            <th id="stato_comp">Azione</th>
-            <th class="control"><i class="table-add fa fa-plus"></i></th>
-          </tr>
-          <tr>
-            <td headers="cod_comp" contenteditable="true" class="search_comp"></td>
-            <td headers="desc_comp" contenteditable="false"></td>
-            <td headers="dim_comp" contenteditable="false"></td>
-            <td headers="mat_comp" contenteditable="false"></td>
-            <td headers="qt_comp" contenteditable="true"></td>
-            <td headers="stato_comp" class="control">
-              <select class="action" name="">
-                <option value="1">Da ordinare</option>
-                <option value="2">Da Tagliare</option>
-                <option value="3">Ordinato</option>
-                <option value="4">Tagliato</option>
-              </select>
-            </td>
-            <td class="control"><i class="table-remove fa fa-times"></i></td>
-          </tr>
-          <tr class="hide">
-            <td headers="cod_comp" contenteditable="true" class="search_comp"></td>
-            <td headers="desc_comp" contenteditable="false"></td>
-            <td headers="dim_comp" contenteditable="false"></td>
-            <td headers="mat_comp" contenteditable="false"></td>
-            <td headers="qt_comp" contenteditable="true"></td>
-            <td headers="stato_comp" class="control">
-              <select class="action" name="">
-                <option value="1">Da ordinare</option>
-                <option value="2">Da Tagliare</option>
-                <option value="3">Ordinato</option>
-                <option value="4">Tagliato</option>
-              </select>
-            </td>
-            <td class="control"><i class="table-remove fa fa-times"></i></td>
-          </tr>
-        </table>
-      </p>
-    </div>
+    </p>
   </div>
 </div>
+
 <button id="test_btn">Test dialog</button>
 <br>
 

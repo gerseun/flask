@@ -14,7 +14,11 @@ $(document).ready(function() {
       var $clone = $table.find('tr.hide').clone(true, true).removeClass('hide');
       $table.append($clone);
     }
-    add_autocomp();
+    if ($('.container').attr('id') == 'listaTaglio') {
+      add_autocomp($table);
+    } else {
+      add_autocomp($('.container'));
+    }
   };
 
   $('.table-add').click(function() {
@@ -70,22 +74,28 @@ $(document).ready(function() {
 
   function fill_row($row, arr) {
     $.each(arr, function(index, el) {
-      var $cell = $row.find('td[headers="'+index+'"]');
+      var $cell = $row.find('td[headers*="'+index+'"]');
       $cell.text(el);
+      if (['cod_imp', 'cod_comp', 'cod_art'].includes(index)) {
+        $row.addClass(index);
+      }
       if ($('.container').attr('id') == 'newImpegno') {
         if (['qt_comp', 'qt_art'].includes(index)) {
           return true;
         }
+      }else {
+        $cell.attr('contenteditable', 'false');
       }
-      $cell.attr('contenteditable', 'false');
+
     });
   };
 
-  function fill_tables(arr){
+  function fill_tables(arr, $div){
     $.each(arr, function(t_ind, t_arr) {
-      var $table = $('.container').find('#'+t_ind+'');
+      var $table = $div.find('.'+t_ind+'');
       var $rows = $table.find('tr:not(:hidden)');
       if ($rows.length-1 < t_arr.length) {
+
         add_row($table, t_arr.length-($rows.length-1));
       } else {
         $rows.each(function(index, el) {
@@ -102,8 +112,8 @@ $(document).ready(function() {
     });
   };
 
-  function add_autocomp() {
-    $('.search_art:not(.ui-autocomplete-input), .search_comp:not(.ui-autocomplete-input), .search_imp:not(.ui-autocomplete-input)').each(function(index, el) {
+  function add_autocomp($div) {
+    $div.find('.search_art:not(.ui-autocomplete-input), .search_comp:not(.ui-autocomplete-input), .search_imp:not(.ui-autocomplete-input)').each(function(index, el) {
       $cell = $(this);
       var arr = [];
       if ($(this).hasClass('search_art')) {
@@ -130,9 +140,9 @@ $(document).ready(function() {
               var arr = JSON.parse(data);
               //console.log(arr);
               if ($cell.attr('id') == 'first_cell') {
-                fill_tables(arr['messaggio']);
+                fill_tables(arr['messaggio'], $('.container'));
               } else {
-                fill_row($cell.parent('tr'), arr['messaggio'][$cell.parents('table').attr('id')][0]);
+                fill_row($cell.parent('tr'), arr['messaggio'][$cell.parents('table').attr('class')][0]);
               }
             });
           }
@@ -152,7 +162,11 @@ $(document).ready(function() {
       list_art = data['messaggio']['list_art'];
       list_comp = data['messaggio']['list_comp'];
       list_imp = data['messaggio']['list_imp'];
-      add_autocomp();
+      if (data['pagina'] == 'listaTaglio') {
+        add_autocomp_lt();
+      } else {
+        add_autocomp($('.container'));
+      }
     });
   };
 
@@ -161,7 +175,7 @@ $(document).ready(function() {
     $('.container').find('table').each(function(index, el) {
       var t_arr = get_table($(this));
       if (check_array(t_arr)){
-        page_arr[$(this).attr('id')] = t_arr;
+        page_arr[$(this).attr('class')] = t_arr;
       } else {
         return false;
       }
@@ -179,54 +193,106 @@ $(document).ready(function() {
     first_call();
   }
 
-  function request_list_lt(){
-    var pagina = $('.container').attr('id');
-    var azione = 'first_call';
-    var messaggio = '';
-    var path = '/test';
+  function create_dialog(i, r_row) {
     var send = {};
-    send['pagina'] = pagina;
-    send['azione'] = azione;
-    send['messaggio'] = messaggio;
-    $.post(path, JSON.stringify(send), function(data, textStatus, xhr) {
-      data = JSON.parse(data);
-      if (data['azione'] == "first_call") {
-        var arr = data['messaggio'];
-        if (arr.hasOwnProperty('list_art')) {
-          list_art = arr['list_art'];
-        }
-        if (arr.hasOwnProperty('list_comp')) {
-          list_comp = arr['list_comp'];
-        }
-        if (arr.hasOwnProperty('list_imp')) {
-          list_imp = arr['list_imp'];
-          add_autocomp_lt($('.search_imp:not(:hidden)'), list_imp);
-        }
+    var qt = "";
+    send['pagina'] = $('.container').attr('id');
+    if (r_row.hasOwnProperty('cod_art')) {
+      send['azione'] = 'search_art';
+      send['messaggio'] = r_row['cod_art'];
+      qt = r_row['qt_art'];
+    }
+    if (r_row.hasOwnProperty('cod_comp')) {
+      send['azione'] = 'search_comp';
+      send['messaggio'] = r_row['cod_comp'];
+      qt = r_row['qt_comp'];
+    }
+    $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+      var arr = JSON.parse(data);
+      var $clone = $('#dialog0').clone(true, true).removeClass('hide');
+      $clone.attr('id', 'dialog'+i+'');
+      $t_art = $clone.find('.t_art');
+      $t_art_rows = $t_art.find('tr');
+      fill_row($t_art_rows.eq(1), r_row);
+      $t_comp = $clone.find('.t_comp');
+      $t_comp_rows = $t_comp.find('tr');
+      if ($t_comp_rows.length-2 < arr['messaggio']['t_comp'].length) {
+        add_row($t_comp, arr['messaggio']['t_comp'].length);
       }
+      $t_comp.find('tr').each(function(index, el) {
+        if (index>1) {
+          fill_row($(this), arr['messaggio']['t_comp'][index-2]);
+          $(this).find('td[headers*="qt_comp"]').each(function(index, el) {
+            if ($(this).text()=="") {
+              $(this).text(qt);
+            }else {
+              $(this).attr('contenteditable', 'true');
+              $(this).text($(this).text()*qt);
+            }
+          });
+        }
+      });
+      $clone.dialog({
+        autoOpen: false,
+        height: 'auto',
+        width:'auto',
+        resizable:false,
+        modal:true,
+        create: function(event,ui){
+          add_autocomp($(this));
+          $('.container table').eq(1).find('tr:not(:hidden)').eq(i).find('.open-dialog').click(function(event) {
+            $('#dialog'+i+'').dialog( "open" );
+          });
+        },
+        buttons:{
+          'Salva': function() {
+            $( this ).dialog( "close" );
+          },
+          'Stampa': function() {
+            $( this ).dialog( "close" );
+          }
+        }
+      });
+
     });
+
+
   };
 
   function add_autocomp_lt($el, arr) {
-    $el.each(function(index, el) {
+    $('.search_imp_lt:not(.ui-autocomplete-input)').each(function(index, el) {
+      $cell = $(this);
+      var arr = [];
       if (!($(this).parent('tr').hasClass('hide'))) {
-        $(this).autocomplete({
+        $cell.autocomplete({
           autoFocus: true,
-          source: arr,
+          source: list_imp,
           minLength: 1,
           select: function(event, ui) {
-            $element = this;
-            var val = ui.item.value;
-            var pagina = $('.container').attr('id');
-            var azione = $(this).attr('class').split(' ')[0];
-            var messaggio = val;
-            var path = '/test';
+            $cell = $(this);
             var send = {};
-            send['pagina'] = pagina;
-            send['azione'] = azione;
-            send['messaggio'] = messaggio;
-            $.post(path, JSON.stringify(send), function(data, textStatus, xhr) {
+            send['pagina'] = $('.container').attr('id');;
+            send['azione'] = $(this).attr('class').split(' ')[0];
+            send['messaggio'] = ui.item.value;
+            $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
               var arr = JSON.parse(data);
-              console.log(data);
+              //console.log(arr);
+              var p_arr = {};
+              p_arr['t_imp'] = arr['messaggio']['t_imp'];
+              p_arr['t_art'] = arr['messaggio']['t_art'].concat(arr['messaggio']['t_comp']);
+
+              if ($cell.attr('id') == 'first_cell') {
+                fill_tables(p_arr, $('.container'));
+              } else {
+                fill_row($cell.parent('tr'), arr['messaggio'][$cell.parents('table').attr('class')][0]);
+              }
+
+              $('.container table').eq(1).find('tr:not(:hidden)').each(function(index, el) {
+                if (index > 0){
+                  $(this).addClass('dialog'+index+'');
+                  create_dialog(index, p_arr['t_art'][index-1]);
+                }
+              });
             });
           }
         });
@@ -234,44 +300,4 @@ $(document).ready(function() {
       }
     });
   };
-
-  $('#load_btn').click();
-/*
-  if (['newArticolo','newComponente','newImpegno'].includes($('.container').attr('id'))) {
-    request_list();
-    $('#export_btn').click(export_tables);
-    $('.table-add').click(function() {
-      var $parent_table = $(this).parents('table');
-      add_row($parent_table, 1);
-    });
-
-    $('.table-remove').click(function(event) {
-      $(this).parents('tr').detach();
-    });
-  }
-*/
-
-  if (['listaTaglio'].includes($('.container').attr('id'))){
-    request_list_lt();
-
-    dialog_box = $('#dialog').dialog({
-      autoOpen: false,
-      height:'auto',
-      width:'auto',
-      resizable:false,
-      modal:true,
-      buttons:{
-        'Salva': function() {
-          $( this ).dialog( "close" );
-        },
-        'Stampa': function() {
-          $( this ).dialog( "close" );
-        }
-      }
-    });
-    $('.open-dialog').click(function(event) {
-      //$('#dialog').attr('hidden', 'false');
-      dialog_box.dialog( "open" );
-    });
-  }
 });
