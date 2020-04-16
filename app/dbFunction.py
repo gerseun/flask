@@ -90,7 +90,13 @@ def search_imp(namePage, ricercaImp):
     #consegno il pacco
     return risposta
 
+def listaTaglio(namePage):
 
+    #creo array di risposta
+    arrayTaglio = {}
+    risposta = {"pagina": namePage,"azione": "lista_taglio" , "messaggio": arrayTaglio}
+    #consegno il pacco
+    return risposta
 
 '''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -118,8 +124,8 @@ def getComponente(ricComponente):
     if row:
         #salvo i dati componente
         arrayComp = {"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"]}
-    else:
-        arrayComp = {"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": ""}
+    #else:
+        #arrayComp = {"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": ""}
     mydb.close()
     return arrayComp
 
@@ -134,8 +140,8 @@ def getArticolo(ricArticolo):
     if row:
         #salvo i dati articolo
         arrayArt = {"id_art": row["id_art"], "cod_art": row["cod_art"],"desc_art": row["desc_art"],"cli_art": row["cli_art"],"cod_cli_art": row["cod_cli_art"]}
-    else:
-        arrayArt = {"id_art": "", "cod_art": "","desc_art": "","cli_art": "","cod_cli_art": ""}
+    #else:
+        #arrayArt = {"id_art": "", "cod_art": "","desc_art": "","cli_art": "","cod_cli_art": ""}
     mydb.close()
     return arrayArt
 
@@ -152,8 +158,8 @@ def getImpegno(ricImpegno):
         #elaboro la data
         data = row["data_ord"].strftime("%d/%m/%Y")
         arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": data}
-    else:
-        arrayImp = {"id_imp": "", "cod_imp": "","cliente": "","cod_ord_cli": "","data_ord": ""}
+    #else:
+        #arrayImp = {"id_imp": "", "cod_imp": "","cliente": "","cod_ord_cli": "","data_ord": ""}
     mydb.close()
     return arrayImp
 
@@ -174,8 +180,8 @@ def getCompInArticolo(ric_id_articolo):
         flag = True
         arr_Componenti.append({"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"]})
     #se non aveva componenti passo stringa vuota
-    if flag == False:
-        arr_Componenti.append({"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": "","qt_comp": ""})
+    #if flag == False:
+        #arr_Componenti.append({"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": "","qt_comp": ""})
     #chiusura
     mydb.close()
     return arr_Componenti
@@ -197,8 +203,8 @@ def getCompInImpegno(ric_id_impegno):
         data = row["data_cons_comp"].strftime("%d/%m/%Y")
         arr_Componenti.append({"id_riga_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data})
     #se non aveva componenti passo stringa vuota
-    if flag == False:
-        arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
+    #if flag == False:
+        #arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
     #chiusura
     mydb.close()
     return arr_Componenti
@@ -220,8 +226,8 @@ def getArtInImpegno(ric_id_impegno):
         data = row["data_cons_art"].strftime("%d/%m/%Y")
         arr_Articoli.append({"id_riga_art": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data})
     #se non aveva componenti passo stringa vuota
-    if flag == False:
-        arr_Articoli.append({"id_riga_art": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
+    #if flag == False:
+        #arr_Articoli.append({"id_riga_art": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
     #chiusura
     mydb.close()
     return arr_Articoli
