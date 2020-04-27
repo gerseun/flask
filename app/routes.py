@@ -21,7 +21,7 @@ def index():
     test5 = {"newImpegno":{"t_imp":[{"cod_imp":"123","cliente":"asd","cod_ord_cli":"111","data_ord":"2019-12-04","id_imp":"1"}], "t_art":[{"cod_art":"1ABC00100","desc_art":"cilindro","qt_art":"3","data_cons_art":"2019-12-05","id_riga_imp":"1"}], "t_comp":[{"cod_comp":"1ABC00102","desc_comp":"camicia","qt_comp":"100","data_cons_comp":"2019-12-07","id_riga_imp_comp":"1"}, {"cod_comp":"1ABC00110","desc_comp":"stelo","qt_comp":"50","data_cons_comp":"2019-12-08","id_riga_imp_comp":"2"}]}}
 
     pagina = "home"
-    stampa = f.first_call(pagina)
+    stampa = f.search_imp("home","2/20")
     #stampa = 'asd'
 
     user = {'username': 'Mago'}

@@ -90,8 +90,18 @@ def search_imp(namePage, ricercaImp):
     #consegno il pacco
     return risposta
 
-def listaTaglio(namePage):
+def search_Produzione_Articolo(namePage, id_riga_imp):
+    #prendo i componenti in produzione dell' articolo
+    compInArticolo = getCompInArtImpegno(id_riga_imp)
+    risposta = {"pagina": namePage,"azione": "search_Produzione_Articolo" , "messaggio": compInArticolo}
+    return risposta
 
+def funz_Taglio(namePage, assieme):
+    #separo le componenti principali
+    impegno = assieme["t_imp"][0]
+    articoli = assieme["t_art"]
+    componenti = assieme["t_comp"]
+    #clono la vecchia riga e la salvo nel backup con la precendente operazione
     #creo array di risposta
     arrayTaglio = {}
     risposta = {"pagina": namePage,"azione": "lista_taglio" , "messaggio": arrayTaglio}
@@ -201,7 +211,7 @@ def getCompInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_comp"].strftime("%d/%m/%Y")
-        arr_Componenti.append({"id_riga_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data})
+        arr_Componenti.append({"id_riga_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data, "id_produzione": row["id_produzione"]})
     #se non aveva componenti passo stringa vuota
     #if flag == False:
         #arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
@@ -217,7 +227,7 @@ def getArtInImpegno(ric_id_impegno):
     #seleziono gli id_riga_imp dell' impegno ricercato
     mioDB.execute("SELECT * FROM riga_imp INNER JOIN articolo ON riga_imp.ID_art=articolo.ID_art  WHERE riga_imp.ID_imp = '" + str(ric_id_impegno) + "' ORDER BY riga_imp.ID_riga_imp ASC")
     risultato = mioDB.fetchall()
-    #variabili array COMPONENTI
+    #variabili array ARTICOLI
     arr_Articoli = []
     #ciclo tutti i componenti
     flag = False
@@ -231,6 +241,24 @@ def getArtInImpegno(ric_id_impegno):
     #chiusura
     mydb.close()
     return arr_Articoli
+
+def getCompInArtImpegno(ric_id_art_imp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.ID_riga_imp = '" + str(ric_id_art_imp) + "' ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompInArtImp = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"] })
+    #chiusura
+    mydb.close()
+    return arr_CompInArtImp
 
 #RICEVO TUTTI I CODICI IMPEGNO
 def getCodImpegni():
