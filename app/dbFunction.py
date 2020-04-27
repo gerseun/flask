@@ -234,7 +234,7 @@ def getArtInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_art"].strftime("%d/%m/%Y")
-        arr_Articoli.append({"id_riga_art": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data})
+        arr_Articoli.append({"id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data})
     #se non aveva componenti passo stringa vuota
     #if flag == False:
         #arr_Articoli.append({"id_riga_art": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})

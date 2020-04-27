@@ -24,27 +24,53 @@
   </div>
   <br>
   <div class="">
-    <table class="t_art t_comp">
+    <table class="t_art">
       <tr>
         <th></th>
         <th id="cod_art">Codice Articolo</th>
         <th id="desc_art">Descrizione</th>
         <th id="data_cons_art">Data consegna</th>
         <th id="qt_art">Quantità</th>
-        <th class="control"><i class="table-add-lt fa fa-plus"></i></th>
+        <th id="id_riga_imp">id articolo</th>
       </tr>
       <tr class="hide">
         <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
-        <td headers="cod_art cod_comp" contenteditable="true"></td>
-        <td headers="desc_art desc_comp" contenteditable="false"></td>
-        <td headers="data_cons_art data_cons_comp" contenteditable="false"></td>
-        <td headers="qt_art qt_comp" contenteditable="true"></td>
-        <td class="control"><i class="table-remove fa fa-times"></i></td>
+        <td headers="cod_art" contenteditable="false"></td>
+        <td headers="desc_art" contenteditable="false"></td>
+        <td headers="data_cons_art" contenteditable="false"></td>
+        <td headers="qt_art" contenteditable="false"></td>
+        <td headers="id_riga_imp" contenteditable="false"></td>
+      </tr>
+    </table>
+  </div>
+  <br>
+  <div class="">
+    <table class="t_comp">
+      <tr>
+        <th></th>
+        <th id="cod_comp">Codice Componente</th>
+        <th id="desc_comp">Descrizione</th>
+        <th id="data_cons_comp">Data consegna</th>
+        <th id="qt_comp">Quantità</th>
+        <th id="id_riga_imp_comp">id componente</th>
+      </tr>
+      <tr class="hide">
+        <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
+        <td headers="cod_comp" contenteditable="false"></td>
+        <td headers="desc_comp" contenteditable="false"></td>
+        <td headers="data_cons_comp" contenteditable="false"></td>
+        <td headers="qt_comp" contenteditable="true"></td>
+        <td headers="id_riga_comp" contenteditable="false"></td>
       </tr>
     </table>
   </div>
 </div>
 <br>
+
+  <!-- FINE TABELLA SELEZIONE
+      APERTURA BOX DI SELEZIONE TAGLIO-->
+
+
 <div id="box">
   <div id="dialog0" title="Stampa liste taglio-ordine" class="hide">
     <p>
