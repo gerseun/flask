@@ -15,7 +15,7 @@ $(document).ready(function() {
       $table.append($clone);
     }
     if ($('.container').attr('id') == 'listaTaglio') {
-      add_autocomp($table);
+      //add_autocomp($table);
     } else {
       add_autocomp($('.container'));
     }
@@ -194,21 +194,18 @@ $(document).ready(function() {
   }
 
   function create_dialog(i, r_row) {
+    console.log(r_row);
     var send = {};
     var qt = "";
     send['pagina'] = $('.container').attr('id');
-    if (r_row.hasOwnProperty('cod_art')) {
-      send['azione'] = 'search_art';
-      send['messaggio'] = r_row['cod_art'];
-      qt = r_row['qt_art'];
-    }
-    if (r_row.hasOwnProperty('cod_comp')) {
-      send['azione'] = 'search_comp';
-      send['messaggio'] = r_row['cod_comp'];
-      qt = r_row['qt_comp'];
-    }
+    send['azione'] = 'search_Produzione_Articolo';
+    send['messaggio'] = r_row['id_riga_imp'];
+    qt = r_row['qt_art'];
+
     $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
       var arr = JSON.parse(data);
+      console.log(arr);
+
       var $clone = $('#dialog0').clone(true, true).removeClass('hide');
       $clone.attr('id', 'dialog'+i+'');
       $t_art = $clone.find('.t_art');
@@ -216,12 +213,12 @@ $(document).ready(function() {
       fill_row($t_art_rows.eq(1), r_row);
       $t_comp = $clone.find('.t_comp');
       $t_comp_rows = $t_comp.find('tr');
-      if ($t_comp_rows.length-2 < arr['messaggio']['t_comp'].length) {
-        add_row($t_comp, arr['messaggio']['t_comp'].length);
+      if ($t_comp_rows.length-2 < arr['messaggio'].length) {
+        add_row($t_comp, arr['messaggio'].length);
       }
       $t_comp.find('tr').each(function(index, el) {
         if (index>1) {
-          fill_row($(this), arr['messaggio']['t_comp'][index-2]);
+          fill_row($(this), arr['messaggio'][index-2]);
           $(this).find('td[headers*="qt_comp"]').each(function(index, el) {
             if ($(this).text()=="") {
               $(this).text(qt);
@@ -276,13 +273,14 @@ $(document).ready(function() {
             send['messaggio'] = ui.item.value;
             $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
               var arr = JSON.parse(data);
-              //console.log(arr);
+              console.log(arr);
               var p_arr = {};
               p_arr['t_imp'] = arr['messaggio']['t_imp'];
-              p_arr['t_art'] = arr['messaggio']['t_art'].concat(arr['messaggio']['t_comp']);
+              p_arr['t_art'] = arr['messaggio']['t_art'];
+              p_arr['t_comp'] = arr['messaggio']['t_comp'];
 
               if ($cell.attr('id') == 'first_cell') {
-                fill_tables(p_arr, $('.container'));
+                fill_tables(arr['messaggio'], $('.container'));
               } else {
                 fill_row($cell.parent('tr'), arr['messaggio'][$cell.parents('table').attr('class')][0]);
               }
@@ -290,7 +288,7 @@ $(document).ready(function() {
               $('.container table').eq(1).find('tr:not(:hidden)').each(function(index, el) {
                 if (index > 0){
                   $(this).addClass('dialog'+index+'');
-                  create_dialog(index, p_arr['t_art'][index-1]);
+                  create_dialog(index, arr['messaggio']['t_art'][index-1]);
                 }
               });
             });
