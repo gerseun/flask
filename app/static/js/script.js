@@ -194,7 +194,6 @@ $(document).ready(function() {
   }
 
   function create_dialog(i, r_row) {
-    console.log(r_row);
     var send = {};
     var qt = "";
     send['pagina'] = $('.container').attr('id');
@@ -204,8 +203,7 @@ $(document).ready(function() {
 
     $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
       var arr = JSON.parse(data);
-      console.log(arr);
-
+      //console.log(arr);
       var $clone = $('#dialog0').clone(true, true).removeClass('hide');
       $clone.attr('id', 'dialog'+i+'');
       $t_art = $clone.find('.t_art');
@@ -243,6 +241,15 @@ $(document).ready(function() {
         },
         buttons:{
           'Salva': function() {
+            var arr = {};
+            var send = {};
+            arr["t_comp"] = get_table($(this).find('table.t_comp').eq(0));
+            send['pagina'] = $('.container').attr('id');;
+            send['azione'] = 'aggiorna_comp';
+            send['messaggio'] = arr;
+            $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+              console.log(data);
+            });
             $( this ).dialog( "close" );
           },
           'Stampa': function() {
@@ -273,7 +280,7 @@ $(document).ready(function() {
             send['messaggio'] = ui.item.value;
             $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
               var arr = JSON.parse(data);
-              console.log(arr);
+              //console.log(arr);
               var p_arr = {};
               p_arr['t_imp'] = arr['messaggio']['t_imp'];
               p_arr['t_art'] = arr['messaggio']['t_art'];
