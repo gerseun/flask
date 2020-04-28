@@ -82,7 +82,7 @@ def search_imp(namePage, ricercaImp):
     impegno = getImpegno(ricercaImp)
     #ricerco i comp contenuti nell' impegno
     componenti = getCompInImpegno(impegno["id_imp"])
-    #ricerco gli articoli contenuti nell' impegno
+    #ricerco gli articoli contenuti nell' impegno - con i loro sottocomponenti
     articoli = getArtInImpegno(impegno["id_imp"])
     #creo array di risposta
     impArtComp = {"t_imp": [impegno], "t_art": articoli, "t_comp": componenti}
@@ -234,7 +234,11 @@ def getArtInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_art"].strftime("%d/%m/%Y")
-        arr_Articoli.append({"id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data})
+        #cerco i suoi componenti
+        arrComp = getCompInArtImpegno(row["id_riga_imp"])
+        #arrComp = {"t_comp": componenti}
+        #creo array
+        arr_Articoli.append({"id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data, "t_comp": arrComp})
     #se non aveva componenti passo stringa vuota
     #if flag == False:
         #arr_Articoli.append({"id_riga_art": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
