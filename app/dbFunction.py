@@ -108,13 +108,22 @@ def funz_Taglio(namePage, assieme):
     #consegno il pacco
     return risposta
 
+def deleteComp(IDcomp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #elimino componente dal DB
+    sql = "DELETE FROM component WHERE id_comp = %s"
+    val = (IDcomp)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
 
 def deleteCompInArticolo(IDartcomp):
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
-    #istruzione query string -> seleziono il componente ricercato
-    sql = "DELETE FROM articolo_componenti WHERE id_artcomp"
+    #elimino componente nell' articolo, ma non il componente da DB
+    sql = "DELETE FROM articolo_componenti WHERE id_artcomp = %s"
     val = (IDartcomp)
     mioDB.execute(sql, val)
     return "DELETE COMPLETE"
@@ -123,11 +132,26 @@ def deleteArtInImpegno(IDrigaArt):
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
-    #istruzione query string -> seleziono il componente ricercato
+    #elimino articolo dall' impegno
     sql = "DELETE FROM riga_imp WHERE id_riga_imp = %s"
     val = (IDrigaArt)
     mioDB.execute(sql, val)
+    #elimino componenti dell' articolo dall' impegno
+    sql = "DELETE FROM riga_dett WHERE id_riga_imp = %s"
+    val = (IDrigaArt)
+    mioDB.execute(sql, val)
     return "DELETE COMPLETE"
+
+def deleteCompInImpegno(IDrigaComp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #elimino componente singolo dall' impegno
+    sql = "DELETE FROM riga_imp_comp WHERE id_riga_imp_comp = %s"
+    val = (IDrigaComp)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
+
 
 '''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
