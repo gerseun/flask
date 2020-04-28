@@ -159,8 +159,8 @@ def test():
             risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'search_Produzione_Articolo') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.search_Produzione_Articolo(formatted_data['pagina'], formatted_data['messaggio']))
-        if (formatted_data['azione'] == 'search_comp') and (formatted_data['pagina'] == 'listaTaglio'):
-            risposta = json.dumps(f.search_comp(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'aggiorna_comp') and (formatted_data['pagina'] == 'listaTaglio'):
+            risposta = "okok"
 
         #risposta = 'ok'
         return risposta

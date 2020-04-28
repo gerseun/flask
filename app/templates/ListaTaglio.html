@@ -31,7 +31,7 @@
         <th id="desc_art">Descrizione</th>
         <th id="data_cons_art">Data consegna</th>
         <th id="qt_art">Quantità</th>
-        <th id="id_riga_imp">id imp art</th>
+        <th id="id_riga_imp" hidden="true">id imp art</th>
       </tr>
       <tr class="hide">
         <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
@@ -39,7 +39,7 @@
         <td headers="desc_art" contenteditable="false"></td>
         <td headers="data_cons_art" contenteditable="false"></td>
         <td headers="qt_art" contenteditable="false"></td>
-        <td headers="id_riga_imp" contenteditable="false"></td>
+        <td headers="id_riga_imp" contenteditable="false" hidden="true"></td>
       </tr>
     </table>
   </div>
@@ -75,7 +75,7 @@
   <div id="dialog0" title="Stampa liste taglio-ordine" class="hide">
     <p>
       <table class="t_art">
-        <tr>
+        <tr class="headers">
           <th id="cod_art">Codice Articolo</th>
           <th id="desc_art">Descrizione</th>
           <th id="data_cons_art">Data consegna</th>
