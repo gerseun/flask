@@ -108,6 +108,27 @@ def funz_Taglio(namePage, assieme):
     #consegno il pacco
     return risposta
 
+
+def deleteCompInArticolo(IDartcomp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #istruzione query string -> seleziono il componente ricercato
+    sql = "DELETE FROM articolo_componenti WHERE id_artcomp"
+    val = (IDartcomp)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
+
+def deleteArtInImpegno(IDrigaArt):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #istruzione query string -> seleziono il componente ricercato
+    sql = "DELETE FROM riga_imp WHERE id_riga_imp = %s"
+    val = (IDrigaArt)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
+
 '''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 FUNZIONI CHE RIUTILIZZO IN QUESTA PAGINA
@@ -188,7 +209,7 @@ def getCompInArticolo(ric_id_articolo):
     flag = False
     for row in risultato:
         flag = True
-        arr_Componenti.append({"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"]})
+        arr_Componenti.append({"id_artcomp": row["id_artcomp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"]})
     #se non aveva componenti passo stringa vuota
     #if flag == False:
         #arr_Componenti.append({"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": "","qt_comp": ""})
