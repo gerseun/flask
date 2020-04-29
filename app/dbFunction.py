@@ -569,8 +569,8 @@ def setArticoloInImpegno(artAssieme, idImp):
         else:
             #query string per settare la riga nel DB
             data_cons = datetime.datetime.strptime(item["data_cons_art"], '%d/%m/%Y').date()
-            sql = "UPDATE riga_imp SET qt_art = %s WHERE id_riga_imp = %s"
-            val = (item["qt_art"], item["id_riga_art"])
+            sql = "UPDATE riga_imp SET qt_art = %s, data_cons_art = %s WHERE id_riga_imp = %s"
+            val = (item["qt_art"], data_cons, item["id_riga_art"])
             mioDB.execute(sql, val)
             #nuova riga
             id_riga = item["id_riga_art"]
@@ -625,8 +625,8 @@ def setComponenteInImpegno(compAssieme, idImp):
             #idArt non può essere null, filtro su inserimento dati
             #query string per settare la riga nel DB
             data_cons = datetime.datetime.strptime(item["data_cons_comp"], '%d/%m/%Y').date()
-            sql = "UPDATE riga_imp_comp SET qt_comp = %s WHERE id_riga_imp_comp = %s"
-            val = (item["qt_comp"], item["id_riga_comp"])
+            sql = "UPDATE riga_imp_comp SET qt_comp = %s, data_cons_comp = %s WHERE id_riga_imp_comp = %s"
+            val = (item["qt_comp"], data_cons, item["id_riga_comp"])
             mioDB.execute(sql, val)
             #prendo l' indice della riga
             id_riga = item["id_riga_comp"]
