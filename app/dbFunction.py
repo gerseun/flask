@@ -96,17 +96,17 @@ def search_Produzione_Articolo(namePage, id_riga_imp):
     risposta = {"pagina": namePage,"azione": "search_Produzione_Articolo" , "messaggio": compInArticolo}
     return risposta
 
-def funz_Taglio(namePage, assieme):
-    #separo le componenti principali
-    impegno = assieme["t_imp"][0]
-    articoli = assieme["t_art"]
-    componenti = assieme["t_comp"]
-    #clono la vecchia riga e la salvo nel backup con la precendente operazione
-    #creo array di risposta
-    arrayTaglio = {}
-    risposta = {"pagina": namePage,"azione": "lista_taglio" , "messaggio": arrayTaglio}
-    #consegno il pacco
-    return risposta
+def setAzioneArticolo(idRiga, idAzione):
+    #salvo nel DB Backup
+    saveBackupDett(idRiga)
+    #salvo la nuova Azione
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    sql = "UPDATE riga_dett SET id_produzione = %s WHERE id_riga_dett = %s"
+    val = (idAzione, idRiga)
+    mioDB.execute(sql, val)
+    return "AZIONE AGGIORNATA"
 
 def deleteComp(IDcomp):
     #apro la connessione al database
@@ -636,3 +636,29 @@ def setComponenteInImpegno(compAssieme, idImp):
     mydb.commit()
     mydb.close()
     return cont
+
+#SALVO LA RIGA NEL BACKUP
+def saveBackupDett(id):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    vecchio = getRigaDett(id)
+    #salvo i Dati
+    sql = "INSERT INTO backup_riga_dett (id_riga_dett_b, id_riga_imp_b, id_comp_b, qt_comp_b, id_produzione_b, pos_comp_imp_b) VALUES (%s, %s, %s, %s, %s, %s)"
+    val = (vecchio["id_riga_dett"], vecchio["id_riga_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["id_produzione"], vecchio["pos_comp_imp"])
+    mioDB.execute(sql, val)
+    mydb.commit()
+    return "OK"
+
+#PRENDO LA RIGA DETT
+def getRigaDett(idRiga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    mioDB.execute("SELECT * FROM riga_dett WHERE id_riga_dett = '" + idRiga + "'")
+    row = mioDB.fetchone()
+    #salvo i Dati
+    riga = {"id_riga_dett": row["id_riga_dett"], "id_riga_imp": row["id_riga_imp"], "id_comp": row["id_comp"], "qt_comp": row["qt_comp"], "id_produzione": row["id_produzione"], "pos_comp_imp": row["pos_comp_imp"]}
+    return riga
