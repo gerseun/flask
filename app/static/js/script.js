@@ -227,12 +227,12 @@ $(document).ready(function() {
         if (index>1) {
           fill_row($(this), arr['messaggio'][index-2]);
           $(this).find('td[headers*="qt_comp"]').each(function(index, el) {
-            if ($(this).text()=="") {
-              $(this).text(qt);
-            }else {
+            //if ($(this).text()=="") {
+              //$(this).text(qt);
+            //}else {
               $(this).attr('contenteditable', 'true');
-              $(this).text($(this).text()*qt);
-            }
+              //$(this).text($(this).text()*qt);
+            //}
           });
         }
       });
@@ -355,3 +355,13 @@ $(document).ready(function() {
     });
   };
 });
+
+/*
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+
+today = mm + '/' + dd + '/' + yyyy;
+document.write(today);
+*/

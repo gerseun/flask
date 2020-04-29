@@ -166,3 +166,7 @@ def test():
 
         #risposta = 'ok'
         return risposta
+
+@app.route('/tabella', methods=['GET', 'POST'])
+def tabella():
+    return render_template('tabella.html', title='test tabella')
