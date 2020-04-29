@@ -96,16 +96,38 @@ def search_Produzione_Articolo(namePage, id_riga_imp):
     risposta = {"pagina": namePage,"azione": "search_Produzione_Articolo" , "messaggio": compInArticolo}
     return risposta
 
-def funz_Taglio(namePage, assieme):
-    #separo le componenti principali
-    impegno = assieme["t_imp"][0]
-    articoli = assieme["t_art"]
-    componenti = assieme["t_comp"]
-    #clono la vecchia riga e la salvo nel backup con la precendente operazione
-    #creo array di risposta
-    arrayTaglio = {}
-    risposta = {"pagina": namePage,"azione": "lista_taglio" , "messaggio": arrayTaglio}
-    #consegno il pacco
+def setAzioneArticolo(namePage, articolo):
+    #ciclo i componenti da salvare
+    componenti = articolo["t_comp"]
+    for x in componenti:
+        #salvo nel DB Backup
+        saveBackupDett(x)
+        #salvo la nuova Azione
+        #apro la connessione al database
+        mydb = connessione()
+        mioDB = mydb.cursor(dictionary=True)
+        sql = "UPDATE riga_dett SET id_produzione = %s WHERE id_riga_dett = %s"
+        val = (x["id_produzione"], x["id_riga_dett"])
+        mioDB.execute(sql, val)
+    #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORANTO CON SUCCESSO"}
+    return risposta
+
+def setAzioneCompSingolo(namePage, componenti):
+    #ciclo i componenti da salvare
+    comp = componenti["t_comp_sing"]
+    for x in comp:
+        #salvo nel DB Backup
+        saveBackupCompSingolo(x)
+        #salvo la nuova Azione
+        #apro la connessione al database
+        mydb = connessione()
+        mioDB = mydb.cursor(dictionary=True)
+        sql = "UPDATE riga_imp_comp SET id_produzione = %s WHERE id_riga_imp_comp = %s"
+        val = (x["id_produzione"], x["id_riga_imp_comp"])
+        mioDB.execute(sql, val)
+    #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORANTO CON SUCCESSO"}
     return risposta
 
 def deleteComp(IDcomp):
@@ -636,3 +658,55 @@ def setComponenteInImpegno(compAssieme, idImp):
     mydb.commit()
     mydb.close()
     return cont
+
+#SALVO LA RIGA NEL BACKUP
+def saveBackupDett(riga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    vecchio = getRigaDett(riga["id_riga_dett"])
+    #salvo i Dati
+    sql = "INSERT INTO backup_riga_dett (id_riga_dett_b, id_riga_imp_b, id_comp_b, qt_comp_b, id_produzione_b, pos_comp_imp_b) VALUES (%s, %s, %s, %s, %s, %s)"
+    val = (vecchio["id_riga_dett"], vecchio["id_riga_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["id_produzione"], vecchio["pos_comp_imp"])
+    mioDB.execute(sql, val)
+    mydb.commit()
+    return "OK"
+
+#PRENDO LA RIGA DETT
+def getRigaDett(idRiga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    mioDB.execute("SELECT * FROM riga_dett WHERE id_riga_dett = '" + idRiga + "'")
+    row = mioDB.fetchone()
+    #salvo i Dati
+    riga = {"id_riga_dett": row["id_riga_dett"], "id_riga_imp": row["id_riga_imp"], "id_comp": row["id_comp"], "qt_comp": row["qt_comp"], "id_produzione": row["id_produzione"], "pos_comp_imp": row["pos_comp_imp"]}
+    return riga
+
+#SALVO LA RIGA NEL BACKUP COMP SINGOLO
+def saveBackupCompSingolo(riga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    vecchio = getRigaCompSingolo(riga["id_riga_imp_comp"])
+    #salvo i Dati
+    sql = "INSERT INTO backup_riga_imp_comp (id_riga_imp_comp_b, id_imp_b, id_comp_b, qt_comp_b, data_cons_comp_b, id_produzione_b, pos_comp_sing_imp_b) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    val = (vecchio["id_riga_dett"], vecchio["id_riga_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["data_cons_comp_b"], vecchio["id_produzione"], vecchio["pos_comp_imp"])
+    mioDB.execute(sql, val)
+    mydb.commit()
+    return "OK"
+
+#PRENDO LA RIGA COMP SINGOLO ORIGINALE
+def getRigaCompSingolo(idRiga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    mioDB.execute("SELECT * FROM riga_imp_comp WHERE id_riga_dett = '" + idRiga + "'")
+    row = mioDB.fetchone()
+    #salvo i Dati
+    riga = {"riga_imp_comp": row["riga_imp_comp"], "id_imp": row["id_imp"], "id_comp": row["id_comp"], "qt_comp": row["qt_comp"], "data_cons_comp": row["data_cons_comp"], "id_produzione": row["id_produzione"], "pos_comp_sing_imp": row["pos_comp_sing_imp"]}
+    return riga
