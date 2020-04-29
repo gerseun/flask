@@ -87,9 +87,11 @@ $(document).ready(function() {
       if (['cod_imp', 'cod_comp', 'cod_art'].includes(index)) {
         $row.addClass(index);
       }
-      if ($('.container').attr('id') == 'newImpegno') {
-        if (['qt_comp', 'qt_art'].includes(index)) {
-          return true;
+      if (['newImpegno','newArticolo','newComponente'].includes($('.container').attr('id'))) {
+        if (['qt_comp', 'qt_art','data_cons_art','data_cons_comp'].includes(index)) {
+          $cell.attr('contenteditable', 'true');
+        }else {
+          $cell.attr('contenteditable', 'false');
         }
       }else {
         $cell.attr('contenteditable', 'false');
