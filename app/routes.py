@@ -161,6 +161,8 @@ def test():
             risposta = json.dumps(f.search_Produzione_Articolo(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'aggiorna_comp') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = "okok"
+        if (formatted_data['azione'] == 'aggiorna_comp_sing') and (formatted_data['pagina'] == 'listaTaglio'):
+            risposta = "okokok"
 
         #risposta = 'ok'
         return risposta

@@ -47,19 +47,19 @@
   <div class="">
     <table class="t_comp">
       <tr>
-        <th></th>
+        <th class="control"><i class="open-dialog-comp fa fa-arrow-circle-right"></i></th>
         <th id="cod_comp">Codice Componente</th>
         <th id="desc_comp">Descrizione</th>
         <th id="data_cons_comp">Data consegna</th>
         <th id="qt_comp">Quantità</th>
-        <th id="id_riga_imp_comp">id imp comp</th>
+        <th id="id_riga_comp">id imp comp</th>
       </tr>
       <tr class="hide">
-        <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
+        <td></td>
         <td headers="cod_comp" contenteditable="false"></td>
         <td headers="desc_comp" contenteditable="false"></td>
         <td headers="data_cons_comp" contenteditable="false"></td>
-        <td headers="qt_comp" contenteditable="true"></td>
+        <td headers="qt_comp" contenteditable="false"></td>
         <td headers="id_riga_comp" contenteditable="false"></td>
       </tr>
     </table>
@@ -72,6 +72,38 @@
 
 
 <div id="box">
+  <div id="dialog_comp" title="Stampa liste taglio-ordine" class="hide">
+    <p>
+      <table class="t_comp">
+        <tr>
+          <th id="cod_comp">Codice Componente</th>
+          <th id="desc_comp">Descrizione</th>
+          <th id="dim_comp">Dimensione</th>
+          <th id="mat_comp">Materiale</th>
+          <th id="qt_comp">Qt Componente</th>
+          <th id="id_produzione">Azione</th>
+          <th id="id_riga_comp">ID Comp Impegno</th>
+        </tr>
+        <tr class="hide">
+          <td headers="cod_comp" contenteditable="true"></td>
+          <td headers="desc_comp" contenteditable="false"></td>
+          <td headers="dim_comp" contenteditable="false"></td>
+          <td headers="mat_comp" contenteditable="false"></td>
+          <td headers="qt_comp" contenteditable="true"></td>
+          <td headers="id_produzione" class="control_prod">
+            <select class="action" name="">
+              <option value="0">scegliere</option>
+              <option value="1">Da ordinare</option>
+              <option value="2">Da Tagliare</option>
+              <option value="3">Ordinato</option>
+              <option value="4">Tagliato</option>
+            </select>
+          </td>
+          <td headers="id_riga_comp" contenteditable="false"></td>
+        </tr>
+      </table>
+    </p>
+  </div>
   <div id="dialog0" title="Stampa liste taglio-ordine" class="hide">
     <p>
       <table class="t_art">
@@ -95,17 +127,18 @@
           <th id="dim_comp">Dimensione</th>
           <th id="mat_comp">Materiale</th>
           <th id="qt_comp">Qt Componente</th>
-          <th id="stato_comp">Azione</th>
+          <th id="id_produzione">Azione</th>
           <th id="id_riga_dett">ID Comp Impegno</th>
         </tr>
         <tr class="hide">
-          <td headers="cod_comp" contenteditable="true" class="search_comp"></td>
+          <td headers="cod_comp" contenteditable="true"></td>
           <td headers="desc_comp" contenteditable="false"></td>
           <td headers="dim_comp" contenteditable="false"></td>
           <td headers="mat_comp" contenteditable="false"></td>
           <td headers="qt_comp" contenteditable="true"></td>
-          <td headers="stato_comp" class="control">
+          <td headers="id_produzione" class="control_prod">
             <select class="action" name="">
+              <option value="0">scegliere</option>
               <option value="1">Da ordinare</option>
               <option value="2">Da Tagliare</option>
               <option value="3">Ordinato</option>

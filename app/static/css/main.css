@@ -211,9 +211,9 @@ td[contenteditable="false"] {
 .container {
   overflow-x: auto;
 }
-.open-dialog {
+.open-dialog, .open-dialog-comp {
   cursor: pointer;
 }
-.open-dialog:hover {
+.open-dialog:hover, .open-dialog-comp:hover {
   color: #0000ff;
 }
