@@ -320,6 +320,7 @@ $(document).ready(function() {
                       if (index>1) {
                         fill_row($(this), arr['messaggio']['t_comp'][index-2]);
                       }
+                      $(this).find('td[headers*="qt_comp"]').attr('contenteditable', 'true');
                     });
                     $('.open-dialog-comp').click(function(event) {
                       $('#dialog_comp').dialog( "open" );

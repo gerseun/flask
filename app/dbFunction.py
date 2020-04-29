@@ -256,7 +256,7 @@ def getCompInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_comp"].strftime("%d/%m/%Y")
-        arr_Componenti.append({"id_riga_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data, "id_produzione": row["id_produzione"]})
+        arr_Componenti.append({"id_riga_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"], "dim_comp": row["dim_comp"], "dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data, "id_produzione": row["id_produzione"]})
     #se non aveva componenti passo stringa vuota
     #if flag == False:
         #arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
