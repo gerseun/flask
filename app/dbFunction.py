@@ -106,11 +106,11 @@ def setAzioneArticolo(namePage, articolo):
         #apro la connessione al database
         mydb = connessione()
         mioDB = mydb.cursor(dictionary=True)
-        sql = "UPDATE riga_dett SET id_produzione = %s WHERE id_riga_dett = %s"
-        val = (x["id_produzione"], x["id_riga_dett"])
+        sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s WHERE id_riga_dett = %s"
+        val = (x["qt_comp"], x["id_produzione"], x["id_riga_dett"])
         mioDB.execute(sql, val)
     #fine
-    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORANTO CON SUCCESSO"}
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
 
 def setAzioneCompSingolo(namePage, componenti):
@@ -123,11 +123,11 @@ def setAzioneCompSingolo(namePage, componenti):
         #apro la connessione al database
         mydb = connessione()
         mioDB = mydb.cursor(dictionary=True)
-        sql = "UPDATE riga_imp_comp SET id_produzione = %s WHERE id_riga_imp_comp = %s"
-        val = (x["id_produzione"], x["id_riga_imp_comp"])
+        sql = "UPDATE riga_imp_comp SET  qt_comp = %s, id_produzione = %s WHERE id_riga_imp_comp = %s"
+        val = (x["qt_comp"], x["id_produzione"], x["id_riga_imp_comp"])
         mioDB.execute(sql, val)
     #fine
-    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORANTO CON SUCCESSO"}
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
 
 def deleteComp(IDcomp):
