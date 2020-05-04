@@ -8,6 +8,7 @@ from app import app
 from app import dbFunction as f #f verrà usata per richiamare le funzioni in dbFunction
 from app.forms import LoginForm
 import pprint
+from app import save_to_excel as save
 
 #first = '{"firstCall":{"list_imp":["123","321","145","167"],"list_art":["1ABC00100","1ABC00200","1BCA00100","1BCA00200"],"list_comp":["1ABC00102","1ABC00110","1ABC00201","1BCA00120","1BCA00230"]}}'
 
@@ -163,6 +164,8 @@ def test():
             risposta = json.dumps(f.setAzioneArticolo(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'aggiorna_comp_sing') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.setAzioneCompSingolo(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'salva_file') and (formatted_data['pagina'] == 'listaTaglio'):
+            risposta = json.dumps(save.save_xlsx(formatted_data['messaggio']))
 
         #risposta = 'ok'
         return risposta
