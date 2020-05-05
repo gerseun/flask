@@ -6,6 +6,7 @@ except ImportError:
     import json
 from app import app
 from app import dbFunction as f #f verrà usata per richiamare le funzioni in dbFunction
+from app import set_folder as s #s verrà usata per richiamare le funzioni in set_folder
 from app.forms import LoginForm
 import pprint
 from app import save_to_excel as save
@@ -22,8 +23,8 @@ def index():
     #test5 = {"newImpegno":{"t_imp":[{"cod_imp":"123","cliente":"asd","cod_ord_cli":"111","data_ord":"2019-12-04","id_imp":"1"}], "t_art":[{"cod_art":"1ABC00100","desc_art":"cilindro","qt_art":"3","data_cons_art":"2019-12-05","id_riga_imp":"1"}], "t_comp":[{"cod_comp":"1ABC00102","desc_comp":"camicia","qt_comp":"100","data_cons_comp":"2019-12-07","id_riga_imp_comp":"1"}, {"cod_comp":"1ABC00110","desc_comp":"stelo","qt_comp":"50","data_cons_comp":"2019-12-08","id_riga_imp_comp":"2"}]}}
 
     pagina = "home"
-    stampa = f.search_imp("home","2/20")
-    #stampa = 'asd'
+    #stampa = f.search_imp("home","2/20")
+    stampa = s.setFolder(1,1)
 
     user = {'username': 'Mago'}
     posts = [

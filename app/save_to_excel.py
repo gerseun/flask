@@ -5,7 +5,7 @@ def save_xlsx(array):
     sh_name = imp.replace('/','-')
 
     # Give the location of the file
-    path = "vuota.xlsx"
+    path = "template taglio.xlsx"
     #Open an xlsx for reading
     wb = openpyxl.load_workbook(path)
 
