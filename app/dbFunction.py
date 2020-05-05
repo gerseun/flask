@@ -164,7 +164,17 @@ def deleteArtInImpegno(IDrigaArt):
     mioDB.execute(sql, val)
     return "DELETE COMPLETE"
 
-def deleteCompInImpegno(IDrigaComp):
+def deleteCompArtInImpegno(IDrigaCompArt):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #elimino componente singolo dall' impegno
+    sql = "DELETE FROM riga_dett WHERE id_riga_dett = %s"
+    val = (IDrigaCompArt)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
+    
+def deleteCompSingInImpegno(IDrigaComp):
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
