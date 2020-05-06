@@ -82,7 +82,7 @@ def search_imp(namePage, ricercaImp):
     impegno = getImpegno(ricercaImp)
     #ricerco i comp contenuti nell' impegno
     componenti = getCompInImpegno(impegno["id_imp"])
-    #ricerco gli articoli contenuti nell' impegno
+    #ricerco gli articoli contenuti nell' impegno - con i loro sottocomponenti
     articoli = getArtInImpegno(impegno["id_imp"])
     #creo array di risposta
     impArtComp = {"t_imp": [impegno], "t_art": articoli, "t_comp": componenti}
@@ -90,6 +90,99 @@ def search_imp(namePage, ricercaImp):
     #consegno il pacco
     return risposta
 
+def search_Produzione_Articolo(namePage, id_riga_imp):
+    #prendo i componenti in produzione dell' articolo
+    compInArticolo = getCompInArtImpegno(id_riga_imp)
+    risposta = {"pagina": namePage,"azione": "search_Produzione_Articolo" , "messaggio": compInArticolo}
+    return risposta
+
+def setAzioneArticolo(namePage, articolo):
+    #ciclo i componenti da salvare
+    componenti = articolo["t_comp"]
+    for x in componenti:
+        #salvo nel DB Backup
+        saveBackupDett(x)
+        #salvo la nuova Azione
+        #apro la connessione al database
+        mydb = connessione()
+        mioDB = mydb.cursor(dictionary=True)
+        sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s WHERE id_riga_dett = %s"
+        val = (x["qt_comp"], x["id_produzione"], x["id_riga_dett"])
+        mioDB.execute(sql, val)
+    #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
+    return risposta
+
+def setAzioneCompSingolo(namePage, componenti):
+    #ciclo i componenti da salvare
+    comp = componenti["t_comp_sing"]
+    for x in comp:
+        #salvo nel DB Backup
+        saveBackupCompSingolo(x)
+        #salvo la nuova Azione
+        #apro la connessione al database
+        mydb = connessione()
+        mioDB = mydb.cursor(dictionary=True)
+        sql = "UPDATE riga_imp_comp SET  qt_comp = %s, id_produzione = %s WHERE id_riga_imp_comp = %s"
+        val = (x["qt_comp"], x["id_produzione"], x["id_riga_imp_comp"])
+        mioDB.execute(sql, val)
+    #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
+    return risposta
+
+def deleteComp(IDcomp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #elimino componente dal DB
+    sql = "DELETE FROM component WHERE id_comp = %s"
+    val = (IDcomp)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
+
+def deleteCompInArticolo(IDartcomp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #elimino componente nell' articolo, ma non il componente da DB
+    sql = "DELETE FROM articolo_componenti WHERE id_artcomp = %s"
+    val = (IDartcomp)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
+
+def deleteArtInImpegno(IDrigaArt):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #elimino articolo dall' impegno
+    sql = "DELETE FROM riga_imp WHERE id_riga_imp = %s"
+    val = (IDrigaArt)
+    mioDB.execute(sql, val)
+    #elimino componenti dell' articolo dall' impegno
+    sql = "DELETE FROM riga_dett WHERE id_riga_imp = %s"
+    val = (IDrigaArt)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
+
+def deleteCompArtInImpegno(IDrigaCompArt):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #elimino componente singolo dall' impegno
+    sql = "DELETE FROM riga_dett WHERE id_riga_dett = %s"
+    val = (IDrigaCompArt)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
+    
+def deleteCompSingInImpegno(IDrigaComp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #elimino componente singolo dall' impegno
+    sql = "DELETE FROM riga_imp_comp WHERE id_riga_imp_comp = %s"
+    val = (IDrigaComp)
+    mioDB.execute(sql, val)
+    return "DELETE COMPLETE"
 
 
 '''
@@ -118,8 +211,8 @@ def getComponente(ricComponente):
     if row:
         #salvo i dati componente
         arrayComp = {"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"]}
-    else:
-        arrayComp = {"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": ""}
+    #else:
+        #arrayComp = {"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": ""}
     mydb.close()
     return arrayComp
 
@@ -134,8 +227,8 @@ def getArticolo(ricArticolo):
     if row:
         #salvo i dati articolo
         arrayArt = {"id_art": row["id_art"], "cod_art": row["cod_art"],"desc_art": row["desc_art"],"cli_art": row["cli_art"],"cod_cli_art": row["cod_cli_art"]}
-    else:
-        arrayArt = {"id_art": "", "cod_art": "","desc_art": "","cli_art": "","cod_cli_art": ""}
+    #else:
+        #arrayArt = {"id_art": "", "cod_art": "","desc_art": "","cli_art": "","cod_cli_art": ""}
     mydb.close()
     return arrayArt
 
@@ -152,8 +245,8 @@ def getImpegno(ricImpegno):
         #elaboro la data
         data = row["data_ord"].strftime("%d/%m/%Y")
         arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": data}
-    else:
-        arrayImp = {"id_imp": "", "cod_imp": "","cliente": "","cod_ord_cli": "","data_ord": ""}
+    #else:
+        #arrayImp = {"id_imp": "", "cod_imp": "","cliente": "","cod_ord_cli": "","data_ord": ""}
     mydb.close()
     return arrayImp
 
@@ -172,10 +265,10 @@ def getCompInArticolo(ric_id_articolo):
     flag = False
     for row in risultato:
         flag = True
-        arr_Componenti.append({"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"]})
+        arr_Componenti.append({"id_artcomp": row["id_artcomp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"]})
     #se non aveva componenti passo stringa vuota
-    if flag == False:
-        arr_Componenti.append({"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": "","qt_comp": ""})
+    #if flag == False:
+        #arr_Componenti.append({"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": "","qt_comp": ""})
     #chiusura
     mydb.close()
     return arr_Componenti
@@ -195,10 +288,10 @@ def getCompInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_comp"].strftime("%d/%m/%Y")
-        arr_Componenti.append({"id_riga_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data})
+        arr_Componenti.append({"id_riga_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"], "dim_comp": row["dim_comp"], "dim_comp": row["dim_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data, "id_produzione": row["id_produzione"]})
     #se non aveva componenti passo stringa vuota
-    if flag == False:
-        arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
+    #if flag == False:
+        #arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
     #chiusura
     mydb.close()
     return arr_Componenti
@@ -211,20 +304,42 @@ def getArtInImpegno(ric_id_impegno):
     #seleziono gli id_riga_imp dell' impegno ricercato
     mioDB.execute("SELECT * FROM riga_imp INNER JOIN articolo ON riga_imp.ID_art=articolo.ID_art  WHERE riga_imp.ID_imp = '" + str(ric_id_impegno) + "' ORDER BY riga_imp.ID_riga_imp ASC")
     risultato = mioDB.fetchall()
-    #variabili array COMPONENTI
+    #variabili array ARTICOLI
     arr_Articoli = []
     #ciclo tutti i componenti
     flag = False
     for row in risultato:
         flag = True
         data = row["data_cons_art"].strftime("%d/%m/%Y")
-        arr_Articoli.append({"id_riga_art": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data})
+        #cerco i suoi componenti
+        arrComp = getCompInArtImpegno(row["id_riga_imp"])
+        #arrComp = {"t_comp": componenti}
+        #creo array
+        arr_Articoli.append({"id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data, "t_comp": arrComp})
     #se non aveva componenti passo stringa vuota
-    if flag == False:
-        arr_Articoli.append({"id_riga_art": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
+    #if flag == False:
+        #arr_Articoli.append({"id_riga_art": "", "cod_art": "","id_art": "","desc_art": "","qt_art": "","data_cons_art": ""})
     #chiusura
     mydb.close()
     return arr_Articoli
+
+def getCompInArtImpegno(ric_id_art_imp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.ID_riga_imp = '" + str(ric_id_art_imp) + "' ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompInArtImp = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"] })
+    #chiusura
+    mydb.close()
+    return arr_CompInArtImp
 
 #RICEVO TUTTI I CODICI IMPEGNO
 def getCodImpegni():
@@ -486,8 +601,8 @@ def setArticoloInImpegno(artAssieme, idImp):
         else:
             #query string per settare la riga nel DB
             data_cons = datetime.datetime.strptime(item["data_cons_art"], '%d/%m/%Y').date()
-            sql = "UPDATE riga_imp SET qt_art = %s WHERE id_riga_imp = %s"
-            val = (item["qt_art"], item["id_riga_art"])
+            sql = "UPDATE riga_imp SET qt_art = %s, data_cons_art = %s WHERE id_riga_imp = %s"
+            val = (item["qt_art"], data_cons, item["id_riga_art"])
             mioDB.execute(sql, val)
             #nuova riga
             id_riga = item["id_riga_art"]
@@ -542,8 +657,8 @@ def setComponenteInImpegno(compAssieme, idImp):
             #idArt non può essere null, filtro su inserimento dati
             #query string per settare la riga nel DB
             data_cons = datetime.datetime.strptime(item["data_cons_comp"], '%d/%m/%Y').date()
-            sql = "UPDATE riga_imp_comp SET qt_comp = %s WHERE id_riga_imp_comp = %s"
-            val = (item["qt_comp"], item["id_riga_comp"])
+            sql = "UPDATE riga_imp_comp SET qt_comp = %s, data_cons_comp = %s WHERE id_riga_imp_comp = %s"
+            val = (item["qt_comp"], data_cons, item["id_riga_comp"])
             mioDB.execute(sql, val)
             #prendo l' indice della riga
             id_riga = item["id_riga_comp"]
@@ -553,3 +668,55 @@ def setComponenteInImpegno(compAssieme, idImp):
     mydb.commit()
     mydb.close()
     return cont
+
+#SALVO LA RIGA NEL BACKUP
+def saveBackupDett(riga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    vecchio = getRigaDett(riga["id_riga_dett"])
+    #salvo i Dati
+    sql = "INSERT INTO backup_riga_dett (id_riga_dett_b, id_riga_imp_b, id_comp_b, qt_comp_b, id_produzione_b, pos_comp_imp_b) VALUES (%s, %s, %s, %s, %s, %s)"
+    val = (vecchio["id_riga_dett"], vecchio["id_riga_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["id_produzione"], vecchio["pos_comp_imp"])
+    mioDB.execute(sql, val)
+    mydb.commit()
+    return "OK"
+
+#PRENDO LA RIGA DETT
+def getRigaDett(idRiga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    mioDB.execute("SELECT * FROM riga_dett WHERE id_riga_dett = '" + idRiga + "'")
+    row = mioDB.fetchone()
+    #salvo i Dati
+    riga = {"id_riga_dett": row["id_riga_dett"], "id_riga_imp": row["id_riga_imp"], "id_comp": row["id_comp"], "qt_comp": row["qt_comp"], "id_produzione": row["id_produzione"], "pos_comp_imp": row["pos_comp_imp"]}
+    return riga
+
+#SALVO LA RIGA NEL BACKUP COMP SINGOLO
+def saveBackupCompSingolo(riga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    vecchio = getRigaCompSingolo(riga["id_riga_imp_comp"])
+    #salvo i Dati
+    sql = "INSERT INTO backup_riga_imp_comp (id_riga_imp_comp_b, id_imp_b, id_comp_b, qt_comp_b, data_cons_comp_b, id_produzione_b, pos_comp_sing_imp_b) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+    val = (vecchio["id_riga_dett"], vecchio["id_riga_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["data_cons_comp_b"], vecchio["id_produzione"], vecchio["pos_comp_imp"])
+    mioDB.execute(sql, val)
+    mydb.commit()
+    return "OK"
+
+#PRENDO LA RIGA COMP SINGOLO ORIGINALE
+def getRigaCompSingolo(idRiga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    mioDB.execute("SELECT * FROM riga_imp_comp WHERE id_riga_dett = '" + idRiga + "'")
+    row = mioDB.fetchone()
+    #salvo i Dati
+    riga = {"riga_imp_comp": row["riga_imp_comp"], "id_imp": row["id_imp"], "id_comp": row["id_comp"], "qt_comp": row["qt_comp"], "data_cons_comp": row["data_cons_comp"], "id_produzione": row["id_produzione"], "pos_comp_sing_imp": row["pos_comp_sing_imp"]}
+    return riga

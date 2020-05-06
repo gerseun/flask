@@ -15,7 +15,7 @@ $(document).ready(function() {
       $table.append($clone);
     }
     if ($('.container').attr('id') == 'listaTaglio') {
-      add_autocomp($table);
+      //add_autocomp($table);
     } else {
       add_autocomp($('.container'));
     }
@@ -36,7 +36,11 @@ $(document).ready(function() {
       if (index > 0) {
         var r_arr = {};
        $(this).find('td:not(.control)').each(function(index, el) {
-         r_arr[$(this).attr('headers')] = $(this).text();
+         if ($(this).attr('headers') == "id_produzione") {
+           r_arr[$(this).attr('headers')] = $(this).find('select').val();
+         } else {
+           r_arr[$(this).attr('headers')] = $(this).text();
+         }
        });
        t_arr.push(r_arr);
       }
@@ -75,13 +79,19 @@ $(document).ready(function() {
   function fill_row($row, arr) {
     $.each(arr, function(index, el) {
       var $cell = $row.find('td[headers*="'+index+'"]');
-      $cell.text(el);
+      if (index != "id_produzione") {
+        $cell.text(el);
+      } else {
+        $cell.find('select').val(el);
+      }
       if (['cod_imp', 'cod_comp', 'cod_art'].includes(index)) {
         $row.addClass(index);
       }
-      if ($('.container').attr('id') == 'newImpegno') {
-        if (['qt_comp', 'qt_art'].includes(index)) {
-          return true;
+      if (['newImpegno','newArticolo','newComponente'].includes($('.container').attr('id'))) {
+        if (['qt_comp', 'qt_art','data_cons_art','data_cons_comp'].includes(index)) {
+          $cell.attr('contenteditable', 'true');
+        }else {
+          $cell.attr('contenteditable', 'false');
         }
       }
       $cell.attr('contenteditable', 'false');
@@ -95,7 +105,6 @@ $(document).ready(function() {
       var $table = $div.find('.'+t_ind+'');
       var $rows = $table.find('tr:not(:hidden)');
       if ($rows.length-1 < t_arr.length) {
-
         add_row($table, t_arr.length-($rows.length-1));
       } else {
         $rows.each(function(index, el) {
@@ -197,18 +206,13 @@ $(document).ready(function() {
     var send = {};
     var qt = "";
     send['pagina'] = $('.container').attr('id');
-    if (r_row.hasOwnProperty('cod_art')) {
-      send['azione'] = 'search_art';
-      send['messaggio'] = r_row['cod_art'];
-      qt = r_row['qt_art'];
-    }
-    if (r_row.hasOwnProperty('cod_comp')) {
-      send['azione'] = 'search_comp';
-      send['messaggio'] = r_row['cod_comp'];
-      qt = r_row['qt_comp'];
-    }
+    send['azione'] = 'search_Produzione_Articolo';
+    send['messaggio'] = r_row['id_riga_imp'];
+    qt = r_row['qt_art'];
+
     $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
       var arr = JSON.parse(data);
+      //console.log(arr);
       var $clone = $('#dialog0').clone(true, true).removeClass('hide');
       $clone.attr('id', 'dialog'+i+'');
       $t_art = $clone.find('.t_art');
@@ -216,19 +220,19 @@ $(document).ready(function() {
       fill_row($t_art_rows.eq(1), r_row);
       $t_comp = $clone.find('.t_comp');
       $t_comp_rows = $t_comp.find('tr');
-      if ($t_comp_rows.length-2 < arr['messaggio']['t_comp'].length) {
-        add_row($t_comp, arr['messaggio']['t_comp'].length);
+      if ($t_comp_rows.length-2 < arr['messaggio'].length) {
+        add_row($t_comp, arr['messaggio'].length);
       }
       $t_comp.find('tr').each(function(index, el) {
         if (index>1) {
-          fill_row($(this), arr['messaggio']['t_comp'][index-2]);
+          fill_row($(this), arr['messaggio'][index-2]);
           $(this).find('td[headers*="qt_comp"]').each(function(index, el) {
-            if ($(this).text()=="") {
-              $(this).text(qt);
-            }else {
+            //if ($(this).text()=="") {
+              //$(this).text(qt);
+            //}else {
               $(this).attr('contenteditable', 'true');
-              $(this).text($(this).text()*qt);
-            }
+              //$(this).text($(this).text()*qt);
+            //}
           });
         }
       });
@@ -246,17 +250,36 @@ $(document).ready(function() {
         },
         buttons:{
           'Salva': function() {
+            var arr = {};
+            var send = {};
+            arr["t_comp"] = get_table($(this).find('table.t_comp').eq(0));
+            send['pagina'] = $('.container').attr('id');;
+            send['azione'] = 'aggiorna_comp';
+            send['messaggio'] = arr;
+            $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+              console.log(data);
+            });
             $( this ).dialog( "close" );
           },
           'Stampa': function() {
+            var arr = {};
+            var send = {};
+            arr["t_comp"] = get_table($(this).find('table.t_comp').eq(0));
+            arr["t_art"] = get_table($(this).find('table.t_art').eq(0));
+            arr["t_imp"] = get_table($('.container').find('table.t_imp').eq(0));
+
+            send['pagina'] = $('.container').attr('id');
+            send['azione'] = 'salva_file';
+            send['messaggio'] = arr;
+            console.log(send);
+            $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+              console.log(data);
+            });
             $( this ).dialog( "close" );
           }
         }
       });
-
     });
-
-
   };
 
   function add_autocomp_lt($el, arr) {
@@ -276,23 +299,67 @@ $(document).ready(function() {
             send['messaggio'] = ui.item.value;
             $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
               var arr = JSON.parse(data);
-              //console.log(arr);
+              //console.log(arr['messaggio']);
               var p_arr = {};
               p_arr['t_imp'] = arr['messaggio']['t_imp'];
-              p_arr['t_art'] = arr['messaggio']['t_art'].concat(arr['messaggio']['t_comp']);
+              p_arr['t_art'] = arr['messaggio']['t_art'];
+              p_arr['t_comp'] = arr['messaggio']['t_comp'];
 
               if ($cell.attr('id') == 'first_cell') {
-                fill_tables(p_arr, $('.container'));
+                fill_tables(arr['messaggio'], $('.container'));
               } else {
                 fill_row($cell.parent('tr'), arr['messaggio'][$cell.parents('table').attr('class')][0]);
               }
 
-              $('.container table').eq(1).find('tr:not(:hidden)').each(function(index, el) {
+              $('.container .t_art').eq(0).find('tr:not(:hidden)').each(function(index, el) {
                 if (index > 0){
                   $(this).addClass('dialog'+index+'');
-                  create_dialog(index, p_arr['t_art'][index-1]);
+                  create_dialog(index, arr['messaggio']['t_art'][index-1]);
                 }
               });
+              if (arr['messaggio']['t_comp'].length > 0) {
+                var $comp_dg = $('#dialog_comp').removeClass('hide');
+                $comp_dg.dialog({
+                  autoOpen: false,
+                  height: 'auto',
+                  width:'auto',
+                  resizable:false,
+                  modal:true,
+                  create: function(event,ui){
+                    $t_comp = $('#dialog_comp').find('.t_comp');
+                    $t_comp_rows = $t_comp.find('tr');
+                    if ($t_comp_rows.length-2 < arr['messaggio']['t_comp'].length) {
+                      add_row($t_comp, arr['messaggio']['t_comp'].length);
+                    }
+                    $t_comp.find('tr').each(function(index, el) {
+                      if (index>1) {
+                        fill_row($(this), arr['messaggio']['t_comp'][index-2]);
+                      }
+                      $(this).find('td[headers*="qt_comp"]').attr('contenteditable', 'true');
+                    });
+                    $('.open-dialog-comp').click(function(event) {
+                      $('#dialog_comp').dialog( "open" );
+                    });
+                  },
+                  buttons:{
+                    'Salva': function() {
+                      var arr = {};
+                      var send = {};
+                      arr["t_comp_sing"] = get_table($(this).find('table.t_comp').eq(0));
+                      send['pagina'] = $('.container').attr('id');;
+                      send['azione'] = 'aggiorna_comp_sing';
+                      send['messaggio'] = arr;
+                      $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+                        console.log(data);
+                      });
+                      $( this ).dialog( "close" );
+                    },
+                    'Stampa': function() {
+                      $( this ).dialog( "close" );
+                    }
+                  }
+                });
+              }
             });
           }
         });
@@ -301,3 +368,13 @@ $(document).ready(function() {
     });
   };
 });
+
+/*
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, '0');
+var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+var yyyy = today.getFullYear();
+
+today = mm + '/' + dd + '/' + yyyy;
+document.write(today);
+*/
