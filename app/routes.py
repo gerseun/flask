@@ -5,8 +5,9 @@ try:
 except ImportError:
     import json
 from app import app
-from app import dbFunction as f #f verrà usata per richiamare le funzioni in dbFunction
-from app import set_folder as s #s verrà usata per richiamare le funzioni in set_folder
+from app import dbFunction as f     #f verrà usata per richiamare le funzioni in dbFunction
+from app import set_folder as s     #s verrà usata per richiamare le funzioni in set_folder
+from app import save_to_excel as e  #s verrà usata per richiamare le funzioni in set_folder
 from app.forms import LoginForm
 import pprint
 from app import save_to_excel as save
@@ -24,7 +25,14 @@ def index():
 
     pagina = "home"
     #stampa = f.search_imp("home","2/20")
-    stampa = s.setFolder(1,1)
+    imp = "1/20"
+    imp_folder = imp.replace("/","-")
+    #1 - creo DIR
+    s.setFolder(imp_folder)
+    #2 - creo file excel taglio/ordine
+    imp = f.search_imp("HOME", "1/20")
+    stampa = e.save_xlsx_Taglio(imp["messaggio"])
+
 
     user = {'username': 'Mago'}
     posts = [

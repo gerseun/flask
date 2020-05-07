@@ -4,8 +4,29 @@ import os
 from datetime import datetime
 from shutil import copy2
 
-def save_xlsx(array):
-    '''Array coordinate'''
+def save_xlsx_Taglio(array):
+    #prendo le variabili da salvare
+    t_imp = array['t_imp'][0]
+    t_art = array['t_art'][0]
+    t_comp = array['t_comp']
+    cod_imp = t_imp['cod_imp']
+    imp = cod_imp.replace('/','-')
+    cod_art = t_art['cod_art']
+    #creo il file excel
+
+    path = 'C:/Produzione Python/'+imp+'/'+cod_art+'-Taglio.xlsx'
+    copy2('template taglio.xlsx', path)
+
+
+
+
+
+
+
+
+
+
+    '''
     col_arr = {'id_riga_dett':1, 'qt_comp':2, 'cod_comp':4, 'desc_comp':11, 'dim_comp':17, 'mat_comp':25}
     row_arr = [8,10,12,14,16,18,20,22,24,26,28,30,32,34,36]
 
@@ -17,13 +38,13 @@ def save_xlsx(array):
     cod_art = t_art['cod_art']
 
     create_dir(imp)
-    path = 'Produzione Python/'+imp+'/'+cod_art+'.xlsx'
+    path = 'C:Produzione Python/'+imp+'/'+cod_art+'.xlsx'
     copy2('vuota.xlsx', path)
 
     wb = openpyxl.load_workbook(path)
     ws = wb['TAGLIO']
 
-    '''Riempie la descrizione articolo'''
+    #Riempie la descrizione articolo
     coord_arr = get_cell_coord(wb, 'cod_imp')
     ws[coord_arr[0]] = cod_imp
 
@@ -47,7 +68,7 @@ def save_xlsx(array):
     coord_arr = get_cell_coord(wb, 'data_comp')
     ws[coord_arr[0]] = current_time
 
-    '''Riempie le righe dei componenti'''
+    #Riempie le righe dei componenti
     row_arr = row_arr[0:len(t_comp)]
     index = 0
     for r in row_arr:
@@ -62,6 +83,8 @@ def save_xlsx(array):
 
     wb.active = ws
     wb.save(path)
+
+    '''
     return 'file excel modificato'
 
 def get_cell_coord(wb, range_name):
@@ -71,13 +94,6 @@ def get_cell_coord(wb, range_name):
     for title, coord in dests:
         coord_arr.append(coord)
     return coord_arr
-
-def create_dir(imp):
-    if not(os.path.exists('Produzione Python')):
-        os.mkdir('Produzione Python')
-    dir = 'Produzione Python/' + imp
-    if not(os.path.exists(dir)):
-        os.mkdir(dir)
 
     # Give the location of the file
 #    path = "template taglio.xlsx"

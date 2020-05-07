@@ -1,17 +1,30 @@
 import os.path
 
 #controllo la presenza della cartella
-def setFolder(codImp, codPath):
+def setFolder(codImp):
     #controllo la presenza della cartella iniziale
-    setGfolder()
-    
-    return "ok"
+    test = setGfolder()
+    path = 'C:/Produzione Python/' + str(codImp)
+    if test:
+        #creo la cartella dell' IMPEGNO
+        if os.path.isdir(path):
+            #mex di ritorno
+            messaggio = "GIA PRESENTE"
+        else:
+            #mex di ritorno
+            messaggio = "CREAZIONE"
+            #creo la cartella
+            os.makedirs(path)
+    else:
+        messaggio = "ERRORE CREAZIONE"
+    return messaggio
 
 def setGfolder():
     #controllo la presenza della cartella iniziale
-    if os.path.isdir("G:\Produzione Python"):
-        risposta = "esiste"
+    if os.path.isdir("C:/Produzione Python"):
+        risposta = True
     else:
-        risposta = "non esiste"
+        risposta = False
         #creo la cartella
-        os.makedirs("G:\Produzione Python")
+        os.makedirs("C:/Produzione Python")
+    return risposta
