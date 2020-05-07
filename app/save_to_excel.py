@@ -1,4 +1,5 @@
 import openpyxl
+from openpyxl.styles import Font
 import os
 from datetime import datetime
 from shutil import copy2
@@ -27,7 +28,7 @@ def save_xlsx(array):
     ws[coord_arr[0]] = cod_imp
 
     coord_arr = get_cell_coord(wb, 'id_riga_imp')
-    ws[coord_arr[0]] = 'id_riga_imp*' + t_art['id_riga_imp']
+    ws[coord_arr[0]] = 'ID_RIGA_IMP*' + t_art['id_riga_imp']
 
     coord_arr = get_cell_coord(wb, 'cliente')
     ws[coord_arr[0]] = t_imp['cliente']
@@ -54,7 +55,7 @@ def save_xlsx(array):
         for c_name, c in col_arr.items():
             cell = ws.cell(row=r, column=c)
             if c_name == 'id_riga_dett':
-                cell.value = 'id_riga_dett*' + arr[c_name]
+                cell.value = 'ID_RIGA_DETT*' + arr[c_name]
             else:
                 cell.value = arr[c_name]
         index += 1
