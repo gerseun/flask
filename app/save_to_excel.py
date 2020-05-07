@@ -3,19 +3,21 @@ from openpyxl.styles import Font
 import os
 from datetime import datetime
 from shutil import copy2
+import datetime
+
 
 def save_xlsx_Taglio(array):
     #prendo le variabili da salvare
     t_imp = array['t_imp'][0]
-    t_art = array['t_art'][0]
-    t_comp = array['t_comp']
     cod_imp = t_imp['cod_imp']
     imp = cod_imp.replace('/','-')
+    t_art = array['t_art'][0]
     cod_art = t_art['cod_art']
     #creo il file excel
-
-    path = 'C:/Produzione Python/'+imp+'/'+cod_art+'-Taglio.xlsx'
+    path = 'C:/Produzione Python/'+imp+'/'+cod_art+'.xlsx'
     copy2('template taglio.xlsx', path)
+    #vado a popolare il file
+    popolateFile(array, path)
 
 
 
@@ -86,6 +88,47 @@ def save_xlsx_Taglio(array):
 
     '''
     return 'file excel modificato'
+
+def popolateFile(insieme, fileName):
+    #prendo i dati dell' ordine
+    t_imp = insieme['t_imp'][0]
+    t_art = insieme['t_art'][0]
+    t_comp = insieme['t_comp']
+    #popolo l' articolo
+    wb = openpyxl.load_workbook(fileName)
+    #popolo taglio
+#creo array pagine e ciclo le pagine!!!!!
+
+    ws = wb["TAGLIO"]
+    ws["A1"] = "*ART." + str(t_art["id_riga_imp"]) + "*"    #ID RIGA ART
+    ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
+    ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
+    ws["V1"] = str(t_art["data_cons_art"])                  #DATA CONSEGNA
+    ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
+    ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
+    ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
+
+    ws = wb["ORDINE"]
+    ws["A1"] = "*ART." + str(t_art["id_riga_imp"]) + "*"    #ID RIGA ART
+    ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
+    ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
+    ws["V1"] = str(t_art["data_cons_art"])                  #DATA CONSEGNA
+    ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
+    ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
+    ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
+
+    col_arr = {'id_riga_dett':1, 'qt_comp':2, 'cod_comp':4, 'desc_comp':11, 'dim_comp':17, 'mat_comp':25}
+    row_arr = [8,10,12,14,16,18,20,22,24,26,28,30,32,34,36]
+
+    wb.active = ws
+    wb.save(fileName)
+
+    return "OK"
+
+def adesso():
+    now = datetime.datetime.now()
+    dataOra = now.strftime("%d/%m/%Y")
+    return dataOra
 
 def get_cell_coord(wb, range_name):
     my_range = wb.defined_names[range_name]
