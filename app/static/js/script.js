@@ -50,7 +50,7 @@ $(document).ready(function() {
 
   function check_array(arr){
     var dataRGEX = /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])[\/\-]\d{4}$/;
-    var arr_id = ['id_comp','id_art','id_imp','id_riga_art','id_riga_comp'];
+    var arr_id = ['id_comp','id_art','id_imp','id_riga_art','id_riga_comp', 'id_riga_imp_comp'];
     var bool = true;
     $.each(arr, function(index, el) {
       $.each(el, function(i, e) {
@@ -95,7 +95,7 @@ $(document).ready(function() {
         }
       }
       $cell.attr('contenteditable', 'false');
-      
+
 
     });
   };

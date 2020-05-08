@@ -94,29 +94,20 @@ def popolateFile(insieme, fileName):
     t_imp = insieme['t_imp'][0]
     t_art = insieme['t_art'][0]
     t_comp = insieme['t_comp']
-    #popolo l' articolo
+    #popolo INTESTAZIONE -> ARTICOLO ED IMPEGNO
     wb = openpyxl.load_workbook(fileName)
-    #popolo taglio
-#creo array pagine e ciclo le pagine!!!!!
-
-    ws = wb["TAGLIO"]
-    ws["A1"] = "*ART." + str(t_art["id_riga_imp"]) + "*"    #ID RIGA ART
-    ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
-    ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
-    ws["V1"] = str(t_art["data_cons_art"])                  #DATA CONSEGNA
-    ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
-    ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
-    ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
-
-    ws = wb["ORDINE"]
-    ws["A1"] = "*ART." + str(t_art["id_riga_imp"]) + "*"    #ID RIGA ART
-    ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
-    ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
-    ws["V1"] = str(t_art["data_cons_art"])                  #DATA CONSEGNA
-    ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
-    ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
-    ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
-
+    #creo array pagine e ciclo le pagine!!!!!
+    arrayPage = ["TAGLIO", "ORDINE"]
+    for page in arrayPage:
+        ws = wb[page]
+        ws["A1"] = "*ART." + str(t_art["id_riga_imp"]) + "*"    #ID RIGA ART
+        ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
+        ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
+        ws["V1"] = str(t_art["data_cons_art"])                  #DATA CONSEGNA
+        ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
+        ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
+        ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
+    #popolo TABELLA -> COMPONENTI
     col_arr = {'id_riga_dett':1, 'qt_comp':2, 'cod_comp':4, 'desc_comp':11, 'dim_comp':17, 'mat_comp':25}
     row_arr = [8,10,12,14,16,18,20,22,24,26,28,30,32,34,36]
 
