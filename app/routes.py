@@ -30,9 +30,9 @@ def index():
     #1 - creo DIR
     s.setFolder(imp_folder)
     #2 - creo file excel taglio/ordine
-    imp = f.search_imp("HOME", "1/20")
-    stampa = e.save_xlsx_Taglio(imp["messaggio"])
-
+    #imp = f.search_imp("HOME", "1/20")
+    #stampa = e.save_xlsx_Taglio(imp["messaggio"])
+    stampa = "ASD"
 
     user = {'username': 'Mago'}
     posts = [

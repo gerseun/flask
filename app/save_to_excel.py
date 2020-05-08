@@ -108,8 +108,21 @@ def popolateFile(insieme, fileName):
         ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
         ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
     #popolo TABELLA -> COMPONENTI
-    col_arr = {'id_riga_dett':1, 'qt_comp':2, 'cod_comp':4, 'desc_comp':11, 'dim_comp':17, 'mat_comp':25}
-    row_arr = [8,10,12,14,16,18,20,22,24,26,28,30,32,34,36]
+    contT = 6
+    contO = 6
+    for comp in t_comp:
+        #controllo se da tagliare o se da ordinare
+        if taglio:
+            #setto il foglio
+            ws = wb[arrayPage[0]]
+            contT += 2
+
+        else:
+            #setto il foglio
+            ws = wb[arrayPage[1]]
+            conto += 2
+        #inserisco la riga componente
+        
 
     wb.active = ws
     wb.save(fileName)
