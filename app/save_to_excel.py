@@ -5,6 +5,7 @@ from datetime import datetime
 from shutil import copy2
 import datetime
 import pprint
+import os.path
 
 def save_xlsx_Taglio(array):
 
@@ -15,9 +16,14 @@ def save_xlsx_Taglio(array):
     t_art = array['t_art'][0]
     cod_art = t_art['cod_art']
     #controllo se esiste già -> creo file ARTICOLO-1
-    #creo il file excel
-    path = 'C:/Produzione Python/'+imp+'/'+cod_art+'.xlsx'
-    copy2('template taglio.xlsx', path)
+    path = 'C:/Produzione Python/'+imp+'/'+cod_art+'-1.xlsx'
+    if os.path.isfile(path):
+        #nuova path
+        path = 'C:/Produzione Python/'+imp+'/'+cod_art+'.xlsx'
+    else:
+        #creo il file excel
+        copy2('template taglio.xlsx', path)
+
     #vado a popolare il file
     popolateFile(array, path)
 
