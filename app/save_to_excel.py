@@ -6,23 +6,32 @@ from shutil import copy2
 import datetime
 import pprint
 import os.path
+from app import set_folder as s     #s verrà usata per richiamare le funzioni in set_folder
 
 def save_xlsx_Taglio(array):
-
+    #OTTENGO UN SINGOLO ARTICOLO
     #prendo le variabili da salvare
     t_imp = array['t_imp'][0]
-    cod_imp = t_imp['cod_imp']
-    imp = cod_imp.replace('/','-')
     t_art = array['t_art'][0]
     cod_art = t_art['cod_art']
+
+    #controllo e creo la cartella
+    imp = t_imp["cod_imp"]
+    imp_folder = imp.replace("/","-")
+    #1 - creo DIR
+    s.setFolder(imp_folder)
     #controllo se esiste già -> creo file ARTICOLO-1
-    path = 'C:/Produzione Python/'+imp+'/'+cod_art+'-1.xlsx'
-    if os.path.isfile(path):
-        #nuova path
-        path = 'C:/Produzione Python/'+imp+'/'+cod_art+'.xlsx'
-    else:
-        #creo il file excel
-        copy2('template taglio.xlsx', path)
+    path = 'C:/Produzione Python/'+imp_folder+'/'+cod_art+'.xlsx'
+    contPath = 0
+    while True:
+        if os.path.isfile(path):
+            #esiste
+            contPath += 1
+            path = 'C:/Produzione Python/'+imp_folder+'/'+cod_art+'-'+str(contPath)+'.xlsx'
+        else:
+            break
+    #creo il file excel
+    copy2('template taglio.xlsx', path)
 
     #vado a popolare il file
     popolateFile(array, path)
@@ -115,30 +124,38 @@ def popolateFile(insieme, fileName):
         ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
         ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
         ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
+    #fine ciclo header
 
-    print("FINE CICLO HEADER")
     #popolo TABELLA -> COMPONENTI
     contT = 6
     contO = 6
     contRow = 6
     for comp in t_comp:
-        print("COMPONENTE: " + str(contRow))
-        print(comp)
-        #controllo se da tagliare o se da ordinare
-        if comp["id_produzione"] == 1:
-            #setto il foglio
-            ws = wb[arrayPage[0]]
-            contT += 2
-            contRow = contT
-        elif comp["id_produzione"] == 2:
-            #setto il foglio
-            ws = wb[arrayPage[1]]
-            contO += 2
-            contRow = contO
-        #inserisco la riga componente
-        print(ws)
-        ws["A" + str(contRow)] = "*COMP." + str(comp["id_riga_dett"]) + "*"    #ID RIGA COMP
+        #INSERISCO LA RIGA SOLO SE QT > 0
+        if comp["qt_comp"] > 0:
+            #controllo se da tagliare o se da ordinare
+            #TAGLIO
+            if comp["id_produzione"] == 2:
+                #setto il foglio
+                ws = wb[arrayPage[0]]
+                contT += 2
+                contRow = contT
+            #ORDINE
+            elif comp["id_produzione"] == 1:
+                #setto il foglio
+                ws = wb[arrayPage[1]]
+                contO += 2
+                contRow = contO
+            #inserisco la riga componente
+            print(ws)
+            ws["A" + str(contRow)] = "*COMP." + str(comp["id_riga_dett"]) + "*"     #ID RIGA COMP
+            ws["B" + str(contRow)] = str(comp["qt_comp"])                           #QT COMPO
+            ws["D" + str(contRow)] = str(comp["cod_comp"])                          #DIS PARTICOLARE
+            ws["K" + str(contRow)] = str(comp["desc_comp"])                         #DESCRIZIONE
+            ws["Q" + str(contRow)] = str(comp["dim_comp"])                          #DIMENSIONI
+            ws["Y" + str(contRow)] = str(comp["mat_comp"])                          #MATERIALE
 
+    #fine ciclo componenti
     wb.active = ws
     wb.save(fileName)
 
