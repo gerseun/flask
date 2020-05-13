@@ -4,15 +4,17 @@ import os
 from datetime import datetime
 from shutil import copy2
 import datetime
-
+import pprint
 
 def save_xlsx_Taglio(array):
+
     #prendo le variabili da salvare
     t_imp = array['t_imp'][0]
     cod_imp = t_imp['cod_imp']
     imp = cod_imp.replace('/','-')
     t_art = array['t_art'][0]
     cod_art = t_art['cod_art']
+    #controllo se esiste già -> creo file ARTICOLO-1
     #creo il file excel
     path = 'C:/Produzione Python/'+imp+'/'+cod_art+'.xlsx'
     copy2('template taglio.xlsx', path)
@@ -93,7 +95,7 @@ def popolateFile(insieme, fileName):
     #prendo i dati dell' ordine
     t_imp = insieme['t_imp'][0]
     t_art = insieme['t_art'][0]
-    t_comp = insieme['t_comp']
+    t_comp = t_art['t_comp']
     #popolo INTESTAZIONE -> ARTICOLO ED IMPEGNO
     wb = openpyxl.load_workbook(fileName)
     #creo array pagine e ciclo le pagine!!!!!
@@ -107,22 +109,29 @@ def popolateFile(insieme, fileName):
         ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
         ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
         ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
+
+    print("FINE CICLO HEADER")
     #popolo TABELLA -> COMPONENTI
     contT = 6
     contO = 6
+    contRow = 6
     for comp in t_comp:
+        print("COMPONENTE: " + str(contRow))
+        print(comp)
         #controllo se da tagliare o se da ordinare
-        if taglio:
+        if comp["id_produzione"] == 1:
             #setto il foglio
             ws = wb[arrayPage[0]]
             contT += 2
-
-        else:
+            contRow = contT
+        elif comp["id_produzione"] == 2:
             #setto il foglio
             ws = wb[arrayPage[1]]
-            conto += 2
+            contO += 2
+            contRow = contO
         #inserisco la riga componente
-        
+        print(ws)
+        ws["A" + str(contRow)] = "*COMP." + str(comp["id_riga_dett"]) + "*"    #ID RIGA COMP
 
     wb.active = ws
     wb.save(fileName)

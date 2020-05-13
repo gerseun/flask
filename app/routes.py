@@ -25,20 +25,20 @@ def index():
 
     pagina = "home"
     #stampa = f.search_imp("home","2/20")
-    imp = "1/20"
+    imp = "2/20"
     imp_folder = imp.replace("/","-")
     #1 - creo DIR
     s.setFolder(imp_folder)
     #2 - creo file excel taglio/ordine
-    #imp = f.search_imp("HOME", "1/20")
-    #stampa = e.save_xlsx_Taglio(imp["messaggio"])
-    stampa = "ASD"
+    imp = f.search_imp("HOME", "2/20")
+    stampa = e.save_xlsx_Taglio(imp["messaggio"])
+    #stampa = "ASD"
 
     user = {'username': 'Mago'}
     posts = [
         {
             'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
+            'body': imp
         },
         {
             'author': {'username': 'Susan'},
