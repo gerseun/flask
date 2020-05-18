@@ -8,8 +8,8 @@ CODICI FUNZIONI DI LAVORO
 "0">scegliere
 "1">Da ordinare
 "2">Da Tagliare
-"3">Ordinato
-"4">Tagliato
+"3">Verificare a mag
+"4">Ufficio Tecnico
 "5">
 "6">
 "7">

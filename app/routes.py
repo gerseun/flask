@@ -27,19 +27,19 @@ def index():
     #stampa = f.search_imp("home","2/20")
 
     #creo file excel taglio/ordine
-    imp = f.search_imp("HOME", "2/20")
-    stampa = e.save_xlsx_Taglio(imp["messaggio"])
+    #imp = f.search_imp("HOME", "3/20")
+    #stampa = e.save_xlsx_Taglio(imp["messaggio"])
     #stampa = "ASD"
 
     user = {'username': 'Mago'}
     posts = [
         {
             'author': {'username': 'John'},
-            'body': imp
+            'body': "imp"
         },
         {
             'author': {'username': 'Susan'},
-            'body': stampa
+            'body': "stampa"
         }
     ]
 

@@ -25,9 +25,18 @@
             <a href="{{ url_for('ListaTaglio') }}">Lista Taglio</a>
           </div>
         </div>
+        <div class="dropdown">
+          <button class="dropbtn">Ufficio acquisti
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-content">
+            <a href="{{ url_for('OrdineMateriale') }}">Ordine/arrivo materiale</a>
+            <a href="{{ url_for('MaterialeScaduto') }}">Scadenze consegne</a>
+          </div>
+        </div>
         <a id="about">About</a>
 
-        <div class="login-container">
+      <div class="login-container">
         <div>
           <a class="login" href="{{ url_for('login') }}">Login</a>
         </div>
