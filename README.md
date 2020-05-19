@@ -5,14 +5,18 @@ LINK DB GRAFICO
 https://dbdiagram.io/d/5dcc0e5bedf08a25543de0bb
 
 CODICI FUNZIONI DI LAVORO
-"0">scegliere
-"1">Da ordinare
-"2">Da Tagliare
-"3">Verificare a mag
-"4">Ufficio Tecnico
-"5">
-"6">
-"7">
-"8">
-"9">
-"10">
+iniziali
+      "0">scegliere
+      "1">Da ordinare
+      "2">Da Tagliare
+      "3">Verificare a mag
+      "4">Ufficio Tecnico
+acquisti      
+      "5">Ordinato
+      "6">Materiale Arrivato
+
+      
+      "7">
+      "8">
+      "9">
+      "10">

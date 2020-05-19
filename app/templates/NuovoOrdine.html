@@ -6,42 +6,59 @@
   <p>Per apportare modifiche contattare Simone</p>
   <p>Timbrare il codice dell' articolo da ordinare.</p>
 
+<!-- CASELLA DI TESTO PER INSERIMENTO DA BARCODE -->
+<div class="ricAcquisti">
+   <input type="text" name="ricercaAcquisti" size=”40″ maxlength=”20″>
+</div>
+<br><br>
+
   <div class="">
-    <table class="t_art">
+    <table class="t_imp_art">
       <tr>
-        <th id="id_riga_imp">id imp art</th>
         <th id="cod_art">Codice Articolo</th>
         <th id="desc_art">Descrizione</th>
+        <th id="cliente">Cliente</th>
+        <th id="cod_imp">Codice Impegno</th>
         <th id="data_cons_art">Data consegna</th>
-        <th id="qt_art">Quantità</th>
       </tr>
-      <tr>
-        <td headers="id_riga_imp" contenteditable="true"></td>
+      <tr class="hide">
         <td headers="cod_art" contenteditable="false"></td>
         <td headers="desc_art" contenteditable="false"></td>
+        <td headers="cliente" contenteditable="false"></td>
+        <td headers="cod_imp" contenteditable="false"></td>
         <td headers="data_cons_art" contenteditable="false"></td>
-        <td headers="qt_art" contenteditable="false"></td>
       </tr>
     </table>
   </div>
-  <br>
+  <br>  <br>
   <div class="">
-    <table class="t_comp">
+    <table class="t_compAcq"><!-- è la tabella t_comp contenuti in t_art. Non i t_comp singoli -->
       <tr>
-        <th class="control"><i class="open-dialog-comp fa fa-arrow-circle-right"></i></th>
         <th id="cod_comp">Codice Componente</th>
         <th id="desc_comp">Descrizione</th>
-        <th id="data_cons_comp">Data consegna</th>
-        <th id="qt_comp">Quantità</th>
-        <th id="id_riga_imp_comp">id imp comp</th>
+        <th id="dim_comp">Dimensione</th>
+        <th id="mat_comp">Materiale</th>
+        <th id="qt_comp">Qt Componente</th>
+        <th id="id_produzione">Azione</th>
+        <th id="id_riga_imp_comp">ID Comp Impegno</th>
+
       </tr>
       <tr class="hide">
-        <td></td>
-        <td headers="cod_comp" contenteditable="false"></td>
+        <td headers="cod_comp" contenteditable="true"></td>
         <td headers="desc_comp" contenteditable="false"></td>
-        <td headers="data_cons_comp" contenteditable="false"></td>
-        <td headers="qt_comp" contenteditable="false"></td>
-        <td headers="id_riga_imp_comp" contenteditable="false"></td>
+        <td headers="dim_comp" contenteditable="false"></td>
+        <td headers="mat_comp" contenteditable="false"></td>
+        <td headers="qt_comp" contenteditable="true"></td>
+        <td headers="id_produzione" class="control_prod">
+          <select class="action" name="">
+            <option value="0">scegliere</option>
+            <option value="1">Da ordinare</option>
+            <option value="2">Da Tagliare</option>
+            <option value="3">Verificare a mag</option>
+            <option value="4">Ufficio Tecnico</option>
+          </select>
+        </td>
+        <td headers="id_riga_dett" contenteditable="false"></td>
       </tr>
     </table>
   </div>
