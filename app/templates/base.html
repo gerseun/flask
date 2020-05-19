@@ -23,6 +23,7 @@
             <a href="{{ url_for('NuovoComponente') }}">Inserimento componente</a>
             <a href="{{ url_for('NuovoImpegno') }}">Inserimento impegno</a>
             <a href="{{ url_for('ListaTaglio') }}">Lista Taglio</a>
+
           </div>
         </div>
         <div class="dropdown">
@@ -30,8 +31,8 @@
             <i class="fa fa-caret-down"></i>
           </button>
           <div class="dropdown-content">
-            <a href="{{ url_for('OrdineMateriale') }}">Ordine/arrivo materiale</a>
-            <a href="{{ url_for('MaterialeScaduto') }}">Scadenze consegne</a>
+            <a href="{{ url_for('NuovoOrdine') }}">Inserimento ordine</a>
+            <a href="{{ url_for('Scadenze') }}">Scadenze</a>
           </div>
         </div>
         <a id="about">About</a>

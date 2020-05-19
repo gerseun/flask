@@ -24,11 +24,11 @@ def index():
     #test5 = {"newImpegno":{"t_imp":[{"cod_imp":"123","cliente":"asd","cod_ord_cli":"111","data_ord":"2019-12-04","id_imp":"1"}], "t_art":[{"cod_art":"1ABC00100","desc_art":"cilindro","qt_art":"3","data_cons_art":"2019-12-05","id_riga_imp":"1"}], "t_comp":[{"cod_comp":"1ABC00102","desc_comp":"camicia","qt_comp":"100","data_cons_comp":"2019-12-07","id_riga_imp_comp":"1"}, {"cod_comp":"1ABC00110","desc_comp":"stelo","qt_comp":"50","data_cons_comp":"2019-12-08","id_riga_imp_comp":"2"}]}}
 
     pagina = "home"
-    #stampa = f.search_imp("home","2/20")
+    #stampa = f.searchProd("home","A.17")
 
     #creo file excel taglio/ordine
-    #imp = f.search_imp("HOME", "3/20")
-    #stampa = e.save_xlsx_Taglio(imp["messaggio"])
+    imp = f.search_imp("HOME", "3/20")
+    stampa = e.save_xlsx_Taglio(imp["messaggio"])
     #stampa = "ASD"
 
     user = {'username': 'Mago'}
@@ -39,7 +39,7 @@ def index():
         },
         {
             'author': {'username': 'Susan'},
-            'body': "stampa"
+            'body': stampa
         }
     ]
 
@@ -91,6 +91,14 @@ def NuovoComponente():
 @app.route('/NuovoImpegno', methods=['GET', 'POST'])
 def NuovoImpegno():
     return render_template('NuovoImpegno.html', title='CREAZIONE IMPEGNO')
+
+@app.route('/NuovoOrdine', methods=['GET', 'POST'])
+def NuovoOrdine():
+    return render_template('NuovoOrdine.html', title='NUOVO ORDINE')
+
+@app.route('/Scadenze', methods=['GET', 'POST'])
+def Scadenze():
+    return render_template('Scadenze.html', title='NUOVO ORDINE')
 
 @app.route('/About')
 def About():
@@ -172,6 +180,9 @@ def test():
             risposta = json.dumps(f.setAzioneCompSingolo(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'salva_file') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(save.save_xlsx(formatted_data['messaggio']))
+
+        if (formatted_data['azione'] == 'search_art') and (formatted_data['pagina'] == 'NuovoOrdine'):
+            risposta = json.dumps(f.search_art(formatted_data['pagina'], formatted_data['messaggio']))
 
         #risposta = 'ok'
         return risposta
