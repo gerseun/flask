@@ -36,11 +36,13 @@ def save_xlsx_Taglio(array):
     copy2('template taglio.xlsx', path)
     #controllo se esistono componenti singoli
     if t_comp:
-        path = 'C:/Produzione Python/'+imp_folder+'/'+'Componenti.xlsx'
+        path_comp = 'C:/Produzione Python/'+imp_folder+'/'+'Componenti.xlsx'
+        #creo il file excel
+        copy2('template taglio.xlsx', path_comp)
     #vado a popolare il file
     popolateFile(array, path)
     #vado a popolare il file per componenti singoli
-    popolateFileComp(array, path)
+    popolateFileComp(array, path_comp)
     return 'file excel modificato'
 
 def popolateFile(insieme, fileName):
@@ -51,7 +53,7 @@ def popolateFile(insieme, fileName):
     #popolo INTESTAZIONE -> ARTICOLO ED IMPEGNO
     wb = openpyxl.load_workbook(fileName)
     #creo array pagine e ciclo le pagine!!!!!
-    arrayPage = ["TAGLIO", "ORDINE", "MAGAZZINO"]
+    arrayPage = ["TAGLIO", "ORDINE", "MAGAZZINO", "UFF TECNICO"]
     for page in arrayPage:
         ws = wb[page]
         ws["A1"] = "*A." + str(t_art["id_riga_imp"]) + "*"    #ID RIGA ART
@@ -102,27 +104,25 @@ def popolateFile(insieme, fileName):
     #fine ciclo componenti
     wb.active = ws
     wb.save(fileName)
-
     return "OK"
 
 def popolateFileComp(insieme, fileName):
     #prendo i dati dell' ordine
     t_imp = insieme['t_imp'][0]
-    t_art = insieme['t_art'][0]
-    t_comp = t_art['t_comp']
+    t_comp = insieme['t_comp']
     #popolo INTESTAZIONE -> ARTICOLO ED IMPEGNO
     wb = openpyxl.load_workbook(fileName)
     #creo array pagine e ciclo le pagine!!!!!
-    arrayPage = ["TAGLIO", "ORDINE", "MAGAZZINO"]
+    arrayPage = ["TAGLIO", "ORDINE", "MAGAZZINO", "UFF TECNICO"]
     for page in arrayPage:
         ws = wb[page]
-        ws["A1"] = "*A." + str(t_art["id_riga_imp"]) + "*"    #ID RIGA ART
+        ws["A1"] = "*I." + str(t_imp["id_imp"]) + "*"           #ID RIGA ART
         ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
         ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
-        ws["V1"] = str(t_art["data_cons_art"])                  #DATA CONSEGNA
+        ws["V1"] = str(t_comp[0]["data_cons_comp"])             #DATA CONSEGNA
         ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
-        ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
-        ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
+        #ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
+        #ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
     #fine ciclo header
 
     #popolo TABELLA -> COMPONENTI
@@ -154,7 +154,7 @@ def popolateFileComp(insieme, fileName):
                 contRow = contM
             #inserisco la riga componente
             print(ws)
-            ws["A" + str(contRow)] = "*C." + str(comp["id_riga_dett"]) + "*"     #ID RIGA COMP
+            ws["A" + str(contRow)] = "*C." + str(comp["id_riga_imp_comp"]) + "*"     #ID RIGA COMP
             ws["B" + str(contRow)] = str(comp["qt_comp"])                           #QT COMPO
             ws["D" + str(contRow)] = str(comp["cod_comp"])                          #DIS PARTICOLARE
             ws["K" + str(contRow)] = str(comp["desc_comp"])                         #DESCRIZIONE
@@ -164,7 +164,6 @@ def popolateFileComp(insieme, fileName):
     #fine ciclo componenti
     wb.active = ws
     wb.save(fileName)
-
     return "OK"
 
 def adesso():
