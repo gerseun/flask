@@ -9,6 +9,26 @@ $(document).ready(function() {
   jQuery.fn.shift = [].shift;
   page_class = $('.container').attr('id');
 
+  if(page_class == "newOrdine"){
+    $("#test_btn_ordine").click(function(event) {
+      var page_arr = {};
+
+      var send = {};
+      send['pagina'] = $('.container').attr('id');
+      send['azione'] = 'testOrdine';
+      send['messaggio'] = "A.17";
+      $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+        console.log(data);
+        var arr = JSON.parse(data);
+        //console.log(arr);
+
+          fill_tables(arr['messaggio'], $('.container'));
+
+      });
+
+    });
+  }
+
   function add_row($table, n) {
     for (var i = 0; i < n; i++) {
       var $clone = $table.find('tr.hide').clone(true, true).removeClass('hide');
@@ -88,15 +108,19 @@ $(document).ready(function() {
         $row.addClass(index);
       }
       if (['newImpegno','newArticolo','newComponente'].includes($('.container').attr('id'))) {
-        if (['qt_comp', 'qt_art','data_cons_art','data_cons_comp'].includes(index)) {
+        if (['qt_comp', 'qt_art','data_cons_art','data_cons_comp', 'cod_ordine', 'scadenza'].includes(index)) {
           $cell.attr('contenteditable', 'true');
         }else {
           $cell.attr('contenteditable', 'false');
         }
       }
-      $cell.attr('contenteditable', 'false');
-
-
+      else if (['newOrdine'].includes($('.container').attr('id'))) {
+        if (['cod_ordine', 'scadenza'].includes(index)) {
+          $cell.attr('contenteditable', 'true');
+        }else {
+          $cell.attr('contenteditable', 'false');
+        }
+      }
     });
   };
 
