@@ -379,6 +379,18 @@ $(document).ready(function() {
                       $( this ).dialog( "close" );
                     },
                     'Stampa': function() {
+                      var arr = {};
+                      var send = {};
+                      arr["t_comp"] = get_table($(this).find('table.t_comp').eq(0));
+                      arr["t_imp"] = get_table($('.container').find('table.t_imp').eq(0));
+
+                      send['pagina'] = $('.container').attr('id');
+                      send['azione'] = 'salva_file_comp';
+                      send['messaggio'] = arr;
+                      console.log(send);
+                      $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+                        console.log(data);
+                      });
                       $( this ).dialog( "close" );
                     }
                   }
