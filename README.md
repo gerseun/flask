@@ -15,7 +15,6 @@ acquisti
       "5">Ordinato
       "6">Materiale Arrivato
 
-
       "7">
       "8">
       "9">

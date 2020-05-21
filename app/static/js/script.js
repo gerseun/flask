@@ -16,9 +16,8 @@ $(document).ready(function() {
       var send = {};
       send['pagina'] = $('.container').attr('id');
       send['azione'] = 'testOrdine';
-      send['messaggio'] = "A.17";
+      send['messaggio'] = "I.17";
       $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
-        console.log(data);
         var arr = JSON.parse(data);
         //console.log(arr);
 

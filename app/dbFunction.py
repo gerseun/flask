@@ -734,9 +734,10 @@ FUNZIONI PER IDA
 def get_DaOrdinare(namePage, id_riga_imp):
     #controllo se Articolo o componenti singoli
     flag = id_riga_imp[0]
+    #articolo
+    id_riga_imp = id_riga_imp[2:]
+    #ARTICOLO
     if flag == "A":
-        #articolo
-        id_riga_imp = id_riga_imp[2:]
         array_art = getArtFromIdRigaImp(id_riga_imp)
         #impegno
         array_imp = getImpFromIDimp(array_art["id_imp"])
@@ -747,9 +748,21 @@ def get_DaOrdinare(namePage, id_riga_imp):
         #creo e trasmetto il messaggio
         daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": compInArticolo}
         risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+    #COMPONENTI SINGOLI
+    elif flag == "I":
+        #impegno
+        array_imp = getImpFromIDimp(id_riga_imp)
+        #prendo i componenti in produzione dell' articolo
+        compSing = getFiltroDaOrdinareSing(id_riga_imp)
+        #creo array per la prima tabella
+        array_imp_art = {"cod_art": "-", "desc_art": "-", "cliente": array_imp["cliente"], "cod_imp": array_imp["cod_imp"], "cliente": array_imp["cliente"], "data_cons_art": compSing[0]["data_cons_comp"]}
+        #creo e trasmetto il messaggio
+        daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": compSing}
+        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
     #chiusura funzione
     return risposta
 
+#seleziono i comp nell' articolo selezionato che interessano ad Ida
 def getFiltroDaOrdinare(ric_id_art_imp):
     #apro la connessione al database
     mydb = connessione()
@@ -765,11 +778,45 @@ def getFiltroDaOrdinare(ric_id_art_imp):
         flag = True
         #controllo se serve per Acquisti
         if row["id_produzione"] == 1 or row["id_produzione"] == 5 or row["id_produzione"] == 6:
-            data = row["scadenza"].strftime("%d/%m/%Y")
+            #controllo date
+            if row["scadenza"]:
+                data = row["scadenza"].strftime("%d/%m/%Y")
+            else:
+                data = None
             arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": data})
     #chiusura
     mydb.close()
     return arr_CompInArtImp
+
+#seleziono i comp singoli che interessano ad Ida
+def getFiltroDaOrdinareSing(ric_id_art_imp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_imp_comp INNER JOIN componente ON riga_imp_comp.ID_comp=componente.ID_comp  WHERE riga_imp_comp.ID_imp = '" + str(ric_id_art_imp) + "' ORDER BY riga_imp_comp.ID_riga_imp_comp ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompInArtImp = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        #controllo se serve per Acquisti
+        if row["id_produzione"] == 1 or row["id_produzione"] == 5 or row["id_produzione"] == 6:
+            #controllo date
+            if row["scadenza"]:
+                data = row["scadenza"].strftime("%d/%m/%Y")
+            else:
+                data = None
+            data_cons = row["data_cons_comp"].strftime("%d/%m/%Y")
+
+            #assegno gli ID uguali a quelli di riga_dett per popolare la tabella
+            arr_CompInArtImp.append({"id_riga_dett": row["id_riga_imp_comp"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_sing_imp": row["pos_comp_sing_imp"], "cod_ordine": row["cod_ordine"], "scadenza": data, "data_cons_comp": data_cons})
+    #chiusura
+    mydb.close()
+    return arr_CompInArtImp
+
 
 def getArtFromIdRigaImp(ric_id_riga_imp):
     #apro la connessione al database
