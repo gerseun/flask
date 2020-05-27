@@ -39,10 +39,10 @@ def save_xlsx_Taglio(array):
         path_comp = 'C:/Produzione Python/'+imp_folder+'/'+'Componenti.xlsx'
         #creo il file excel
         copy2('template taglio.xlsx', path_comp)
+        #vado a popolare il file per componenti singoli
+        popolateFileComp(array, path_comp)
     #vado a popolare il file
     popolateFile(array, path)
-    #vado a popolare il file per componenti singoli
-    popolateFileComp(array, path_comp)
     return 'file excel modificato'
 
 def popolateFile(insieme, fileName):
@@ -119,7 +119,7 @@ def popolateFileComp(insieme, fileName):
         ws["A1"] = "*I." + str(t_imp["id_imp"]) + "*"           #ID RIGA ART
         ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
         ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
-        ws["V1"] = str(t_comp[0]["data_cons_comp"])             #DATA CONSEGNA
+        #ws["V1"] = str(t_comp[0]["data_cons_comp"])             #DATA CONSEGNA
         ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
         #ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
         #ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
