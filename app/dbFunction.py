@@ -214,7 +214,7 @@ def getComponente(ricComponente):
     row = mioDB.fetchone()
     if row:
         #salvo i dati componente
-        arrayComp = {"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"]}
+        arrayComp = {"id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"grezzo": row["grezzo"]}
     #else:
         #arrayComp = {"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": ""}
     mydb.close()
@@ -269,7 +269,7 @@ def getCompInArticolo(ric_id_articolo):
     flag = False
     for row in risultato:
         flag = True
-        arr_Componenti.append({"id_artcomp": row["id_artcomp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"]})
+        arr_Componenti.append({"id_artcomp": row["id_artcomp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"grezzo": row["grezzo"]})
     #se non aveva componenti passo stringa vuota
     #if flag == False:
         #arr_Componenti.append({"id_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","mat_comp": "","qt_comp": ""})
@@ -292,7 +292,7 @@ def getCompInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_comp"].strftime("%d/%m/%Y")
-        arr_Componenti.append({"id_riga_imp_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"], "dim_comp": row["dim_comp"], "mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data, "id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"]})
+        arr_Componenti.append({"id_riga_imp_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"], "dim_comp": row["dim_comp"], "mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data, "id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"],"grezzo": row["grezzo"]})
     #se non aveva componenti passo stringa vuota
     #if flag == False:
         #arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
@@ -340,7 +340,7 @@ def getCompInArtImpegno(ric_id_art_imp):
     flag = False
     for row in risultato:
         flag = True
-        arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"] })
+        arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"],"grezzo": row["grezzo"] })
     #chiusura
     mydb.close()
     return arr_CompInArtImp
@@ -466,12 +466,13 @@ def setComponenti(codComponenti):
     for componente in codComponenti:
         #ciclo tutti i componenti
         codComp = componente["cod_comp"]
+        grez = componente["grezzo"]
         desc = componente["desc_comp"]
         dim = componente["dim_comp"]
         mat = componente["mat_comp"]
         #query per inserire il componente nella tabella componenti
-        sql = "INSERT INTO componente (cod_comp, desc_comp, dim_comp, mat_comp, pos_comp, data_comp) VALUES (%s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE desc_comp = %s, dim_comp = %s, mat_comp = %s, pos_comp = %s"
-        val = (codComp, desc, dim, mat, "0", dataOra, desc, dim, mat, "0")
+        sql = "INSERT INTO componente (cod_comp, grezzo, desc_comp, dim_comp, mat_comp, pos_comp, data_comp) VALUES (%s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE desc_comp = %s, dim_comp = %s, mat_comp = %s, pos_comp = %s, grezzo = %s"
+        val = (codComp, grez, desc, dim, mat, "0", dataOra, desc, dim, mat, "0", grez)
         mioDB.execute(sql, val)
         mydb.commit()
         #prendo l' indice di componente

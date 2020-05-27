@@ -14,8 +14,9 @@ iniziali
 acquisti      
       "5">Ordinato
       "6">Materiale Arrivato
-
-      "7">
-      "8">
+taglio
+      "1">Da ordinare
+      "7">Mat tagliato
+      "8">carico
       "9">
       "10">
