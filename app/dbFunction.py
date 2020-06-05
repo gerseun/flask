@@ -737,6 +737,7 @@ def get_DaOrdinare(namePage, id):
     flag = id[0]
     #articolo
     id = id[2:]
+
     #ARTICOLO
     if flag == "A":
         array_art = getArtFromIdRigaImp(id)
@@ -749,6 +750,7 @@ def get_DaOrdinare(namePage, id):
         #creo e trasmetto il messaggio
         daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": compInArticolo}
         risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+
     #COMPONENTI SINGOLI
     elif flag == "I":
         #impegno
@@ -760,6 +762,7 @@ def get_DaOrdinare(namePage, id):
         #creo e trasmetto il messaggio
         daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": compSing}
         risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+
     #COMPONENTE IN ARTICOLO
     elif flag == "C":
         #prendo il COMPONENTE
@@ -775,7 +778,15 @@ def get_DaOrdinare(namePage, id):
 
     #COMPONENTE IN COMPONENTE SINGOLO
     elif flag == "S":
-        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": "daOrdinare"}
+        #prendo il COMPONENTE
+        comp = getCompFromIdRigaImpComp(id)
+        #impegno
+        array_imp = getImpFromIDimp(comp["id_imp"])
+        #creo array per la prima tabella
+        array_imp_art = {"cod_art": "-", "desc_art": "-", "cliente": array_imp["cliente"], "cod_imp": array_imp["cod_imp"], "cliente": array_imp["cliente"], "data_cons_art": comp["data_cons_comp"]}
+        #creo e trasmetto il messaggio
+        daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": [comp]}
+        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
 
     #chiusura funzione
     return risposta
@@ -795,6 +806,27 @@ def getCompFromIdRigaDett(ric_id_dett):
         else:
             data = None
         arr_CompInArtImp = {"id_riga_dett": row["id_riga_dett"], "id_riga_imp": row["id_riga_imp"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data}
+    #chiusura
+    mydb.close()
+    return arr_CompInArtImp
+
+#seleziono il componente in componente singolo selezionato
+def getCompFromIdRigaImpComp(ric_id_dett):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_imp_comp INNER JOIN componente ON riga_imp_comp.ID_comp=componente.ID_comp  WHERE riga_imp_comp.id_riga_imp_comp = '" + str(ric_id_dett) + "'")
+    row = mioDB.fetchone()
+    #stampo
+    if row:
+        if row["scadenza"]:
+            data = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            data = None
+
+        data_cons = row["data_cons_comp"].strftime("%d/%m/%Y")
+        arr_CompInArtImp = {"id_riga_dett": row["id_riga_imp_comp"], "id_imp": row["id_imp"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_sing_imp": row["pos_comp_sing_imp"], "cod_ordine": row["cod_ordine"], "scadenza": data, "grezzo": row["grezzo"], "data_cons_comp": data_cons}
     #chiusura
     mydb.close()
     return arr_CompInArtImp
