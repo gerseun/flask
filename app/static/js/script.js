@@ -10,6 +10,26 @@ $(document).ready(function() {
   page_class = $('.container').attr('id');
 
   if(page_class == "newOrdine"){
+
+    $('#input_field').focus();
+    $('#input_field').focusout(function(event) {
+      var text = $(this).val();
+      if (text == '') {
+
+      }else {
+        var send = {};
+
+        send['pagina'] = $('.container').attr('id');
+        send['azione'] = 'azioneOrdine';
+        send['messaggio'] = text;
+        $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+          var arr = JSON.parse(data);
+          console.log(arr);
+          fill_tables(arr['messaggio'], $('.container'));
+        });
+      }
+    });
+
     $("#test_btn_ordine").click(function(event) {
       var page_arr = {};
 

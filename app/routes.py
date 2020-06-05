@@ -187,6 +187,10 @@ def test():
             risposta = json.dumps(f.get_DaOrdinare(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newOrdine'):
             risposta = json.dumps(f.setAzioneOrdine(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'azioneOrdine') and (formatted_data['pagina'] == 'newOrdine'):
+            risposta = json.dumps(f.get_DaOrdinare(formatted_data['pagina'], formatted_data['messaggio']))
+
+
 
 
         #risposta = 'ok'

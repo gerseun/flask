@@ -50,14 +50,12 @@ def save_xlsx_Taglio_comp(array):
     #1 - creo DIR
     s.setFolder(imp_folder)
     #controllo se esistono componenti singoli
-    if t_comp:
-        path_comp = 'C:/Produzione Python/'+imp_folder+'/'+'Componenti.xlsx'
-        #creo il file excel
-        copy2('template taglio.xlsx', path_comp)
-        #vado a popolare il file per componenti singoli
-        popolateFileComp(array, path_comp)
-    #vado a popolare il file
-    popolateFile(array, path)
+    path_comp = 'C:/Produzione Python/'+imp_folder+'/'+'Componenti.xlsx'
+    #creo il file excel
+    copy2('template taglio.xlsx', path_comp)
+    #vado a popolare il file per componenti singoli
+    popolateFileComp(array, path_comp)
+
     return 'file excel modificato'
 
 def popolateFile(insieme, fileName):
@@ -154,32 +152,40 @@ def popolateFileComp(insieme, fileName):
     contT = 6
     contO = 6
     contM = 6
+    contUT = 6
     contRow = 6
     for comp in t_comp:
         #INSERISCO LA RIGA SOLO SE QT > 0
-        if comp["qt_comp"] > 0:
+        if int(comp["qt_comp"]) > 0:
             #controllo se da tagliare o se da ordinare
             #TAGLIO
-            if comp["id_produzione"] == 2:
+            if int(comp["id_produzione"]) == 2:
                 #setto il foglio
                 ws = wb[arrayPage[0]]
                 contT += 2
                 contRow = contT
             #ORDINE
-            elif comp["id_produzione"] == 1:
+            elif int(comp["id_produzione"]) == 1:
                 #setto il foglio
                 ws = wb[arrayPage[1]]
                 contO += 2
                 contRow = contO
-            #ORDINE
-            elif comp["id_produzione"] == 3:
+            #MAGAZZINO
+            elif int(comp["id_produzione"]) == 3:
                 #setto il foglio
                 ws = wb[arrayPage[2]]
                 contM += 2
                 contRow = contM
+
+            elif int(comp["id_produzione"]) == 4:
+                #setto il foglio
+                ws = wb[arrayPage[3]]
+                contUT += 2
+                contRow = contUT
+
             #inserisco la riga componente
             print(ws)
-            ws["A" + str(contRow)] = "*C." + str(comp["id_riga_imp_comp"]) + "*"    #ID RIGA COMP
+            ws["A" + str(contRow)] = "*S." + str(comp["id_riga_imp_comp"]) + "*"    #ID RIGA COMP
             ws["B" + str(contRow)] = str(comp["qt_comp"])                           #QT COMPO
             ws["D" + str(contRow)] = str(comp["cod_comp"])                          #DIS PARTICOLARE
             ws["K" + str(contRow)] = str(comp["desc_comp"])                         #DESCRIZIONE

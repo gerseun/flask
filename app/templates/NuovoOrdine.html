@@ -8,7 +8,7 @@
 
 <!-- CASELLA DI TESTO PER INSERIMENTO DA BARCODE -->
 <div class="ricAcquisti">
-   <input type="text" name="ricercaAcquisti" size=”40″ maxlength=”20″>
+   <input id="input_field" type="text" name="ricercaAcquisti" size=”40″ maxlength=”20″>
 </div>
 <br><br>
 
@@ -39,6 +39,7 @@
         <th id="dim_comp">Dimensione</th>
         <th id="mat_comp">Materiale</th>
         <th id="qt_comp">Qt Componente</th>
+        <th id="grezzo">Grezzo</th>
         <th id="id_produzione">Azione</th>
         <th id="cod_ordine">Num. ordine</th>
         <th id="scadenza">Consegna Materiale</th>
@@ -51,6 +52,7 @@
         <td headers="dim_comp" contenteditable="false"></td>
         <td headers="mat_comp" contenteditable="false"></td>
         <td headers="qt_comp" contenteditable="false"></td>
+        <td headers="grezzo" contenteditable="false"></td>
         <td headers="id_produzione" class="control_prod">
           <select class="action" name="">
             <option value="1">Da ordinare</option>
