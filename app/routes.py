@@ -170,16 +170,17 @@ def test():
         if (formatted_data['azione'] == 'search_imp') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
 
+        #LISTA TAGLIO
         if (formatted_data['azione'] == 'search_imp_lt') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'search_Produzione_Articolo') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.search_Produzione_Articolo(formatted_data['pagina'], formatted_data['messaggio']))
-        if (formatted_data['azione'] == 'aggiorna_comp') and (formatted_data['pagina'] == 'listaTaglio'):
-            risposta = json.dumps(f.setAzioneArticolo(formatted_data['pagina'], formatted_data['messaggio']))
-        if (formatted_data['azione'] == 'aggiorna_comp_sing') and (formatted_data['pagina'] == 'listaTaglio'):
+        if (formatted_data['azione'] == 'salva_file_comp') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.setAzioneCompSingolo(formatted_data['pagina'], formatted_data['messaggio']))
+            risposta = json.dumps(save.save_xlsx_Taglio_comp(formatted_data['messaggio']))
         if (formatted_data['azione'] == 'salva_file') and (formatted_data['pagina'] == 'listaTaglio'):
-            risposta = json.dumps(save.save_xlsx(formatted_data['messaggio']))
+            #risposta = json.dumps(f.setAzioneArticolo(formatted_data['pagina'], formatted_data['messaggio']))
+            risposta = json.dumps(save.save_xlsx_Taglio(formatted_data['messaggio']))
 
         #pagina ordini per Ida
         if (formatted_data['azione'] == 'testOrdine') and (formatted_data['pagina'] == 'newOrdine'):

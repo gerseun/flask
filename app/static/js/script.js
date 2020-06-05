@@ -272,7 +272,7 @@ $(document).ready(function() {
           });
         },
         buttons:{
-          'Salva': function() {
+          /*'Salva': function() {
             var arr = {};
             var send = {};
             arr["t_comp"] = get_table($(this).find('table.t_comp').eq(0));
@@ -283,8 +283,8 @@ $(document).ready(function() {
               console.log(data);
             });
             $( this ).dialog( "close" );
-          },
-          'Stampa': function() {
+          },*/
+          'Salva': function() {
             var arr = {};
             var send = {};
             arr["t_comp"] = get_table($(this).find('table.t_comp').eq(0));
@@ -365,7 +365,7 @@ $(document).ready(function() {
                     });
                   },
                   buttons:{
-                    'Salva': function() {
+                    /*'Salva': function() {
                       var arr = {};
                       var send = {};
                       arr["t_comp_sing"] = get_table($(this).find('table.t_comp').eq(0));
@@ -376,8 +376,8 @@ $(document).ready(function() {
                         console.log(data);
                       });
                       $( this ).dialog( "close" );
-                    },
-                    'Stampa': function() {
+                    },*/
+                    'Salva': function() {
                       var arr = {};
                       var send = {};
                       arr["t_comp"] = get_table($(this).find('table.t_comp').eq(0));

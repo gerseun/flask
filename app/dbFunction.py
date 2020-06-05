@@ -117,7 +117,7 @@ def setAzioneArticolo(namePage, articolo):
 
 def setAzioneCompSingolo(namePage, componenti):
     #ciclo i componenti da salvare
-    comp = componenti["t_comp_sing"]
+    comp = componenti["t_comp"]
     print("-")
     print(comp)
     print("-")

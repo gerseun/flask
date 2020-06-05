@@ -16,7 +16,7 @@ def save_xlsx_Taglio(array):
     cod_art = t_art['cod_art']
     t_comp = array['t_comp']
     print("COMPONENTI")
-    print(t_comp)
+    pprint.pprint(t_comp)
     #controllo e creo la cartella
     imp = t_imp["cod_imp"]
     imp_folder = imp.replace("/","-")
@@ -35,21 +35,46 @@ def save_xlsx_Taglio(array):
     #creo il file excel
     copy2('template taglio.xlsx', path)
     #controllo se esistono componenti singoli
-    if t_comp:
-        path_comp = 'C:/Produzione Python/'+imp_folder+'/'+'Componenti.xlsx'
+    #if t_comp:
+    #    path_comp = 'C:/Produzione Python/'+imp_folder+'/'+'Componenti.xlsx'
         #creo il file excel
-        copy2('template taglio.xlsx', path_comp)
+    #    copy2('template taglio.xlsx', path_comp)
         #vado a popolare il file per componenti singoli
-        popolateFileComp(array, path_comp)
+    #    popolateFileComp(array, path_comp)
     #vado a popolare il file
     popolateFile(array, path)
     return 'file excel modificato'
 
+    def save_xlsx_Taglio_comp(array):
+        #OTTENGO UN SINGOLO ARTICOLO
+        #prendo le variabili da salvare
+        t_imp = array['t_imp'][0]
+        t_comp = array['t_comp']
+        print("COMPONENTI")
+        print(t_comp)
+        #controllo e creo la cartella
+        imp = t_imp["cod_imp"]
+        imp_folder = imp.replace("/","-")
+        #1 - creo DIR
+        s.setFolder(imp_folder)
+        #controllo se esistono componenti singoli
+        if t_comp:
+            path_comp = 'C:/Produzione Python/'+imp_folder+'/'+'Componenti.xlsx'
+            #creo il file excel
+            copy2('template taglio.xlsx', path_comp)
+            #vado a popolare il file per componenti singoli
+            popolateFileComp(array, path_comp)
+        #vado a popolare il file
+        popolateFile(array, path)
+        return 'file excel modificato'
+
 def popolateFile(insieme, fileName):
+    pprint.pprint(insieme)
+    print(fileName)
     #prendo i dati dell' ordine
     t_imp = insieme['t_imp'][0]
     t_art = insieme['t_art'][0]
-    t_comp = t_art['t_comp']
+    t_comp = insieme['t_comp']
     #popolo INTESTAZIONE -> ARTICOLO ED IMPEGNO
     wb = openpyxl.load_workbook(fileName)
     #creo array pagine e ciclo le pagine!!!!!
@@ -72,7 +97,7 @@ def popolateFile(insieme, fileName):
     contRow = 6
     for comp in t_comp:
         #INSERISCO LA RIGA SOLO SE QT > 0
-        if comp["qt_comp"] > 0:
+        if int(comp["qt_comp"]) > 0:
             #controllo se da tagliare o se da ordinare
             #TAGLIO
             if comp["id_produzione"] == 2:
