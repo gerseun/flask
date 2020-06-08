@@ -89,17 +89,17 @@ $(document).ready(function() {
 
   function check_array(arr){
     var dataRGEX = /^(0?[1-9]|[12][0-9]|3[01])[\/](0?[1-9]|1[012])[\/\-]\d{4}$/;
-    var arr_id = ['id_comp','id_art','id_imp','id_riga_art','id_riga_comp', 'id_riga_imp_comp','id_artcomp', 'id_riga_imp', 'grezzo', 'cod_ordine', 'scadenza'];
+    var arr_id = ['id_comp','id_art','id_imp','id_riga_art','id_riga_comp', 'id_riga_imp_comp','id_artcomp', 'id_riga_imp', 'grezzo', 'cod_ordine'];
     var bool = true;
     $.each(arr, function(index, el) {
       $.each(el, function(i, e) {
         if (!arr_id.includes(i)) {
-          if (e == ""){
+          if ((e == "") && !(i == 'scadenza')){
             bool = false;
             alert('Tutti i valori devono essere completi.\nTranne l\'ID');
             return false;
           }
-          if (['data_ord','data_cons_art','data_cons_comp'].includes(i)){
+          if ((['data_ord','data_cons_art','data_cons_comp', 'scadenza'].includes(i)) && !(e == '')){
             if (!dataRGEX.test(e)) {
               bool = false;
               alert('La data deve avere formato:\n01\/01\/2000');
@@ -224,21 +224,25 @@ $(document).ready(function() {
 
   $('#export_btn').click(function(){
     var page_arr = {};
+    var trasmetto = true;
     $('.container').find('table').each(function(index, el) {
       var t_arr = get_table($(this));
       if (check_array(t_arr)){
         page_arr[$(this).attr('class')] = t_arr;
       } else {
-        return false;
+        trasmetto = false;
       }
     });
-    var send = {};
-    send['pagina'] = $('.container').attr('id');;
-    send['azione'] = 'ins_nuovo';
-    send['messaggio'] = page_arr;
-    $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
-      console.log(data);
-    });
+    if (trasmetto == true){
+      var send = {};
+      console.log("trasmetto");
+      send['pagina'] = $('.container').attr('id');;
+      send['azione'] = 'ins_nuovo';
+      send['messaggio'] = page_arr;
+      $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+        console.log(data);
+      });
+    }
   });
 
   if (['newArticolo','newComponente','newImpegno', 'listaTaglio'].includes($('.container').attr('id'))) {
