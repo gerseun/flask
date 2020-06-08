@@ -118,9 +118,6 @@ def setAzioneArticolo(namePage, articolo):
 def setAzioneCompSingolo(namePage, componenti):
     #ciclo i componenti da salvare
     comp = componenti["t_comp"]
-    print("-")
-    print(comp)
-    print("-")
     for x in comp:
         #salvo nel DB Backup
         saveBackupCompSingolo(x)
@@ -922,21 +919,45 @@ def getImpFromIDimp(ricIDImpegno):
 
 #SALVO LA LAVORAZIONE COMPIUTA DA ACQUISTI
 def setAzioneOrdine(namePage, articolo):
-    #ciclo i componenti da salvare
-    componenti = articolo["t_compAcq"]
-    for x in componenti:
-        #salvo nel DB Backup
-        saveBackupDett(x)
-        #salvo la nuova Azione
-        #apro la connessione al database
-        mydb = connessione()
-        mioDB = mydb.cursor(dictionary=True)
+    #DISTINZIONE SE ARTICOLO O COMPONENTI SINGOLI
+    isArticolo = articolo["t_imp_art"][0]["cod_art"]
+    if isArticolo == "-":
+        #comp singolo
+        #ciclo i componenti da salvare
+        comp = articolo["t_compAcq"]
+        for x in comp:
+            #salvo nel DB Backup
+            saveBackupCompSingolo(x)
+            #salvo la nuova Azione
+            #apro la connessione al database
+            mydb = connessione()
+            mioDB = mydb.cursor(dictionary=True)
+            if x["scadenza"]:
+                scad = datetime.datetime.strptime(x["scadenza"], '%d/%m/%Y').date()
+            else:
+                scad = None
+            sql = "UPDATE riga_imp_comp SET  qt_comp = %s, id_produzione = %s, cod_ordine = %s, scadenza = %s WHERE id_riga_imp_comp = %s"
+            val = (x["qt_comp"], x["id_produzione"], x["cod_ordine"], scad, x["id_riga_dett"])
+            mioDB.execute(sql, val)
 
-        data = datetime.datetime.strptime(x["scadenza"], '%d/%m/%Y').date()
-        sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s, cod_ordine = %s, scadenza = %s WHERE id_riga_dett = %s"
-        val = (x["qt_comp"], x["id_produzione"], x["cod_ordine"], data, x["id_riga_dett"])
-        mioDB.execute(sql, val)
-        mydb.close()
+    else:
+        #articolo con componenti
+        componenti = articolo["t_compAcq"]
+        for x in componenti:
+            #salvo nel DB Backup
+            saveBackupDett(x)
+            #salvo la nuova Azione
+            #apro la connessione al database
+            mydb = connessione()
+            mioDB = mydb.cursor(dictionary=True)
+            if x["scadenza"]:
+                scad = datetime.datetime.strptime(x["scadenza"], '%d/%m/%Y').date()
+            else:
+                scad = None
+            sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s, cod_ordine = %s, scadenza = %s WHERE id_riga_dett = %s"
+            val = (x["qt_comp"], x["id_produzione"], x["cod_ordine"], scad, x["id_riga_dett"])
+            mioDB.execute(sql, val)
+
     #fine
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta

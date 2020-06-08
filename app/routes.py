@@ -179,7 +179,7 @@ def test():
             risposta = json.dumps(f.setAzioneCompSingolo(formatted_data['pagina'], formatted_data['messaggio']))
             risposta = json.dumps(save.save_xlsx_Taglio_comp(formatted_data['messaggio']))
         if (formatted_data['azione'] == 'salva_file') and (formatted_data['pagina'] == 'listaTaglio'):
-            #risposta = json.dumps(f.setAzioneArticolo(formatted_data['pagina'], formatted_data['messaggio']))
+            risposta = json.dumps(f.setAzioneArticolo(formatted_data['pagina'], formatted_data['messaggio']))
             risposta = json.dumps(save.save_xlsx_Taglio(formatted_data['messaggio']))
 
         #pagina ordini per Ida
@@ -189,9 +189,6 @@ def test():
             risposta = json.dumps(f.setAzioneOrdine(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'azioneOrdine') and (formatted_data['pagina'] == 'newOrdine'):
             risposta = json.dumps(f.get_DaOrdinare(formatted_data['pagina'], formatted_data['messaggio']))
-
-
-
 
         #risposta = 'ok'
         return risposta
