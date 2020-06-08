@@ -289,7 +289,11 @@ def getCompInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_comp"].strftime("%d/%m/%Y")
-        arr_Componenti.append({"id_riga_imp_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"], "dim_comp": row["dim_comp"], "mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data, "id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"],"grezzo": row["grezzo"]})
+        if row["scadenza"]:
+            scad = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            scad = None
+        arr_Componenti.append({"id_riga_imp_comp": row["id_riga_imp_comp"], "id_comp": row["id_comp"], "cod_comp": row["cod_comp"],"desc_comp": row["desc_comp"], "dim_comp": row["dim_comp"], "mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"data_cons_comp": data, "id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "scadenza": scad, "grezzo": row["grezzo"]})
     #se non aveva componenti passo stringa vuota
     #if flag == False:
         #arr_Componenti.append({"id_riga_comp": "", "cod_comp": "","desc_comp": "","dim_comp": "","qt_comp": "","data_cons_comp": ""})
@@ -312,6 +316,7 @@ def getArtInImpegno(ric_id_impegno):
     for row in risultato:
         flag = True
         data = row["data_cons_art"].strftime("%d/%m/%Y")
+
         #cerco i suoi componenti
         arrComp = getCompInArtImpegno(row["id_riga_imp"])
         #arrComp = {"t_comp": componenti}
@@ -337,7 +342,11 @@ def getCompInArtImpegno(ric_id_art_imp):
     flag = False
     for row in risultato:
         flag = True
-        arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"],"grezzo": row["grezzo"] })
+        if row["scadenza"]:
+            scad = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            scad = None
+        arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": scad, "grezzo": row["grezzo"] })
     #chiusura
     mydb.close()
     return arr_CompInArtImp
@@ -959,5 +968,12 @@ def setAzioneOrdine(namePage, articolo):
             mioDB.execute(sql, val)
 
     #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
+    return risposta
+
+#CERCO IL MATERIALE ORDINATO MA SCADUTO
+def getOrdineScaduto(namePage):
+    #cerco i componenti all' interno di un articolo con data consegna scaduta
+    
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
