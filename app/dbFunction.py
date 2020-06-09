@@ -973,7 +973,18 @@ def setAzioneOrdine(namePage, articolo):
 
 #CERCO IL MATERIALE ORDINATO MA SCADUTO
 def getOrdineScaduto(namePage):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
     #cerco i componenti all' interno di un articolo con data consegna scaduta
-    
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.scadenza < CURRENT_TIME() AND riga_dett.id_produzione = 5 ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompScaduti = []
+    for row in risultato:
+        print("A")
+
+    #ciclo tutti i componenti
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
