@@ -2,11 +2,67 @@
 
 {% block content %}
 
-<div class="container" id="Scadenze">
+<div class="container" id="scad">
   <p>Per apportare modifiche contattare Simone</p>
-  <p>Inserire i dati dell' impegno da produrre.</p>
+  <br>
+  <p>ORDINI CON CONSEGNA SCADUTA</p>
+  <div class="">
+    <table class="t_compScaduti"><!-- è la tabella t_comp contenuti in t_art. Non i t_comp singoli -->
+      <tr>
+        <th id="cod_comp">Codice Componente</th>
+        <th id="desc_comp">Descrizione</th>
+        <th id="dim_comp">Dimensione</th>
+        <th id="mat_comp">Materiale</th>
+        <th id="qt_comp">Qt Componente</th>
+        <th id="grezzo">Grezzo</th>
+        <th id="cod_ordine">Num. ordine</th>
+        <th id="scadenza">Consegna Materiale</th>
+        <th id="id_riga_imp_comp">ID Comp Impegno</th>
 
+      </tr>
+      <tr class="hide">
+        <td headers="cod_comp" contenteditable="false"></td>
+        <td headers="desc_comp" contenteditable="false"></td>
+        <td headers="dim_comp" contenteditable="false"></td>
+        <td headers="mat_comp" contenteditable="false"></td>
+        <td headers="qt_comp" contenteditable="false"></td>
+        <td headers="grezzo" contenteditable="false"></td>
+        <td headers="cod_ordine" contenteditable="false"></td>
+        <td headers="scadenza" contenteditable="false"></td>
+        <td headers="id_riga_dett" contenteditable="false"></td>
+      </tr>
+    </table>
+  </div>
 
+  <br><br>
+  <p>ORDINI IN SCADENZA NEI SUCCESSIVI 7 GIORNI</p>
+  <div class="">
+    <table class="t_compInScadenza"><!-- è la tabella t_comp contenuti in t_art. Non i t_comp singoli -->
+      <tr>
+        <th id="cod_comp">Codice Componente</th>
+        <th id="desc_comp">Descrizione</th>
+        <th id="dim_comp">Dimensione</th>
+        <th id="mat_comp">Materiale</th>
+        <th id="qt_comp">Qt Componente</th>
+        <th id="grezzo">Grezzo</th>
+        <th id="cod_ordine">Num. ordine</th>
+        <th id="scadenza">Consegna Materiale</th>
+        <th id="id_riga_imp_comp">ID Comp Impegno</th>
+
+      </tr>
+      <tr class="hide">
+        <td headers="cod_comp" contenteditable="false"></td>
+        <td headers="desc_comp" contenteditable="false"></td>
+        <td headers="dim_comp" contenteditable="false"></td>
+        <td headers="mat_comp" contenteditable="false"></td>
+        <td headers="qt_comp" contenteditable="false"></td>
+        <td headers="grezzo" contenteditable="false"></td>
+        <td headers="cod_ordine" contenteditable="false"></td>
+        <td headers="scadenza" contenteditable="false"></td>
+        <td headers="id_riga_dett" contenteditable="false"></td>
+      </tr>
+    </table>
+  </div>
 </div>
 <br>
 

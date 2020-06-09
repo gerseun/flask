@@ -711,6 +711,8 @@ def saveBackupCompSingolo(riga):
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
+    print("SECONDO")
+    print(riga)
     #prendo la vecchia riga
     vecchio = getRigaCompSingolo(riga["id_riga_imp_comp"])
     #salvo i Dati
@@ -936,7 +938,7 @@ def setAzioneOrdine(namePage, articolo):
         comp = articolo["t_compAcq"]
         for x in comp:
             #salvo nel DB Backup
-            saveBackupCompSingolo(x)
+            saveBackupCompSingoloORDINE(x)
             #salvo la nuova Azione
             #apro la connessione al database
             mydb = connessione()
@@ -971,20 +973,75 @@ def setAzioneOrdine(namePage, articolo):
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
 
+#SALVO LA RIGA NEL BACKUP COMP SINGOLO
+def saveBackupCompSingoloORDINE(riga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    vecchio = getRigaCompSingolo(riga["id_riga_dett"])
+    #salvo i Dati
+    sql = "INSERT INTO backup_riga_imp_comp (id_riga_imp_comp_b, id_imp_b, id_comp_b, qt_comp_b, data_cons_comp_b, id_produzione_b, pos_comp_sing_imp_b, cod_ordine_b, scadenza_b) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
+    val = (vecchio["id_riga_imp_comp"], vecchio["id_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["data_cons_comp"], vecchio["id_produzione"], vecchio["pos_comp_sing_imp"], vecchio["cod_ordine"], vecchio["scadenza"])
+    mioDB.execute(sql, val)
+    mydb.commit()
+    return "OK"
+
 #CERCO IL MATERIALE ORDINATO MA SCADUTO
 def getOrdineScaduto(namePage):
     #apro la connessione al database
     mydb = connessione()
     mioDB = mydb.cursor(dictionary=True)
+    #1
     #cerco i componenti all' interno di un articolo con data consegna scaduta
     mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.scadenza < CURRENT_TIME() AND riga_dett.id_produzione = 5 ORDER BY riga_dett.ID_riga_dett ASC")
     risultato = mioDB.fetchall()
-
     #variabili array COMPONENTI IN ARTICOLO
     arr_CompScaduti = []
-    for row in risultato:
-        print("A")
-
     #ciclo tutti i componenti
-    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
+    for row in risultato:
+        #controllo date
+        if row["scadenza"]:
+            data = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            data = None
+        arr_CompScaduti.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data})
+
+    #2
+    #cerco i componenti singoli con data consegna scaduta
+    mioDB.execute("SELECT * FROM riga_imp_comp INNER JOIN componente ON riga_imp_comp.ID_comp=componente.ID_comp  WHERE riga_imp_comp.scadenza < CURRENT_TIME() AND riga_imp_comp.id_produzione = 5 ORDER BY riga_imp_comp.ID_riga_imp_comp ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    #ciclo tutti i componenti
+    for row in risultato:
+        #controllo date
+        if row["scadenza"]:
+            data = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            data = None
+        arr_CompScaduti.append({"id_riga_dett": row["id_riga_imp_comp"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data})
+
+    #3
+    #cerco i componenti all' interno di un articolo con data consegna in scadenza in 7 giorni
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE (riga_dett.scadenza BETWEEN CURRENT_TIME() AND (CURRENT_TIME() + INTERVAL 7 DAY)) AND (riga_dett.id_produzione = 5) ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompInScadenza = []
+    #ciclo tutti i componenti
+    for row in risultato:
+        #controllo date
+        if row["scadenza"]:
+            data = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            data = None
+        arr_CompInScadenza.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data})
+
+    #4
+
+    #chiusura
+    mydb.close()
+    #creo e trasmetto il messaggio
+    daOrdinare = {"t_compScaduti": arr_CompScaduti, "t_compInScadenza": arr_CompInScadenza}
+    print(daOrdinare)
+    risposta = {"pagina": namePage,"azione": "scaduti" , "messaggio": daOrdinare}
     return risposta

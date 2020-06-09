@@ -9,6 +9,21 @@ $(document).ready(function() {
   jQuery.fn.shift = [].shift;
   page_class = $('.container').attr('id');
 
+  //funzione di ricerca automatica per Scadenze
+  if(page_class == "scad"){
+    console.log("Bravo Sam")
+    var text = ""
+    var send = {};
+    send['pagina'] = $('.container').attr('id');
+    send['azione'] = 'scaduti';
+    send['messaggio'] = text;
+    $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+      var arr = JSON.parse(data);
+      console.log(arr);
+      fill_tables(arr['messaggio'], $('.container'));
+    });
+  }
+
   if(page_class == "newOrdine"){
 
     $('#input_field').focus();

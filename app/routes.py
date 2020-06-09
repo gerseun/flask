@@ -24,7 +24,7 @@ def index():
     #test5 = {"newImpegno":{"t_imp":[{"cod_imp":"123","cliente":"asd","cod_ord_cli":"111","data_ord":"2019-12-04","id_imp":"1"}], "t_art":[{"cod_art":"1ABC00100","desc_art":"cilindro","qt_art":"3","data_cons_art":"2019-12-05","id_riga_imp":"1"}], "t_comp":[{"cod_comp":"1ABC00102","desc_comp":"camicia","qt_comp":"100","data_cons_comp":"2019-12-07","id_riga_imp_comp":"1"}, {"cod_comp":"1ABC00110","desc_comp":"stelo","qt_comp":"50","data_cons_comp":"2019-12-08","id_riga_imp_comp":"2"}]}}
 
     pagina = "home"
-    stampa = f.getOrdineScaduto("home")
+    #stampa = f.getOrdineScaduto("home")
 
     #creo file excel taglio/ordine
     #imp = f.search_imp("HOME", "2/20")
@@ -39,7 +39,7 @@ def index():
         },
         {
             'author': {'username': 'Susan'},
-            'body': stampa
+            'body': "stampa"
         }
     ]
 
@@ -98,7 +98,10 @@ def NuovoOrdine():
 
 @app.route('/Scadenze', methods=['GET', 'POST'])
 def Scadenze():
-    return render_template('Scadenze.html', title='NUOVO ORDINE')
+    #content = f.getOrdineScaduto("Scadenze")    #Riceve una stringa
+    #print('Dati ricevuti:')
+    #pprint.pprint(content)
+    return render_template('Scadenze.html', title='SCADENZE MATERIALE ARRIVATO')
 
 @app.route('/About')
 def About():
@@ -190,6 +193,9 @@ def test():
         if (formatted_data['azione'] == 'azioneOrdine') and (formatted_data['pagina'] == 'newOrdine'):
             risposta = json.dumps(f.get_DaOrdinare(formatted_data['pagina'], formatted_data['messaggio']))
 
+        #pagina ordini per Ida
+        if (formatted_data['azione'] == 'scaduti') and (formatted_data['pagina'] == 'scad'):
+            risposta = json.dumps(f.getOrdineScaduto(formatted_data['pagina']))
         #risposta = 'ok'
         return risposta
 
