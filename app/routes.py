@@ -103,6 +103,11 @@ def Scadenze():
     #pprint.pprint(content)
     return render_template('Scadenze.html', title='SCADENZE MATERIALE ARRIVATO')
 
+@app.route('/Taglio', methods=['GET', 'POST'])
+def Taglio():
+    return render_template('Taglio.html', title='TAGLIO MATERIALE')
+
+
 @app.route('/About')
 def About():
     if request.method == 'POST':    #Aspetta una richiesta POST dal client

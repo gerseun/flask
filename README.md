@@ -17,6 +17,6 @@ acquisti
 taglio
       "1">Da ordinare
       "7">Mat tagliato
-      "8">carico
+      "8">Trasporto a visano
       "9">
       "10">

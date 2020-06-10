@@ -688,8 +688,8 @@ def saveBackupDett(riga):
     #prendo la vecchia riga
     vecchio = getRigaDett(riga["id_riga_dett"])
     #salvo i Dati
-    sql = "INSERT INTO backup_riga_dett (id_riga_dett_b, id_riga_imp_b, id_comp_b, qt_comp_b, id_produzione_b, pos_comp_imp_b, cod_ordine_b, scadenza_b) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)"
-    val = (vecchio["id_riga_dett"], vecchio["id_riga_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["id_produzione"], vecchio["pos_comp_imp"], vecchio["cod_ordine"], vecchio["scadenza"])
+    sql = "INSERT INTO backup_riga_dett (id_riga_dett_b, id_riga_imp_b, id_comp_b, qt_comp_b, id_produzione_b, pos_comp_imp_b, cod_ordine_b, scadenza_b) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE cod_ordine_b = %s"
+    val = (vecchio["id_riga_dett"], vecchio["id_riga_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["id_produzione"], vecchio["pos_comp_imp"], vecchio["cod_ordine"], vecchio["scadenza"], vecchio["cod_ordine"])
     mioDB.execute(sql, val)
     mydb.commit()
     return "OK"
@@ -716,8 +716,8 @@ def saveBackupCompSingolo(riga):
     #prendo la vecchia riga
     vecchio = getRigaCompSingolo(riga["id_riga_imp_comp"])
     #salvo i Dati
-    sql = "INSERT INTO backup_riga_imp_comp (id_riga_imp_comp_b, id_imp_b, id_comp_b, qt_comp_b, data_cons_comp_b, id_produzione_b, pos_comp_sing_imp_b, cod_ordine_b, scadenza_b) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
-    val = (vecchio["id_riga_imp_comp"], vecchio["id_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["data_cons_comp"], vecchio["id_produzione"], vecchio["pos_comp_sing_imp"], vecchio["cod_ordine"], vecchio["scadenza"])
+    sql = "INSERT INTO backup_riga_imp_comp (id_riga_imp_comp_b, id_imp_b, id_comp_b, qt_comp_b, data_cons_comp_b, id_produzione_b, pos_comp_sing_imp_b, cod_ordine_b, scadenza_b) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE cod_ordine_b = %s"
+    val = (vecchio["id_riga_imp_comp"], vecchio["id_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["data_cons_comp"], vecchio["id_produzione"], vecchio["pos_comp_sing_imp"], vecchio["cod_ordine"], vecchio["scadenza"], vecchio["cod_ordine"])
     mioDB.execute(sql, val)
     mydb.commit()
     return "OK"
