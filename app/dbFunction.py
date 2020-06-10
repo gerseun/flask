@@ -320,6 +320,17 @@ def getCompInArtImpegno(ric_id_art_imp):
     mydb.close()
     return arr_CompInArtImp
 
+#PRENDO LA RIGA DETT
+def getRigaDett(idRiga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    mioDB.execute("SELECT * FROM riga_dett WHERE id_riga_dett = '" + idRiga + "'")
+    row = mioDB.fetchone()
+    #salvo i Dati
+    riga = {"id_riga_dett": row["id_riga_dett"], "id_riga_imp": row["id_riga_imp"], "id_comp": row["id_comp"], "qt_comp": row["qt_comp"], "id_produzione": row["id_produzione"], "pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"]}
+    return riga
 '''
 FUNZIONI SET
 '''
