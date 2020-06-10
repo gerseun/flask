@@ -151,6 +151,7 @@ def test():
         formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
         print('Dati ricevuti:')
         pprint.pprint(formatted_data)
+        #APERTURA - FIRST CALL
         if formatted_data['azione'] == 'first_call':
             risposta = json.dumps(f.first_call(formatted_data['pagina']))
         if (formatted_data['azione'] == 'search_art') and (formatted_data['pagina'] == 'newArticolo'):
@@ -158,9 +159,11 @@ def test():
         if (formatted_data['azione'] == 'search_comp') and (formatted_data['pagina'] == 'newArticolo'):
             risposta = json.dumps(f.search_comp(formatted_data['pagina'], formatted_data['messaggio']))
 
+        #NUOVO COMPONENTE
         if (formatted_data['azione'] == 'search_comp') and (formatted_data['pagina'] == 'newComponente'):
             risposta = json.dumps(f.search_comp(formatted_data['pagina'], formatted_data['messaggio']))
 
+        #NUOVO IMPEGNO
         if (formatted_data['azione'] == 'search_imp') and (formatted_data['pagina'] == 'newImpegno'):
             risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'search_art') and (formatted_data['pagina'] == 'newImpegno'):
@@ -168,6 +171,7 @@ def test():
         if (formatted_data['azione'] == 'search_comp') and (formatted_data['pagina'] == 'newImpegno'):
             risposta = json.dumps(f.search_comp(formatted_data['pagina'], formatted_data['messaggio']))
 
+        #INSERIMENTI - IMP ART COMP
         if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newArticolo'):
             risposta = f.newArticolo(formatted_data['pagina'], formatted_data['messaggio'])
         if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newComponente'):
@@ -175,6 +179,7 @@ def test():
         if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newImpegno'):
             risposta = f.newImpegno(formatted_data['pagina'], formatted_data['messaggio'])
 
+        #LISTA TAGLIO - RICERCA
         if (formatted_data['azione'] == 'search_imp') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
 
@@ -183,9 +188,6 @@ def test():
             risposta = json.dumps(f.search_imp(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'search_Produzione_Articolo') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.search_Produzione_Articolo(formatted_data['pagina'], formatted_data['messaggio']))
-        if (formatted_data['azione'] == 'salva_file_comp') and (formatted_data['pagina'] == 'listaTaglio'):
-            risposta = json.dumps(f.setAzioneCompSingolo(formatted_data['pagina'], formatted_data['messaggio']))
-            risposta = json.dumps(save.save_xlsx_Taglio_comp(formatted_data['messaggio']))
         if (formatted_data['azione'] == 'salva_file') and (formatted_data['pagina'] == 'listaTaglio'):
             risposta = json.dumps(f.setAzioneArticolo(formatted_data['pagina'], formatted_data['messaggio']))
             risposta = json.dumps(save.save_xlsx_Taglio(formatted_data['messaggio']))

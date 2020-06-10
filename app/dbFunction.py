@@ -79,6 +79,24 @@ def search_imp(namePage, ricercaImp):
     #consegno il pacco
     return risposta
 
+def setAzioneArticolo(namePage, articolo):
+    #ciclo i componenti da salvare
+    componenti = articolo["t_comp"]
+    for x in componenti:
+        #salvo nel DB Backup
+        saveBackupDett(x)
+        #salvo la nuova Azione
+        #apro la connessione al database
+        mydb = connessione()
+        mioDB = mydb.cursor(dictionary=True)
+        sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s WHERE id_riga_dett = %s"
+        val = (x["qt_comp"], x["id_produzione"], x["id_riga_dett"])
+        mioDB.execute(sql, val)
+    #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
+    return risposta
+
+
 #inserimento nuovo impegno
 def newImpegno(namePage, assieme):
     #separo le componenti principali
@@ -93,6 +111,11 @@ def newImpegno(namePage, assieme):
     risposta = {"pagina": namePage,"azione": "newImpegno" , "messaggio": "IMPEGNO INSERITO CON SUCCESSO"}
     return risposta
 
+def search_Produzione_Articolo(namePage, id_riga_imp):
+    #prendo i componenti in produzione dell' articolo
+    compInArticolo = getCompInArtImpegno(id_riga_imp)
+    risposta = {"pagina": namePage,"azione": "search_Produzione_Articolo" , "messaggio": compInArticolo}
+    return risposta
 
 '''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -275,6 +298,28 @@ def getArtInImpegno(ric_id_impegno):
     mydb.close()
     return arr_Articoli
 
+def getCompInArtImpegno(ric_id_art_imp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.ID_riga_imp = '" + str(ric_id_art_imp) + "' ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompInArtImp = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        if row["scadenza"]:
+            scad = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            scad = None
+        arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": scad, "grezzo": row["grezzo"] })
+    #chiusura
+    mydb.close()
+    return arr_CompInArtImp
+
 '''
 FUNZIONI SET
 '''
@@ -449,3 +494,17 @@ def setProduzioneArt(idRiga, idArt, qtArt):
     #aggiorno e chiudo il DB
     mydb.commit()
     mydb.close()
+
+#SALVO LA RIGA NEL BACKUP
+def saveBackupDett(riga):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo la vecchia riga
+    vecchio = getRigaDett(riga["id_riga_dett"])
+    #salvo i Dati
+    sql = "INSERT INTO backup_riga_dett (id_riga_dett_b, id_riga_imp_b, id_comp_b, qt_comp_b, id_produzione_b, pos_comp_imp_b, cod_ordine_b, scadenza_b) VALUES (%s, %s, %s, %s, %s, %s, %s, %s) ON DUPLICATE KEY UPDATE cod_ordine_b = %s"
+    val = (vecchio["id_riga_dett"], vecchio["id_riga_imp"], vecchio["id_comp"], vecchio["qt_comp"], vecchio["id_produzione"], vecchio["pos_comp_imp"], vecchio["cod_ordine"], vecchio["scadenza"], vecchio["cod_ordine"])
+    mioDB.execute(sql, val)
+    mydb.commit()
+    return "OK"
