@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container" id="newTaglio">
+  <p>Per apportare modifiche contattare Simone</p>
+  <p>Timbrare il codice dell' articolo da tagliare.</p>
+
+<!-- CASELLA DI TESTO PER INSERIMENTO DA BARCODE -->
+<div class="ricTaglio">
+   <input id="input_field" type="text" name="ricercaTaglio" size=”40″ maxlength=”20″>
+</div>
+<br><br>
+
+  <div class="">
+    <table class="t_imp_art">
+      <tr>
+        <th id="cod_art">Codice Articolo</th>
+        <th id="desc_art">Descrizione</th>
+        <th id="cliente">Cliente</th>
+        <th id="cod_imp">Codice Impegno</th>
+        <th id="data_cons_art">Data consegna</th>
+      </tr>
+      <tr class="hide">
+        <td headers="cod_art" contenteditable="false"></td>
+        <td headers="desc_art" contenteditable="false"></td>
+        <td headers="cliente" contenteditable="false"></td>
+        <td headers="cod_imp" contenteditable="false"></td>
+        <td headers="data_cons_art" contenteditable="false"></td>
+      </tr>
+    </table>
+  </div>
+  <br>  <br>
+  <div class="">
+    <table class="t_compTaglio"><!-- è la tabella t_comp contenuti in t_art. Non i t_comp singoli -->
+      <tr>
+        <th id="cod_comp">Codice Componente</th>
+        <th id="desc_comp">Descrizione</th>
+        <th id="dim_comp">Dimensione</th>
+        <th id="mat_comp">Materiale</th>
+        <th id="qt_comp">Qt Componente</th>
+        <th id="grezzo">Grezzo</th>
+        <th id="id_produzione">Azione</th>
+        <th id="id_riga_imp_comp">ID Comp Impegno</th>
+
+      </tr>
+      <tr class="hide">
+        <td headers="cod_comp" contenteditable="false"></td>
+        <td headers="desc_comp" contenteditable="false"></td>
+        <td headers="dim_comp" contenteditable="false"></td>
+        <td headers="mat_comp" contenteditable="false"></td>
+        <td headers="qt_comp" contenteditable="false"></td>
+        <td headers="grezzo" contenteditable="false"></td>
+        <td headers="id_produzione" class="control_prod">
+          <select class="action" name="">
+            <option value="1">Da ordinare</option>
+            <option value="5">Ordinato</option>
+            <option value="6">Materiale Arrivato</option>
+          </select>
+        </td><td headers="id_riga_dett" contenteditable="false"></td>
+      </tr>
+    </table>
+  </div>
+</div>
+<br>
+
+
+{% endblock %}
