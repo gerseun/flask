@@ -11,7 +11,6 @@ $(document).ready(function() {
 
   //funzione di ricerca automatica per Scadenze
   if(page_class == "scad"){
-    console.log("Bravo Sam")
     var text = ""
     var send = {};
     send['pagina'] = $('.container').attr('id');
@@ -44,22 +43,35 @@ $(document).ready(function() {
         });
       }
     });
+  }
 
-    $("#test_btn_ordine").click(function(event) {
-      var page_arr = {};
+  if(page_class == "newTaglio"){
 
-      var send = {};
-      send['pagina'] = $('.container').attr('id');
-      send['azione'] = 'testOrdine';
-      send['messaggio'] = "I.17";
-      $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
-        var arr = JSON.parse(data);
-        //console.log(arr);
+    $('#input_field').focus();
+    $('#input_field').focusout(function(event) {
+      var text = $(this).val();
+      if (text == '') {
 
-          fill_tables(arr['messaggio'], $('.container'));
+      }else {
+        //aggiungo una riga alla tabella
+        var $table = $(this).parents('table');
+        add_row($table, 1);
+        //ricerco il prodotto da aggiungere
+        var send = {};
+        send['pagina'] = $('.container').attr('id');
+        send['azione'] = 'azioneTaglio';
+        send['messaggio'] = text;
+        $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+          var arr = JSON.parse(data);
+          console.log(arr);
+          if arr['messaggio']{
+            var $rows = $table.find('tr:not(:hidden)');
+            var $row = $rows.cosa cazzo scrivo qua;
+            fill_row($row, arr['messaggio']);
+          }
 
-      });
-
+        });
+      }
     });
   }
 

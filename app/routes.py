@@ -193,8 +193,6 @@ def test():
             risposta = json.dumps(save.save_xlsx_Produzione(formatted_data['messaggio']))
 
         #pagina ordini per Ida
-        if (formatted_data['azione'] == 'testOrdine') and (formatted_data['pagina'] == 'newOrdine'):
-            risposta = json.dumps(f.get_DaOrdinare(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newOrdine'):
             risposta = json.dumps(f.setAzioneOrdine(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'azioneOrdine') and (formatted_data['pagina'] == 'newOrdine'):
@@ -204,7 +202,8 @@ def test():
             risposta = json.dumps(f.getOrdineScaduto(formatted_data['pagina']))
 
         #pagina isorella
-        
+        if (formatted_data['azione'] == 'azioneTaglio') and (formatted_data['pagina'] == 'newTaglio'):
+            risposta = json.dumps(f.get_DaTagliare(formatted_data['pagina'], formatted_data['messaggio']))
 
         #risposta = 'ok'
         return risposta

@@ -708,3 +708,24 @@ def getOrdineScaduto(namePage):
 FUNZIONI PER ISORELLA
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '''
+def get_DaOrdinare(namePage, id):
+    #controllo se Articolo o componenti singoli
+    flag = id[0]
+    #articolo
+    id = id[2:]
+
+    #COMPONENTE IN ARTICOLO
+    elif flag == "C":
+        #prendo il COMPONENTE
+        comp = getCompFromIdRigaDett(id)
+        #articolo
+        array_art = getArtFromIdRigaImp(comp["id_riga_imp"])
+        #impegno
+        array_imp = getImpFromIDimp(array_art["id_imp"])
+        #creo array per la prima tabella
+        array_imp_art = {"cod_art": array_art["cod_art"], "desc_art": array_art["desc_art"], "cliente": array_imp["cliente"], "cod_imp": array_imp["cod_imp"], "cliente": array_imp["cliente"], "data_cons_art": array_art["data_cons_art"]}
+        daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": [comp]}
+        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+
+    #chiusura funzione
+    return risposta
