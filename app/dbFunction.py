@@ -708,14 +708,13 @@ def getOrdineScaduto(namePage):
 FUNZIONI PER ISORELLA
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '''
-def get_DaOrdinare(namePage, id):
-    #controllo se Articolo o componenti singoli
+def get_DaTagliare(namePage, id):
+    #controllo se corretto
     flag = id[0]
     #articolo
     id = id[2:]
-
     #COMPONENTE IN ARTICOLO
-    elif flag == "C":
+    if flag == "C":
         #prendo il COMPONENTE
         comp = getCompFromIdRigaDett(id)
         #articolo
@@ -723,9 +722,9 @@ def get_DaOrdinare(namePage, id):
         #impegno
         array_imp = getImpFromIDimp(array_art["id_imp"])
         #creo array per la prima tabella
-        array_imp_art = {"cod_art": array_art["cod_art"], "desc_art": array_art["desc_art"], "cliente": array_imp["cliente"], "cod_imp": array_imp["cod_imp"], "cliente": array_imp["cliente"], "data_cons_art": array_art["data_cons_art"]}
-        daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": [comp]}
-        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+        array_taglio = {"cod_comp": comp["cod_comp"], "desc_comp": comp["desc_comp"], "dim_comp": comp["dim_comp"], "mat_comp": comp["mat_comp"], "qt_comp": comp["qt_comp"], "imp": array_imp["imp"], "cod_art": array_art["cod_art"], "id_riga_dett": comp["id_riga_dett"]}
+        daTagliare = {"t_compTaglio": [array_taglio]}
+        risposta = {"pagina": namePage,"azione": "get_DaTagliare" , "messaggio": daTagliare}
 
     #chiusura funzione
     return risposta
