@@ -520,14 +520,6 @@ def saveBackupDett(riga):
     mydb.commit()
     return "OK"
 
-     dati articolo
-    #elaboro la data
-    data = row["data_ord"].strftime("%d/%m/%Y")
-    arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": data}
-    #chiusura
-    mydb.close()
-    return arrayImp
-
 '''
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 FUNZIONI PER IDA
@@ -710,3 +702,9 @@ def getOrdineScaduto(namePage):
     print(daOrdinare)
     risposta = {"pagina": namePage,"azione": "scaduti" , "messaggio": daOrdinare}
     return risposta
+
+'''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+FUNZIONI PER ISORELLA
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''

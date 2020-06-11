@@ -8,7 +8,7 @@ import pprint
 import os.path
 from app import set_folder as s     #s verrà usata per richiamare le funzioni in set_folder
 
-def save_xlsx_Taglio(array):
+def save_xlsx_Produzione(array):
     #OTTENGO UN SINGOLO ARTICOLO
     #prendo le variabili da salvare
     t_imp = array['t_imp'][0]
@@ -49,7 +49,8 @@ def popolateFile(insieme, fileName):
     arrayPage = ["TAGLIO", "ORDINE", "MAGAZZINO", "UFF TECNICO"]
     for page in arrayPage:
         ws = wb[page]
-        ws["A1"] = "*A." + str(t_art["id_riga_imp"]) + "*"    #ID RIGA ART
+        if page != "TAGLIO":
+            ws["A1"] = "*A." + str(t_art["id_riga_imp"]) + "*"      #ID RIGA ART
         ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
         ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
         ws["V1"] = str(t_art["data_cons_art"])                  #DATA CONSEGNA
