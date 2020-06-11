@@ -96,7 +96,6 @@ def setAzioneArticolo(namePage, articolo):
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
 
-
 #inserimento nuovo impegno
 def newImpegno(namePage, assieme):
     #separo le componenti principali
@@ -331,6 +330,7 @@ def getRigaDett(idRiga):
     #salvo i Dati
     riga = {"id_riga_dett": row["id_riga_dett"], "id_riga_imp": row["id_riga_imp"], "id_comp": row["id_comp"], "qt_comp": row["qt_comp"], "id_produzione": row["id_produzione"], "pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"]}
     return riga
+
 '''
 FUNZIONI SET
 '''
@@ -519,3 +519,194 @@ def saveBackupDett(riga):
     mioDB.execute(sql, val)
     mydb.commit()
     return "OK"
+
+     dati articolo
+    #elaboro la data
+    data = row["data_ord"].strftime("%d/%m/%Y")
+    arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": data}
+    #chiusura
+    mydb.close()
+    return arrayImp
+
+'''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+FUNZIONI PER IDA
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''
+def get_DaOrdinare(namePage, id):
+    #controllo se Articolo o componenti singoli
+    flag = id[0]
+    #articolo
+    id = id[2:]
+
+    #ARTICOLO
+    if flag == "A":
+        array_art = getArtFromIdRigaImp(id)
+        #impegno
+        array_imp = getImpFromIDimp(array_art["id_imp"])
+        #creo array per la prima tabella
+        array_imp_art = {"cod_art": array_art["cod_art"], "desc_art": array_art["desc_art"], "cliente": array_imp["cliente"], "cod_imp": array_imp["cod_imp"], "cliente": array_imp["cliente"], "data_cons_art": array_art["data_cons_art"]}
+        #prendo i componenti in produzione dell' articolo
+        compInArticolo = getFiltroDaOrdinare(id)
+        #creo e trasmetto il messaggio
+        daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": compInArticolo}
+        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+
+    #COMPONENTE IN ARTICOLO
+    elif flag == "C":
+        #prendo il COMPONENTE
+        comp = getCompFromIdRigaDett(id)
+        #articolo
+        array_art = getArtFromIdRigaImp(comp["id_riga_imp"])
+        #impegno
+        array_imp = getImpFromIDimp(array_art["id_imp"])
+        #creo array per la prima tabella
+        array_imp_art = {"cod_art": array_art["cod_art"], "desc_art": array_art["desc_art"], "cliente": array_imp["cliente"], "cod_imp": array_imp["cod_imp"], "cliente": array_imp["cliente"], "data_cons_art": array_art["data_cons_art"]}
+        daOrdinare = {"t_imp_art": [array_imp_art], "t_compAcq": [comp]}
+        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+
+    #chiusura funzione
+    return risposta
+
+#seleziono il componente in articolo selezionato
+def getCompFromIdRigaDett(ric_id_dett):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.id_riga_dett = '" + str(ric_id_dett) + "'")
+    row = mioDB.fetchone()
+    #stampo
+    if row:
+        if row["scadenza"]:
+            data = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            data = None
+        arr_CompInArtImp = {"id_riga_dett": row["id_riga_dett"], "id_riga_imp": row["id_riga_imp"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data}
+    #chiusura
+    mydb.close()
+    return arr_CompInArtImp
+
+#seleziono i comp nell' articolo selezionato che interessano ad Ida
+def getFiltroDaOrdinare(ric_id_art_imp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.ID_riga_imp = '" + str(ric_id_art_imp) + "' ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompInArtImp = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        #controllo se serve per Acquisti
+        if row["id_produzione"] == 1 or row["id_produzione"] == 5 or row["id_produzione"] == 6:
+            #controllo date
+            if row["scadenza"]:
+                data = row["scadenza"].strftime("%d/%m/%Y")
+            else:
+                data = None
+            arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data})
+    #chiusura
+    mydb.close()
+    return arr_CompInArtImp
+
+def getArtFromIdRigaImp(ric_id_riga_imp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #seleziono gli id_riga_imp dell' impegno ricercato
+    mioDB.execute("SELECT * FROM riga_imp INNER JOIN articolo ON riga_imp.ID_art=articolo.ID_art  WHERE riga_imp.id_riga_imp = '" + str(ric_id_riga_imp) + "' ORDER BY riga_imp.ID_riga_imp ASC")
+    row = mioDB.fetchone()
+    #variabili array ARTICOLI
+    if row:
+        data = row["data_cons_art"].strftime("%d/%m/%Y")
+        #creo array
+        arr_Articoli = {"id_imp": row["id_imp"], "id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data}
+    #chiusura
+    mydb.close()
+    return arr_Articoli
+
+#RICERCA IMPEGNO INSERITO DA ID IMP
+def getImpFromIDimp(ricIDImpegno):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #istruzione query string -> seleziono impegno ricercato
+    mioDB.execute("SELECT * FROM impegno WHERE id_imp='" + str(ricIDImpegno) + "'")
+    row = mioDB.fetchone()
+    if row:
+        #salvo i dati articolo
+        #elaboro la data
+        data = row["data_ord"].strftime("%d/%m/%Y")
+        arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": data}
+    #chiusura
+    mydb.close()
+    return arrayImp
+
+#SALVO LA LAVORAZIONE COMPIUTA DA ACQUISTI
+def setAzioneOrdine(namePage, articolo):
+    #articolo con componenti
+    componenti = articolo["t_compAcq"]
+    for x in componenti:
+        #salvo nel DB Backup
+        saveBackupDett(x)
+        #salvo la nuova Azione
+        #apro la connessione al database
+        mydb = connessione()
+        mioDB = mydb.cursor(dictionary=True)
+        if x["scadenza"]:
+            scad = datetime.datetime.strptime(x["scadenza"], '%d/%m/%Y').date()
+        else:
+            scad = None
+        sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s, cod_ordine = %s, scadenza = %s WHERE id_riga_dett = %s"
+        val = (x["qt_comp"], x["id_produzione"], x["cod_ordine"], scad, x["id_riga_dett"])
+        mioDB.execute(sql, val)
+    #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
+    return risposta
+
+#CERCO IL MATERIALE ORDINATO MA SCADUTO
+def getOrdineScaduto(namePage):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #1
+    #cerco i componenti all' interno di un articolo con data consegna scaduta
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.scadenza < CURRENT_TIME() AND riga_dett.id_produzione = 5 ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompScaduti = []
+    #ciclo tutti i componenti
+    for row in risultato:
+        #controllo date
+        if row["scadenza"]:
+            data = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            data = None
+        arr_CompScaduti.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data})
+
+    #2
+    #cerco i componenti all' interno di un articolo con data consegna in scadenza in 7 giorni
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE (riga_dett.scadenza BETWEEN CURRENT_TIME() AND (CURRENT_TIME() + INTERVAL 7 DAY)) AND (riga_dett.id_produzione = 5) ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompInScadenza = []
+    #ciclo tutti i componenti
+    for row in risultato:
+        #controllo date
+        if row["scadenza"]:
+            data = row["scadenza"].strftime("%d/%m/%Y")
+        else:
+            data = None
+        arr_CompInScadenza.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data})
+
+    #chiusura
+    mydb.close()
+    #creo e trasmetto il messaggio
+    daOrdinare = {"t_compScaduti": arr_CompScaduti, "t_compInScadenza": arr_CompInScadenza}
+    print(daOrdinare)
+    risposta = {"pagina": namePage,"azione": "scaduti" , "messaggio": daOrdinare}
+    return risposta
