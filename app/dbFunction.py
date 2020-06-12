@@ -722,7 +722,7 @@ def get_DaTagliare(namePage, id):
         #impegno
         array_imp = getImpFromIDimp(array_art["id_imp"])
         #creo array per la prima tabella
-        array_taglio = {"cod_comp": comp["cod_comp"], "desc_comp": comp["desc_comp"], "dim_comp": comp["dim_comp"], "mat_comp": comp["mat_comp"], "qt_comp": comp["qt_comp"], "imp": array_imp["cod_imp"], "cod_art": array_art["cod_art"], "id_riga_dett": comp["id_riga_dett"]}
+        array_taglio = {"cod_comp": comp["cod_comp"], "desc_comp": comp["desc_comp"], "dim_comp": comp["dim_comp"], "mat_comp": comp["mat_comp"], "qt_comp": comp["qt_comp"], "cod_imp": array_imp["cod_imp"], "cod_art": array_art["cod_art"], "id_riga_dett": comp["id_riga_dett"]}
         daTagliare = {"t_compTaglio": [array_taglio]}
         risposta = {"pagina": namePage,"azione": "get_DaTagliare" , "messaggio": daTagliare}
 

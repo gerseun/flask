@@ -105,7 +105,7 @@ def popolateFile(insieme, fileName):
             ws["AI" + str(contRow)] = comp["grezzo"]                            #COD GREZZO
 
     #fine ciclo componenti
-    wb.active = ws
+    wb.active = ws["TAGLIO"]
     wb.save(fileName)
     return "OK"
 
@@ -123,7 +123,7 @@ def get_cell_coord(wb, range_name):
     return coord_arr
 
 #STAMPO IL MATERIALE TAGLIATO
-def save_xlsx_Produzione(array):
+def save_xlsx_Taglio(array):
     t_comp = array["t_compTaglio"]
     #OTTENGO UN INSIEME DI COMPONENTI
     #1 - creo DIR
@@ -133,7 +133,7 @@ def save_xlsx_Produzione(array):
     #creo il file excel
     copy2('template cassone.xlsx', path)
     #vado a popolare il file
-    wb = openpyxl.load_workbook()
+    wb = openpyxl.load_workbook(path)
     ws = wb["CASSONE"]
     contRow = 2
 
@@ -151,5 +151,5 @@ def save_xlsx_Produzione(array):
     #stampo
 
     wb.active = ws
-    wb.save(fileName)
+    wb.save(path)
     return 'file excel modificato'
