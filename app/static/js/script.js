@@ -69,10 +69,8 @@ $(document).ready(function() {
             //compilo la riga
             var $rows = $table.find('tr:not(:hidden)'); //prendo tutte le righe
             var $nr = $table.find('tr:not(:hidden)').rows.length;
-            conse.log($nr)
             var $row = $rows[$nr - 1];
             fill_row($row, arr['messaggio']);
-
           }
         });
       }

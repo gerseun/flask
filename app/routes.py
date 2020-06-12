@@ -104,6 +104,9 @@ def Scadenze():
 def Taglio():
     return render_template('Taglio.html', title='TAGLIO MATERIALE')
 
+@app.route('/Carico', methods=['GET', 'POST'])
+def Carico():
+    return render_template('Carico.html', title='CARICO MATERIALE')
 
 @app.route('/About')
 def About():
@@ -202,7 +205,7 @@ def test():
         if (formatted_data['azione'] == 'azioneTaglio') and (formatted_data['pagina'] == 'newTaglio'):
             risposta = json.dumps(f.get_DaTagliare(formatted_data['pagina'], formatted_data['messaggio']))
             #risposta = 'ok'
-            
+
         return risposta
 
 @app.route('/tabella', methods=['GET', 'POST'])
