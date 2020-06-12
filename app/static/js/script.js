@@ -68,16 +68,9 @@ $(document).ready(function() {
             add_row($table, 1);
             //compilo la riga
             var $rows = $table.find('tr:not(:hidden)'); //prendo tutte le righe
-<<<<<<< HEAD
-            var $nr = $table.find('tr:not(:hidden)').rows.length;
-            var $row = $rows[$nr - 1];
-            fill_row($row, arr['messaggio']);
-=======
             console.log($rows);
             var $row = $rows.eq($rows.length-1)
             fill_row($row, arr['messaggio']['t_compTaglio'][0]);
-
->>>>>>> 87ff997f1eb1e1874ff86e1174bfff8db3f96c4c
           }
         });
       }

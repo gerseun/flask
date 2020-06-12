@@ -728,3 +728,21 @@ def get_DaTagliare(namePage, id):
 
     #chiusura funzione
     return risposta
+
+#SALVO IL TAGLIO
+def setAzioneTaglio(namePage, articolo):
+    #articolo con componenti
+    componenti = articolo["t_compTaglio"]
+    for x in componenti:
+        #salvo nel DB Backup
+        saveBackupDett(x)
+        #salvo la nuova Azione
+        #apro la connessione al database
+        mydb = connessione()
+        mioDB = mydb.cursor(dictionary=True)
+        sql = "UPDATE riga_dett SET id_produzione = %s WHERE id_riga_dett = %s"
+        val = (x["id_produzione"], x["id_riga_dett"])
+        mioDB.execute(sql, val)
+    #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
+    return risposta

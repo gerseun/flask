@@ -50,13 +50,13 @@ def popolateFile(insieme, fileName):
     for page in arrayPage:
         ws = wb[page]
         if page != "TAGLIO":
-            ws["A1"] = "*A." + str(t_art["id_riga_imp"]) + "*"      #ID RIGA ART
-        ws["B3"] = str(t_imp["cliente"])                        #CLIENTE ORDINE
-        ws["O1"] = str(t_imp["cod_imp"])                        #CODICE IMPEGNO
-        ws["V1"] = str(t_art["data_cons_art"])                  #DATA CONSEGNA
-        ws["AD1"] = str(adesso())                               #DATA COMPILAZIONE
-        ws["O3"] = str(t_art["desc_art"])                       #DESCRIZIONE ARTICOLO
-        ws["AB3"] = str(t_art["cod_art"])                       #CODICE ARTICOLO
+            ws["A1"] = "*A." + str(t_art["id_riga_imp"]) + "*"                  #ID RIGA ART
+        ws["B3"] = str(t_imp["cliente"])                                        #CLIENTE ORDINE
+        ws["O1"] = str(t_imp["cod_imp"])                                        #CODICE IMPEGNO
+        ws["V1"] = str(t_art["data_cons_art"])                                  #DATA CONSEGNA
+        ws["AD1"] = str(adesso())                                               #DATA COMPILAZIONE
+        ws["O3"] = str(t_art["desc_art"])                                       #DESCRIZIONE ARTICOLO
+        ws["AB3"] = str(t_art["cod_art"])                                       #CODICE ARTICOLO
     #fine ciclo header
 
     #popolo TABELLA -> COMPONENTI
@@ -96,13 +96,13 @@ def popolateFile(insieme, fileName):
                 contRow = contUT
             #inserisco la riga componente
             print(ws)
-            ws["A" + str(contRow)] = "*C." + str(comp["id_riga_dett"]) + "*"        #ID RIGA COMP
-            ws["B" + str(contRow)] = str(comp["qt_comp"])                           #QT COMPO
-            ws["D" + str(contRow)] = str(comp["cod_comp"])                          #DIS PARTICOLARE
-            ws["K" + str(contRow)] = str(comp["desc_comp"])                         #DESCRIZIONE
-            ws["Q" + str(contRow)] = str(comp["dim_comp"])                          #DIMENSIONI
-            ws["Y" + str(contRow)] = str(comp["mat_comp"])                          #MATERIALE
-            ws["AI" + str(contRow)] = comp["grezzo"]                                #COD GREZZO
+            ws["A" + str(contRow)] = "*C." + str(comp["id_riga_dett"]) + "*"    #ID RIGA COMP
+            ws["B" + str(contRow)] = str(comp["qt_comp"])                       #QT COMPO
+            ws["D" + str(contRow)] = str(comp["cod_comp"])                      #DIS PARTICOLARE
+            ws["K" + str(contRow)] = str(comp["desc_comp"])                     #DESCRIZIONE
+            ws["Q" + str(contRow)] = str(comp["dim_comp"])                      #DIMENSIONI
+            ws["Y" + str(contRow)] = str(comp["mat_comp"])                      #MATERIALE
+            ws["AI" + str(contRow)] = comp["grezzo"]                            #COD GREZZO
 
     #fine ciclo componenti
     wb.active = ws
@@ -121,3 +121,35 @@ def get_cell_coord(wb, range_name):
     for title, coord in dests:
         coord_arr.append(coord)
     return coord_arr
+
+#STAMPO IL MATERIALE TAGLIATO
+def save_xlsx_Produzione(array):
+    t_comp = array["t_compTaglio"]
+    #OTTENGO UN INSIEME DI COMPONENTI
+    #1 - creo DIR
+    s.setFolder("cassone")
+    #controllo se esiste già -> creo file cassone
+    path = 'C:/Produzione Python/cassone/stampoTaglio.xlsx'
+    #creo il file excel
+    copy2('template cassone.xlsx', path)
+    #vado a popolare il file
+    wb = openpyxl.load_workbook()
+    ws = wb["CASSONE"]
+    contRow = 2
+
+    for comp in t_comp:
+        ws["A" + str(contRow)] = "*C." + str(comp["id_riga_dett"]) + "*"        #ID RIGA COMP
+        ws["B" + str(contRow)] = str(comp["qt_comp"])                           #QT COMPO
+        ws["C" + str(contRow)] = str(comp["cod_comp"])                          #DIS PARTICOLARE
+        ws["D" + str(contRow)] = str(comp["desc_comp"])                         #DESCRIZIONE
+        ws["E" + str(contRow)] = str(comp["dim_comp"])                          #DIMENSIONI
+        ws["F" + str(contRow)] = str(comp["mat_comp"])                          #MATERIALE
+        ws["F" + str(contRow)] = str(comp["cod_imp"])                           #IMPEGNO
+        contRow = contRow +1
+
+    #fine ciclo componenti
+    #stampo
+
+    wb.active = ws
+    wb.save(fileName)
+    return 'file excel modificato'

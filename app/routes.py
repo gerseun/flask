@@ -204,6 +204,11 @@ def test():
         #pagina isorella
         if (formatted_data['azione'] == 'azioneTaglio') and (formatted_data['pagina'] == 'newTaglio'):
             risposta = json.dumps(f.get_DaTagliare(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newOrdine'):
+            #salvo il taglio
+            risposta = json.dumps(f.setAzioneTaglio(formatted_data['pagina'], formatted_data['messaggio']))
+            #stampo il taglio
+            risposta = json.dumps(save.save_xlsx_Taglio(formatted_data['messaggio']))
             #risposta = 'ok'
 
         return risposta
