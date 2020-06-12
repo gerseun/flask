@@ -60,7 +60,7 @@ $(document).ready(function() {
         send['messaggio'] = text;
         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
           var arr = JSON.parse(data);
-          console.log(arr);
+          //console.log(arr['messaggio']['t_compTaglio'][0]);
           if (arr['messaggio']){
             //qua deve aggiungere e compilare la tabella
             //aggiungo una riga alla tabella
@@ -68,10 +68,9 @@ $(document).ready(function() {
             add_row($table, 1);
             //compilo la riga
             var $rows = $table.find('tr:not(:hidden)'); //prendo tutte le righe
-            var $nr = $table.find('tr:not(:hidden)').rows.length;
-            conse.log($nr)
-            var $row = $rows[$nr - 1];
-            fill_row($row, arr['messaggio']);
+            console.log($rows);
+            var $row = $rows.eq($rows.length-1)
+            fill_row($row, arr['messaggio']['t_compTaglio'][0]);
 
           }
         });
@@ -146,7 +145,7 @@ $(document).ready(function() {
   };
 
   function fill_row($row, arr) {
-    console.log($row)
+    //console.log(arr)
     $.each(arr, function(index, el) {
       var $cell = $row.find('td[headers*="'+index+'"]');
       if (index != "id_produzione") {
