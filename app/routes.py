@@ -98,9 +98,6 @@ def NuovoOrdine():
 
 @app.route('/Scadenze', methods=['GET', 'POST'])
 def Scadenze():
-    #content = f.getOrdineScaduto("Scadenze")    #Riceve una stringa
-    #print('Dati ricevuti:')
-    #pprint.pprint(content)
     return render_template('Scadenze.html', title='SCADENZE MATERIALE ARRIVATO')
 
 @app.route('/Taglio', methods=['GET', 'POST'])
@@ -204,8 +201,8 @@ def test():
         #pagina isorella
         if (formatted_data['azione'] == 'azioneTaglio') and (formatted_data['pagina'] == 'newTaglio'):
             risposta = json.dumps(f.get_DaTagliare(formatted_data['pagina'], formatted_data['messaggio']))
-
-        #risposta = 'ok'
+            #risposta = 'ok'
+            
         return risposta
 
 @app.route('/tabella', methods=['GET', 'POST'])
