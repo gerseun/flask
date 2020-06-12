@@ -61,23 +61,19 @@ $(document).ready(function() {
         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
           var arr = JSON.parse(data);
           console.log(arr);
-
-
-
           if (arr['messaggio']){
             //qua deve aggiungere e compilare la tabella
-
             //aggiungo una riga alla tabella
-            //var $table = $(this).parents('table');
-            //var $table = $('.container');
-            //add_row($table, 1);
+            var $table = $('#tabella_taglio');
+            add_row($table, 1);
             //compilo la riga
-            //var $row = $table.find($table.length());
-            //fill_row($row, arr['messaggio']);
+            var $rows = $table.find('tr:not(:hidden)'); //prendo tutte le righe
+            var $nr = $table.find('tr:not(:hidden)').rows.length;
+            conse.log($nr)
+            var $row = $rows[$nr - 1];
+            fill_row($row, arr['messaggio']);
 
           }
-
-
         });
       }
     });
@@ -85,7 +81,6 @@ $(document).ready(function() {
 
   function add_row($table, n) {
     for (var i = 0; i < n; i++) {
-      console.log("entrato per add row")
       var $clone = $table.find('tr.hide').clone(true, true).removeClass('hide');
       $table.append($clone);
     }
@@ -151,6 +146,7 @@ $(document).ready(function() {
   };
 
   function fill_row($row, arr) {
+    console.log($row)
     $.each(arr, function(index, el) {
       var $cell = $row.find('td[headers*="'+index+'"]');
       if (index != "id_produzione") {
