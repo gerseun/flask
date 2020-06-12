@@ -148,8 +148,9 @@ def save_xlsx_Taglio(array):
         contRow = contRow +1
 
     #fine ciclo componenti
-    #stampo
-
     wb.active = ws
     wb.save(path)
+    #stampo
+    os.startfile(path,'print')
+    
     return 'file excel modificato'
