@@ -45,6 +45,29 @@ $(document).ready(function() {
     });
   }
 
+  if(page_class == "PageAvanzamento"){
+
+    $('#input_field').focus();
+    $('#input_field').focusout(function(event) {
+
+      var text = $(this).val();
+      if (text == '') {
+
+      }else {
+        var send = {};
+  
+        send['pagina'] = $('.container').attr('id');
+        send['azione'] = 'azioneAvanzamento';
+        send['messaggio'] = text;
+        $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+          var arr = JSON.parse(data);
+          console.log(arr);
+          fill_tables(arr['messaggio'], $('.container'));
+        });
+      }
+    });
+  }
+
   if(page_class == "newTaglio" || page_class == "newCarico" || page_class == "newProdIso"){
 
     $('#input_field').focus();

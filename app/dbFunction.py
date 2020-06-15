@@ -250,6 +250,24 @@ def getImpegno(ricImpegno):
     mydb.close()
     return arrayImp
 
+#RICERCA IMPEGNO INSERITO
+def getImpegnoFromID(idImpegno):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #istruzione query string -> seleziono impegno ricercato
+    mioDB.execute("SELECT * FROM impegno WHERE id_imp='" + str(idImpegno) + "'")
+    row = mioDB.fetchone()
+    if row:
+        #salvo i dati articolo
+        #elaboro la data
+        data = row["data_ord"].strftime("%d/%m/%Y")
+        arrayImp = {"id_imp": row["id_imp"], "cod_imp": row["cod_imp"],"cliente": row["cliente"],"cod_ord_cli": row["cod_ord_cli"],"data_ord": data}
+    #else:
+        #arrayImp = {"id_imp": "", "cod_imp": "","cliente": "","cod_ord_cli": "","data_ord": ""}
+    mydb.close()
+    return arrayImp
+
 #RICERCA I COMPONENTI INSERITI IN UN DATO ID_ARTICOLO
 def getCompInArticolo(ric_id_articolo):
     #apro la connessione al database
@@ -330,6 +348,27 @@ def getRigaDett(idRiga):
     #salvo i Dati
     riga = {"id_riga_dett": row["id_riga_dett"], "id_riga_imp": row["id_riga_imp"], "id_comp": row["id_comp"], "qt_comp": row["qt_comp"], "id_produzione": row["id_produzione"], "pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "scadenza": row["scadenza"]}
     return riga
+
+def getArticoliImpegnoFromIDART(idART):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_imp WHERE id_art = '" + str(idART) + "' ORDER BY id_riga_imp ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arrRx = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        if row["data_cons_art"]:
+            data = row["data_cons_art"].strftime("%d/%m/%Y")
+        else:
+            data = None
+        arrRx.append({"id_riga_imp": row["id_riga_imp"], "id_imp": row["id_imp"],"id_art": row["id_art"],"qt_art": row["qt_art"],"data_cons_art": data})
+    #chiusura
+    mydb.close()
+    return arrRx
 
 '''
 FUNZIONI SET
@@ -745,4 +784,29 @@ def setAzioneIsorella(namePage, articolo):
         mioDB.execute(sql, val)
     #fine
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
+    return risposta
+
+'''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+FUNZIONI PER AVANZAMENTO LAVORAZIONE
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''
+
+def get_Avanzamento(namePage, codArt):
+    #cerco ID_articolo
+    articoloRicerca = getArticolo(codArt)
+    articoliImpegno = getArticoliImpegnoFromIDART(articoloRicerca["id_art"])
+    impegno = getImpegnoFromID(articoliImpegno[0]["id_imp"])
+
+    #ciclo i vari impegni in cui è presente l' articolo
+    cont = 0
+    arrayRisp = []
+    for artImp in articoliImpegno:
+        #riga tabella
+        arrayRisp.append({"cod_imp": impegno["cod_imp"], "cliente": impegno["cliente"], "cod_art": articoloRicerca["cod_art"], "desc_art": articoloRicerca["desc_art"], "data_cons_art": articoliImpegno[cont]["data_cons_art"], "qt_art": articoliImpegno[cont]["qt_art"], "id_riga_imp": articoliImpegno[cont]["id_riga_imp"]})
+        cont = cont + 1
+    #array di risposta
+    avanzamento = {"t_Avanzamento": [arrayRisp]}
+    risposta = {"pagina": namePage,"azione": "azioneAvanzamento" , "messaggio": avanzamento}
+    #chiusura funzione
     return risposta

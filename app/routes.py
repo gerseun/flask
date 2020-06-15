@@ -112,6 +112,9 @@ def Carico():
 def ProduzIso():
     return render_template('ProduzIso.html', title='PRODUZIONE ISORELLA')
 
+@app.route('/Avanzamento', methods=['GET', 'POST'])
+def Avanzamento():
+    return render_template('Avanzamento.html', title='STATO AVANZAMENTO PRODUZIONE')
 
 @app.route('/About')
 def About():
@@ -228,7 +231,9 @@ def test():
             #salvo il taglio
             risposta = json.dumps(f.setAzioneIsorella(formatted_data['pagina'], formatted_data['messaggio']))
 
-
+        #pagina avanzamento PRODUZIONE
+        if (formatted_data['azione'] == 'azioneAvanzamento') and (formatted_data['pagina'] == 'PageAvanzamento'):
+            risposta = json.dumps(f.get_Avanzamento(formatted_data['pagina'], formatted_data['messaggio']))
 
         return risposta
 
