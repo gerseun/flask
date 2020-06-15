@@ -708,7 +708,7 @@ def getOrdineScaduto(namePage):
 FUNZIONI PER ISORELLA
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '''
-def get_DaTagliare(namePage, id):
+def get_DaIsorella(namePage, id):
     #controllo se corretto
     flag = id[0]
     #articolo
@@ -723,16 +723,16 @@ def get_DaTagliare(namePage, id):
         array_imp = getImpFromIDimp(array_art["id_imp"])
         #creo array per la prima tabella
         array_taglio = {"cod_comp": comp["cod_comp"], "desc_comp": comp["desc_comp"], "dim_comp": comp["dim_comp"], "mat_comp": comp["mat_comp"], "qt_comp": comp["qt_comp"], "cod_imp": array_imp["cod_imp"], "cod_art": array_art["cod_art"], "id_riga_dett": comp["id_riga_dett"]}
-        daTagliare = {"t_compTaglio": [array_taglio]}
+        daTagliare = {"t_compIsorella": [array_taglio]}
         risposta = {"pagina": namePage,"azione": "get_DaTagliare" , "messaggio": daTagliare}
 
     #chiusura funzione
     return risposta
 
 #SALVO IL TAGLIO
-def setAzioneTaglio(namePage, articolo):
+def setAzioneIsorella(namePage, articolo):
     #articolo con componenti
-    componenti = articolo["t_compTaglio"]
+    componenti = articolo["t_compIsorella"]
     for x in componenti:
         #salvo nel DB Backup
         saveBackupDett(x)

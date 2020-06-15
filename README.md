@@ -17,6 +17,11 @@ acquisti
 taglio
       "1">Da ordinare
       "7">Mat tagliato
-      "8">Trasporto a visano
-      "9">
-      "10">
+carico
+      "8">Carico grezzo
+      "9">Carico parz lavorato
+      "10">Carico finito
+carico
+      "11">Inizio prod Isorella
+      "12">Fine prod Isorella
+      "13">Parziale prod Isorella

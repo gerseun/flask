@@ -108,6 +108,11 @@ def Taglio():
 def Carico():
     return render_template('Carico.html', title='CARICO MATERIALE')
 
+@app.route('/ProduzIso', methods=['GET', 'POST'])
+def ProduzIso():
+    return render_template('ProduzIso.html', title='PRODUZIONE ISORELLA')
+
+
 @app.route('/About')
 def About():
     if request.method == 'POST':    #Aspetta una richiesta POST dal client
@@ -201,15 +206,29 @@ def test():
         if (formatted_data['azione'] == 'scaduti') and (formatted_data['pagina'] == 'scad'):
             risposta = json.dumps(f.getOrdineScaduto(formatted_data['pagina']))
 
-        #pagina isorella
-        if (formatted_data['azione'] == 'azioneTaglio') and (formatted_data['pagina'] == 'newTaglio'):
-            risposta = json.dumps(f.get_DaTagliare(formatted_data['pagina'], formatted_data['messaggio']))
+        #pagina isorella - taglio
+        if (formatted_data['azione'] == 'azioneIsorella') and (formatted_data['pagina'] == 'newTaglio'):
+            risposta = json.dumps(f.get_DaIsorella(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newTaglio'):
             #salvo il taglio
-            risposta = json.dumps(f.setAzioneTaglio(formatted_data['pagina'], formatted_data['messaggio']))
+            risposta = json.dumps(f.setAzioneIsorella(formatted_data['pagina'], formatted_data['messaggio']))
             #stampo il taglio
             risposta = json.dumps(save.save_xlsx_Taglio(formatted_data['messaggio']))
             #risposta = 'ok'
+        #pagina isorella - carico
+        if (formatted_data['azione'] == 'azioneIsorella') and (formatted_data['pagina'] == 'newCarico'):
+            risposta = json.dumps(f.get_DaIsorella(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newCarico'):
+            #salvo il taglio
+            risposta = json.dumps(f.setAzioneIsorella(formatted_data['pagina'], formatted_data['messaggio']))
+        #pagina isorella - produzione
+        if (formatted_data['azione'] == 'azioneIsorella') and (formatted_data['pagina'] == 'newProdIso'):
+            risposta = json.dumps(f.get_DaIsorella(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newProdIso'):
+            #salvo il taglio
+            risposta = json.dumps(f.setAzioneIsorella(formatted_data['pagina'], formatted_data['messaggio']))
+
+
 
         return risposta
 

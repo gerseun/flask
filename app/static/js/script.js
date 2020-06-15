@@ -45,7 +45,7 @@ $(document).ready(function() {
     });
   }
 
-  if(page_class == "newTaglio"){
+  if(page_class == "newTaglio" || page_class == "newCarico" || page_class == "newProdIso"){
 
     $('#input_field').focus();
     $('#input_field').focusout(function(event) {
@@ -56,7 +56,7 @@ $(document).ready(function() {
         //ricerco il prodotto da aggiungere
         var send = {};
         send['pagina'] = $('.container').attr('id');
-        send['azione'] = 'azioneTaglio';
+        send['azione'] = 'azioneIsorella';
         send['messaggio'] = text;
         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
           var arr = JSON.parse(data);
@@ -64,13 +64,13 @@ $(document).ready(function() {
           if (arr['messaggio']){
             //qua deve aggiungere e compilare la tabella
             //aggiungo una riga alla tabella
-            var $table = $('#tabella_taglio');
+            var $table = $('#tabella_isorella');
             add_row($table, 1);
             //compilo la riga
             var $rows = $table.find('tr:not(:hidden)'); //prendo tutte le righe
             console.log($rows);
             var $row = $rows.eq($rows.length-1)
-            fill_row($row, arr['messaggio']['t_compTaglio'][0]);
+            fill_row($row, arr['messaggio']['t_compIsorella'][0]);
           }
         });
       }

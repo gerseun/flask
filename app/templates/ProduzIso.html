@@ -2,13 +2,13 @@
 
 {% block content %}
 
-<div class="container" id="newCarico">
+<div class="container" id="newProdIso">
   <p>Per apportare modifiche contattare Simone</p>
   <p>Timbrare i codici dei componenti trasportati.</p>
 
 <!-- CASELLA DI TESTO PER INSERIMENTO DA BARCODE -->
-<div class="ricCarico">
-   <input id="input_field" type="text" name="ricercaCarico" size=”40″ maxlength=”20″>
+<div class="ricIsorella">
+   <input id="input_field" type="text" name="ricercaProd" size=”40″ maxlength=”20″>
 </div>
 <br><br>
 
@@ -16,7 +16,7 @@
   </div>
   <br>  <br>
   <div class="">
-    <table id="tabella_taglio" class="t_compTaglio"><!-- è la tabella è uguale a quella del taglio -->
+    <table id="tabella_isorella" class="t_compIsorella"><!-- è la tabella è uguale a quella del taglio -->
       <tr>
         <th id="cod_comp">Codice Componente</th>
         <th id="desc_comp">Descrizione</th>
@@ -39,10 +39,9 @@
         <td headers="cod_art" contenteditable="false"></td>
         <td headers="id_produzione" class="control_prod">
           <select class="action" name="">
-            <option value="7">Mat tagliato</option>
-            <option value="8">Carico grezzo</option>
-            <option value="9">Carico parz lavorato</option>
-            <option value="10">Carico finito</option>
+            <option value="11">Inizio prod Isorella</option>
+            <option value="12">Fine prod Isorella</option>
+            <option value="13">Parziale prod Isorella</option>
           </select>
         </td><td headers="id_riga_dett" contenteditable="false"></td>
         <td class="control"><i class="table-remove fa fa-times"></i></td>
