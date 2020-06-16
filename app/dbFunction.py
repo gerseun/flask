@@ -815,7 +815,7 @@ def get_Avanzamento(namePage, codArt):
 def getAvanzamentoFromID(namePage, IDArtImp):
     #cerco ID_articolo
     articoloRicerca = getArtFromIdRigaImp(IDArtImp)
-    impegno = getImpegnoFromID(articoloRicerca[0]["id_imp"])
+    impegno = getImpegnoFromID(articoloRicerca["id_imp"])
     articoli = getArtInImpegno(impegno["id_imp"])
 
     #ciclo i vari impegni in cui è presente l' articolo
