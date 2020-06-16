@@ -378,6 +378,7 @@ def getArtFromIdRigaImp(ric_id_riga_imp):
     mioDB.execute("SELECT * FROM riga_imp INNER JOIN articolo ON riga_imp.ID_art=articolo.ID_art  WHERE riga_imp.id_riga_imp = '" + str(ric_id_riga_imp) + "' ORDER BY riga_imp.ID_riga_imp ASC")
     row = mioDB.fetchone()
     #variabili array ARTICOLI
+    arr_Articoli = {}
     if row:
         data = row["data_cons_art"].strftime("%d/%m/%Y")
         #creo array
