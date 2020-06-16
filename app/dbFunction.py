@@ -370,6 +370,22 @@ def getArticoliImpegnoFromIDART(idART):
     mydb.close()
     return arrRx
 
+def getArtFromIdRigaImp(ric_id_riga_imp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #seleziono gli id_riga_imp dell' impegno ricercato
+    mioDB.execute("SELECT * FROM riga_imp INNER JOIN articolo ON riga_imp.ID_art=articolo.ID_art  WHERE riga_imp.id_riga_imp = '" + str(ric_id_riga_imp) + "' ORDER BY riga_imp.ID_riga_imp ASC")
+    row = mioDB.fetchone()
+    #variabili array ARTICOLI
+    if row:
+        data = row["data_cons_art"].strftime("%d/%m/%Y")
+        #creo array
+        arr_Articoli = {"id_imp": row["id_imp"], "id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data}
+    #chiusura
+    mydb.close()
+    return arr_Articoli
+
 '''
 FUNZIONI SET
 '''
@@ -644,22 +660,6 @@ def getFiltroDaOrdinare(ric_id_art_imp):
     mydb.close()
     return arr_CompInArtImp
 
-def getArtFromIdRigaImp(ric_id_riga_imp):
-    #apro la connessione al database
-    mydb = connessione()
-    mioDB = mydb.cursor(dictionary=True)
-    #seleziono gli id_riga_imp dell' impegno ricercato
-    mioDB.execute("SELECT * FROM riga_imp INNER JOIN articolo ON riga_imp.ID_art=articolo.ID_art  WHERE riga_imp.id_riga_imp = '" + str(ric_id_riga_imp) + "' ORDER BY riga_imp.ID_riga_imp ASC")
-    row = mioDB.fetchone()
-    #variabili array ARTICOLI
-    if row:
-        data = row["data_cons_art"].strftime("%d/%m/%Y")
-        #creo array
-        arr_Articoli = {"id_imp": row["id_imp"], "id_riga_imp": row["id_riga_imp"], "cod_art": row["cod_art"],"id_art": row["id_art"],"desc_art": row["desc_art"],"qt_art": row["qt_art"],"data_cons_art": data}
-    #chiusura
-    mydb.close()
-    return arr_Articoli
-
 #RICERCA IMPEGNO INSERITO DA ID IMP
 def getImpFromIDimp(ricIDImpegno):
     #apro la connessione al database
@@ -808,5 +808,18 @@ def get_Avanzamento(namePage, codArt):
     #array di risposta
     avanzamento = {"t_Avanzamento": arrayRisp}
     risposta = {"pagina": namePage,"azione": "azioneAvanzamento" , "messaggio": avanzamento}
+    #chiusura funzione
+    return risposta
+
+def getAvanzamentoFromID(namePage, IDArtImp):
+    #cerco ID_articolo
+    articoloRicerca = getArtFromIdRigaImp(IDArtImp)
+    impegno = getImpegnoFromID(articoloRicerca[0]["id_imp"])
+    articoli = getArtInImpegno(impegno["id_imp"])
+
+    #ciclo i vari impegni in cui è presente l' articolo
+    impArt = {"t_imp": [impegno], "t_art": articoli}
+    #array di risposta
+    risposta = {"pagina": namePage,"azione": "azioneAvanzamento" , "messaggio": impArt}
     #chiusura funzione
     return risposta
