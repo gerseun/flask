@@ -403,6 +403,13 @@ $(document).ready(function() {
               p_arr['t_art'] = arr['messaggio']['t_art'];
               p_arr['t_comp'] = arr['messaggio']['t_comp'];
 
+              $cell.parents('table').find('tr').each(function(index, el) {
+                if (index > 1) {
+                  el.remove();
+                  $('#dialog'+(index-1)+'').remove();
+                }
+              });
+
               if ($cell.attr('id') == 'first_cell') {
                 fill_tables(arr['messaggio'], $('.container'));
               } else {
