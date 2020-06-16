@@ -403,10 +403,10 @@ $(document).ready(function() {
               p_arr['t_art'] = arr['messaggio']['t_art'];
               p_arr['t_comp'] = arr['messaggio']['t_comp'];
 
-              $cell.parents('table').find('tr').each(function(index, el) {
+              $('.container .t_art').find('tr').each(function(index, el) {
                 if (index > 1) {
                   el.remove();
-                  $('#dialog'+(index-1)+'').remove();
+                  $('#dialog'+(index-1)+'').dialog( "destroy" );
                 }
               });
 
@@ -421,7 +421,7 @@ $(document).ready(function() {
                   $(this).addClass('dialog'+index+'');
                   create_dialog(index, arr['messaggio']['t_art'][index-1]);
                 }
-              });
+              });/*
               if (arr['messaggio']['t_comp'].length > 0) {
                 var $comp_dg = $('#dialog_comp').removeClass('hide');
                 $comp_dg.dialog({
@@ -447,18 +447,6 @@ $(document).ready(function() {
                     });
                   },
                   buttons:{
-                    /*'Salva': function() {
-                      var arr = {};
-                      var send = {};
-                      arr["t_comp_sing"] = get_table($(this).find('table.t_comp').eq(0));
-                      send['pagina'] = $('.container').attr('id');;
-                      send['azione'] = 'aggiorna_comp_sing';
-                      send['messaggio'] = arr;
-                      $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
-                        console.log(data);
-                      });
-                      $( this ).dialog( "close" );
-                    },*/
                     'Salva': function() {
                       var arr = {};
                       var send = {};
@@ -476,7 +464,7 @@ $(document).ready(function() {
                     }
                   }
                 });
-              }
+              }*/
             });
           }
         });
