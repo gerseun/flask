@@ -53,6 +53,14 @@ $(document).ready(function() {
       if (text == '') {
 
       }else {
+
+        $('.container .t_Avanzamento').find('tr').each(function(index, el) {
+          if (index > 1) {
+            el.remove();
+            $('#dialog'+(index-1)+'').dialog( "destroy" );
+          }
+        });
+
         var send = {};
 
         send['pagina'] = $('.container').attr('id');
@@ -62,6 +70,31 @@ $(document).ready(function() {
           var arr = JSON.parse(data);
           console.log(arr);
           fill_tables(arr['messaggio'], $('.container'));
+
+          $('.container .t_Avanzamento').eq(0).find('tr:not(:hidden)').each(function(index, el) {
+            if (index > 0){
+              $(this).addClass('dialog'+index+'');
+              var $clone = $('#dialog_Avanzamento').clone(true, true).removeClass('hide');
+              $clone.attr('id', 'dialog'+index+'');
+              $clone.dialog({
+                autoOpen: false,
+                height: 'auto',
+                width:'auto',
+                resizable:false,
+                modal:true,
+                create: function(event,ui){
+                  $('.container .t_Avanzamento').eq(0).find('tr:not(:hidden)').eq(index).find('.open-dialog').click(function(event) {
+                    $('#dialog'+index+'').dialog( "open" );
+                  });
+                },
+                buttons:{
+                  'Salva': function() {
+                    $( this ).dialog( "close" );
+                  }
+                }
+              });
+            }
+          });
         });
       }
     });
