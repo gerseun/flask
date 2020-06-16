@@ -43,110 +43,59 @@
   <!-- FINE TABELLA SELEZIONE
       APERTURA BOX DI AVANZAMENTO LAVORI-->
 <div id="box">
-  <div id="dialog_comp" title="Stampa liste taglio-ordine" class="hide">
-    <p>
+  <div id="dialog_Avanzamento" title="Stampa avanzamento produzione" class="hide">
+      <p>Dati Impegno.</p>
       <table class="t_imp">
         <tr>
-          <th id="cod_comp">Codice Componente</th>
-          <th id="desc_comp">Descrizione</th>
-          <th id="dim_comp">Dimensione</th>
-          <th id="mat_comp">Materiale</th>
-          <th id="grezzo">Grezzo</th>
-          <th id="qt_comp">Qt Componente</th>
-          <th id="id_produzione">Azione</th>
-          <th id="id_riga_imp_comp">ID Comp Impegno</th>
+          <th id="cod_imp">Codice Impegno</th>
+          <th id="cliente">Cliente</th>
+          <th id="data_comp">Data compilazione</th>
+          <th id="id_imp">ID imp</th>
         </tr>
         <tr class="hide">
-          <td headers="cod_comp" contenteditable="false"></td>
-          <td headers="desc_comp" contenteditable="false"></td>
-          <td headers="dim_comp" contenteditable="false"></td>
-          <td headers="mat_comp" contenteditable="false"></td>
-          <td headers="grezzo" contenteditable="false"></td>
-          <td headers="qt_comp" contenteditable="true"></td>
-          <td headers="id_produzione" class="control_prod">
-            <select class="action" name="">
-              <option value="0">scegliere</option>
-              <option value="1">Da ordinare</option>
-              <option value="2">Da Tagliare</option>
-              <option value="3">Verificare a mag</option>
-              <option value="4">Ufficio Tecnico</option>
-            </select>
-          </td>
-          <td headers="id_riga_imp_comp" contenteditable="false"></td>
+          <td headers="cod_imp" contenteditable="false"></td>
+          <td headers="cliente" contenteditable="false"></td>
+          <td headers="data_comp" contenteditable="false"></td>
+          <td headers="id_imp" contenteditable="false"></td>
         </tr>
       </table>
 
-
-
-
-      <table class="t_comp">
-        <tr>
-          <th id="cod_comp">Codice Componente</th>
-          <th id="desc_comp">Descrizione</th>
-          <th id="dim_comp">Dimensione</th>
-          <th id="mat_comp">Materiale</th>
-          <th id="grezzo">Grezzo</th>
-          <th id="qt_comp">Qt Componente</th>
-          <th id="id_produzione">Azione</th>
-          <th id="id_riga_imp_comp">ID Comp Impegno</th>
-        </tr>
-        <tr class="hide">
-          <td headers="cod_comp" contenteditable="false"></td>
-          <td headers="desc_comp" contenteditable="false"></td>
-          <td headers="dim_comp" contenteditable="false"></td>
-          <td headers="mat_comp" contenteditable="false"></td>
-          <td headers="grezzo" contenteditable="false"></td>
-          <td headers="qt_comp" contenteditable="true"></td>
-          <td headers="id_produzione" class="control_prod">
-            <select class="action" name="">
-              <option value="0">scegliere</option>
-              <option value="1">Da ordinare</option>
-              <option value="2">Da Tagliare</option>
-              <option value="3">Verificare a mag</option>
-              <option value="4">Ufficio Tecnico</option>
-            </select>
-          </td>
-          <td headers="id_riga_imp_comp" contenteditable="false"></td>
-        </tr>
-      </table>
-    </p>
-  </div>
-  <div id="dialog0" title="Stampa liste taglio-ordine" class="hide">
-    <p>
+      <br>
+      <p>Dati Articolo.</p>
       <table class="t_art">
-        <tr class="headers">
+        <tr>
           <th id="cod_art">Codice Articolo</th>
           <th id="desc_art">Descrizione</th>
+          <th id="qt_art">Qt</th>
           <th id="data_cons_art">Data consegna</th>
-          <th id="qt_art">Quantità</th>
-          <th id="id_riga_imp">id imp art</th>
+          <th id="id_riga_imp">ID riga</th>
         </tr>
-        <tr>
-          <td headers="cod_art" contenteditable="false" class=""></td>
+        <tr class="hide">
+          <td headers="cod_art" contenteditable="false"></td>
           <td headers="desc_art" contenteditable="false"></td>
+          <td headers="qt_art" contenteditable="false"></td>
           <td headers="data_cons_art" contenteditable="false"></td>
-          <td headers="qt_art" contenteditable="true"></td>
           <td headers="id_riga_imp" contenteditable="false"></td>
         </tr>
       </table>
+
+      <br><br>
+      <p>Dati Componenti in produzione.</p>
       <table class="t_comp">
         <tr>
           <th id="cod_comp">Codice Componente</th>
           <th id="desc_comp">Descrizione</th>
-          <th id="dim_comp">Dimensione</th>
-          <th id="mat_comp">Materiale</th>
           <th id="grezzo">Grezzo</th>
-          <th id="qt_comp">Qt Componente</th>
-          <th id="id_produzione">Azione</th>
-          <th id="id_riga_dett">ID Comp Impegno</th>
+          <th id="qt_comp">Qt.</th>
+          <th id="id_produzione">Avanzamento</th>
+          <th id="scadenza">Scadenza consegna</th>
+          <th id="id_riga_dett">ID riga</th>
         </tr>
         <tr class="hide">
           <td headers="cod_comp" contenteditable="false"></td>
           <td headers="desc_comp" contenteditable="false"></td>
-          <td headers="dim_comp" contenteditable="false"></td>
-          <td headers="mat_comp" contenteditable="false"></td>
           <td headers="grezzo" contenteditable="false"></td>
-          <td headers="qt_comp" contenteditable="true"></td>
+          <td headers="qt_comp" contenteditable="false"></td>
           <td headers="id_produzione" class="control_prod">
             <select class="action" name="">
               <option value="0">scegliere</option>
@@ -155,13 +104,20 @@
               <option value="3">Verificare a mag</option>
               <option value="4">Ufficio Tecnico</option>
               <option value="5">Ordinato</option>
-              <option value="6">Materiale arrivato</option>
+              <option value="6">Materiale Arrivato</option>
+              <option value="7">Mat tagliato</option>
+              <option value="8">Carico grezzo</option>
+              <option value="9">Carico parz lavorato</option>
+              <option value="10">Carico finito</option>
+              <option value="11">Inizio prod Isorella</option>
+              <option value="12">Fine prod Isorella</option>
+              <option value="13">Parziale prod Isorella</option>
             </select>
           </td>
+          <td headers="scadenza" contenteditable="false"></td>
           <td headers="id_riga_dett" contenteditable="false"></td>
         </tr>
       </table>
-    </p>
   </div>
 
 <button id="test_btn">Test dialog</button>

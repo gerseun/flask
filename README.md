@@ -21,7 +21,7 @@ carico
       "8">Carico grezzo
       "9">Carico parz lavorato
       "10">Carico finito
-carico
+prod isorella
       "11">Inizio prod Isorella
       "12">Fine prod Isorella
-      "13">Parziale prod Isore
+      "13">Parziale prod Isorella
