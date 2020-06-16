@@ -806,7 +806,7 @@ def get_Avanzamento(namePage, codArt):
         arrayRisp.append({"cod_imp": impegno["cod_imp"], "cliente": impegno["cliente"], "cod_art": articoloRicerca["cod_art"], "desc_art": articoloRicerca["desc_art"], "data_cons_art": articoliImpegno[cont]["data_cons_art"], "qt_art": articoliImpegno[cont]["qt_art"], "id_riga_imp": articoliImpegno[cont]["id_riga_imp"]})
         cont = cont + 1
     #array di risposta
-    avanzamento = {"t_Avanzamento": [arrayRisp]}
+    avanzamento = {"t_Avanzamento": arrayRisp}
     risposta = {"pagina": namePage,"azione": "azioneAvanzamento" , "messaggio": avanzamento}
     #chiusura funzione
     return risposta

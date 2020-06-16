@@ -49,13 +49,12 @@ $(document).ready(function() {
 
     $('#input_field').focus();
     $('#input_field').focusout(function(event) {
-
       var text = $(this).val();
       if (text == '') {
 
       }else {
         var send = {};
-  
+
         send['pagina'] = $('.container').attr('id');
         send['azione'] = 'azioneAvanzamento';
         send['messaggio'] = text;

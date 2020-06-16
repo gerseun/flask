@@ -24,4 +24,4 @@ carico
 carico
       "11">Inizio prod Isorella
       "12">Fine prod Isorella
-      "13">Parziale prod Isorella
+      "13">Parziale prod Isore

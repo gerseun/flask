@@ -26,7 +26,7 @@
       </tr>
       <tr class="hide">
         <td class="control"><i class="open-dialog fa fa-arrow-circle-right"></i></td>
-        <td headers="cod_imp" contenteditable="true" class="search_imp_lt" id="first_cell"></td>
+        <td headers="cod_imp" contenteditable="false" class="search_imp_lt" id="first_cell"></td>
         <td headers="cliente" contenteditable="false"></td>
         <td headers="cod_art" contenteditable="false"></td>
         <td headers="desc_art" contenteditable="false"></td>
@@ -41,10 +41,44 @@
 <br>
 
   <!-- FINE TABELLA SELEZIONE
-      APERTURA BOX DI SELEZIONE TAGLIO-->
+      APERTURA BOX DI AVANZAMENTO LAVORI-->
 <div id="box">
   <div id="dialog_comp" title="Stampa liste taglio-ordine" class="hide">
     <p>
+      <table class="t_imp">
+        <tr>
+          <th id="cod_comp">Codice Componente</th>
+          <th id="desc_comp">Descrizione</th>
+          <th id="dim_comp">Dimensione</th>
+          <th id="mat_comp">Materiale</th>
+          <th id="grezzo">Grezzo</th>
+          <th id="qt_comp">Qt Componente</th>
+          <th id="id_produzione">Azione</th>
+          <th id="id_riga_imp_comp">ID Comp Impegno</th>
+        </tr>
+        <tr class="hide">
+          <td headers="cod_comp" contenteditable="false"></td>
+          <td headers="desc_comp" contenteditable="false"></td>
+          <td headers="dim_comp" contenteditable="false"></td>
+          <td headers="mat_comp" contenteditable="false"></td>
+          <td headers="grezzo" contenteditable="false"></td>
+          <td headers="qt_comp" contenteditable="true"></td>
+          <td headers="id_produzione" class="control_prod">
+            <select class="action" name="">
+              <option value="0">scegliere</option>
+              <option value="1">Da ordinare</option>
+              <option value="2">Da Tagliare</option>
+              <option value="3">Verificare a mag</option>
+              <option value="4">Ufficio Tecnico</option>
+            </select>
+          </td>
+          <td headers="id_riga_imp_comp" contenteditable="false"></td>
+        </tr>
+      </table>
+
+
+
+
       <table class="t_comp">
         <tr>
           <th id="cod_comp">Codice Componente</th>
