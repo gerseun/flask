@@ -25,3 +25,8 @@ prod isorella
       "11">Inizio prod Isorella
       "12">Fine prod Isorella
       "13">Parziale prod Isorella
+magazzino
+      "14">Presenza totale
+      "15">Presenza parziale
+      "1">Da ordinare
+      "5">Ordinato

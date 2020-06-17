@@ -112,6 +112,10 @@ def Carico():
 def ProduzIso():
     return render_template('ProduzIso.html', title='PRODUZIONE ISORELLA')
 
+@app.route('/Magazzino', methods=['GET', 'POST'])
+def Magazzino():
+    return render_template('Magazzino.html', title='PREPARAZIONE MAGAZZINO')
+
 @app.route('/Avanzamento', methods=['GET', 'POST'])
 def Avanzamento():
     return render_template('Avanzamento.html', title='STATO AVANZAMENTO PRODUZIONE')
@@ -231,13 +235,19 @@ def test():
             #salvo il taglio
             risposta = json.dumps(f.setAzioneIsorella(formatted_data['pagina'], formatted_data['messaggio']))
 
+        #pagina Magazzino
+        if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newMagazzino'):
+            risposta = json.dumps(f.setAzioneMagazzino(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'azioneMagazzino') and (formatted_data['pagina'] == 'newMagazzino'):
+            risposta = json.dumps(f.get_DaMagazzino(formatted_data['pagina'], formatted_data['messaggio']))
+
         #pagina avanzamento PRODUZIONE
         if (formatted_data['azione'] == 'azioneAvanzamento') and (formatted_data['pagina'] == 'PageAvanzamento'):
             risposta = json.dumps(f.get_Avanzamento(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'azioneAvanzamento2') and (formatted_data['pagina'] == 'PageAvanzamento'):
             risposta = json.dumps(f.getAvanzamentoFromID(formatted_data['pagina'], formatted_data['messaggio']))
-            #risporta = "risposta"
 
+        #risporta = "risposta"
         return risposta
 
 @app.route('/tabella', methods=['GET', 'POST'])

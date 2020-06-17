@@ -24,7 +24,6 @@ $(document).ready(function() {
   }
 
   if(page_class == "newOrdine"){
-
     $('#input_field').focus();
     $('#input_field').focusout(function(event) {
       var text = $(this).val();
@@ -45,8 +44,28 @@ $(document).ready(function() {
     });
   }
 
-  if(page_class == "PageAvanzamento"){
+  if(page_class == "newMagazzino"){
+    $('#input_field').focus();
+    $('#input_field').focusout(function(event) {
+      var text = $(this).val();
+      if (text == '') {
 
+      }else {
+        var send = {};
+
+        send['pagina'] = $('.container').attr('id');
+        send['azione'] = 'azioneMagazzino';
+        send['messaggio'] = text;
+        $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+          var arr = JSON.parse(data);
+          console.log(arr);
+          fill_tables(arr['messaggio'], $('.container'));
+        });
+      }
+    });
+  }
+
+  if(page_class == "PageAvanzamento"){
     $('#input_field').focus();
     $('#input_field').focusout(function(event) {
       var text = $(this).val();
@@ -83,11 +102,7 @@ $(document).ready(function() {
 
               $.post('/test', JSON.stringify(send2), function(data2, textStatus, xhr) {
                 var arr2 = JSON.parse(data2);
-<<<<<<< HEAD
-                console.log(arr2);
-=======
-                //console.log(arr2);
->>>>>>> 94a590bfbbc208bf2621c9c7393cd3fbb078e2bd
+
                 var $clone = $('#dialog_Avanzamento').clone(true, true).removeClass('hide');
                 $clone.attr('id', 'dialog'+index+'');
 
@@ -107,14 +122,7 @@ $(document).ready(function() {
                 $t_comp.find('tr').each(function(index, el) {
                   if (index>1) {
                     fill_row($(this), arr2['messaggio']['t_art'][0]['t_comp'][index-2]);
-                    $(this).find('td[headers*="qt_comp"]').each(function(index, el) {
-                      //if ($(this).text()=="") {
-                        //$(this).text(qt);
-                      //}else {
-                        $(this).attr('contenteditable', 'true');
-                        //$(this).text($(this).text()*qt);
-                      //}
-                    });
+
                   }
                 });
 

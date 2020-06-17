@@ -83,15 +83,17 @@ def setAzioneArticolo(namePage, articolo):
     #ciclo i componenti da salvare
     componenti = articolo["t_comp"]
     for x in componenti:
-        #salvo nel DB Backup
-        saveBackupDett(x)
-        #salvo la nuova Azione
-        #apro la connessione al database
-        mydb = connessione()
-        mioDB = mydb.cursor(dictionary=True)
-        sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s WHERE id_riga_dett = %s"
-        val = (x["qt_comp"], x["id_produzione"], x["id_riga_dett"])
-        mioDB.execute(sql, val)
+        if x["id_produzione"] != 0:
+            #salvo nel DB Backup
+            saveBackupDett(x)
+            #salvo la nuova Azione
+            #apro la connessione al database
+            mydb = connessione()
+            mioDB = mydb.cursor(dictionary=True)
+            sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s WHERE id_riga_dett = %s"
+            val = (x["qt_comp"], x["id_produzione"], x["id_riga_dett"])
+            mioDB.execute(sql, val)
+        #PROSSIMO COMP
     #fine
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
@@ -683,19 +685,20 @@ def setAzioneOrdine(namePage, articolo):
     #articolo con componenti
     componenti = articolo["t_compAcq"]
     for x in componenti:
-        #salvo nel DB Backup
-        saveBackupDett(x)
-        #salvo la nuova Azione
-        #apro la connessione al database
-        mydb = connessione()
-        mioDB = mydb.cursor(dictionary=True)
-        if x["scadenza"]:
-            scad = datetime.datetime.strptime(x["scadenza"], '%d/%m/%Y').date()
-        else:
-            scad = None
-        sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s, cod_ordine = %s, scadenza = %s WHERE id_riga_dett = %s"
-        val = (x["qt_comp"], x["id_produzione"], x["cod_ordine"], scad, x["id_riga_dett"])
-        mioDB.execute(sql, val)
+        if x["id_produzione"] != 0:
+            #salvo nel DB Backup
+            saveBackupDett(x)
+            #salvo la nuova Azione
+            #apro la connessione al database
+            mydb = connessione()
+            mioDB = mydb.cursor(dictionary=True)
+            if x["scadenza"]:
+                scad = datetime.datetime.strptime(x["scadenza"], '%d/%m/%Y').date()
+            else:
+                scad = None
+            sql = "UPDATE riga_dett SET qt_comp = %s, id_produzione = %s, cod_ordine = %s, scadenza = %s WHERE id_riga_dett = %s"
+            val = (x["qt_comp"], x["id_produzione"], x["cod_ordine"], scad, x["id_riga_dett"])
+            mioDB.execute(sql, val)
     #fine
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
@@ -774,15 +777,16 @@ def setAzioneIsorella(namePage, articolo):
     #articolo con componenti
     componenti = articolo["t_compIsorella"]
     for x in componenti:
-        #salvo nel DB Backup
-        saveBackupDett(x)
-        #salvo la nuova Azione
-        #apro la connessione al database
-        mydb = connessione()
-        mioDB = mydb.cursor(dictionary=True)
-        sql = "UPDATE riga_dett SET id_produzione = %s WHERE id_riga_dett = %s"
-        val = (x["id_produzione"], x["id_riga_dett"])
-        mioDB.execute(sql, val)
+        if x["id_produzione"] != 0:
+            #salvo nel DB Backup
+            saveBackupDett(x)
+            #salvo la nuova Azione
+            #apro la connessione al database
+            mydb = connessione()
+            mioDB = mydb.cursor(dictionary=True)
+            sql = "UPDATE riga_dett SET id_produzione = %s WHERE id_riga_dett = %s"
+            val = (x["id_produzione"], x["id_riga_dett"])
+            mioDB.execute(sql, val)
     #fine
     risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
@@ -823,4 +827,89 @@ def getAvanzamentoFromID(namePage, IDArtImp):
     #array di risposta
     risposta = {"pagina": namePage,"azione": "azioneAvanzamento2" , "messaggio": impArt}
     #chiusura funzione
+    return risposta
+
+'''
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+FUNZIONI PER MAGAZZINO
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+'''
+def get_DaMagazzino(namePage, id):
+    #controllo se Articolo o componenti singoli
+    flag = id[0]
+    #articolo
+    id = id[2:]
+
+    #ARTICOLO
+    if flag == "A":
+        array_art = getArtFromIdRigaImp(id)
+        #impegno
+        array_imp = getImpFromIDimp(array_art["id_imp"])
+        #creo array per la prima tabella
+        array_imp_art = {"cod_art": array_art["cod_art"], "desc_art": array_art["desc_art"], "cliente": array_imp["cliente"], "cod_imp": array_imp["cod_imp"], "cliente": array_imp["cliente"], "data_cons_art": array_art["data_cons_art"]}
+        #prendo i componenti in produzione dell' articolo
+        compInArticolo = getFiltroDaOrdinareMagazzino(id)
+        #creo e trasmetto il messaggio
+        daOrdinare = {"t_imp_art": [array_imp_art], "t_Mag": compInArticolo}
+        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+
+    #COMPONENTE IN ARTICOLO
+    elif flag == "C":
+        #prendo il COMPONENTE
+        comp = getCompFromIdRigaDett(id)
+        #articolo
+        array_art = getArtFromIdRigaImp(comp["id_riga_imp"])
+        #impegno
+        array_imp = getImpFromIDimp(array_art["id_imp"])
+        #creo array per la prima tabella
+        array_imp_art = {"cod_art": array_art["cod_art"], "desc_art": array_art["desc_art"], "cliente": array_imp["cliente"], "cod_imp": array_imp["cod_imp"], "cliente": array_imp["cliente"], "data_cons_art": array_art["data_cons_art"]}
+        daOrdinare = {"t_imp_art": [array_imp_art], "t_Mag": [comp]}
+        risposta = {"pagina": namePage,"azione": "get_DaOrdinare" , "messaggio": daOrdinare}
+
+    #chiusura funzione
+    return risposta
+
+#seleziono i comp nell' articolo selezionato che interessano ad Ida
+def getFiltroDaOrdinareMagazzino(ric_id_art_imp):
+    #apro la connessione al database
+    mydb = connessione()
+    mioDB = mydb.cursor(dictionary=True)
+    #prendo i componenti e la loro descrizione
+    mioDB.execute("SELECT * FROM riga_dett INNER JOIN componente ON riga_dett.ID_comp=componente.ID_comp  WHERE riga_dett.ID_riga_imp = '" + str(ric_id_art_imp) + "' ORDER BY riga_dett.ID_riga_dett ASC")
+    risultato = mioDB.fetchall()
+    #variabili array COMPONENTI IN ARTICOLO
+    arr_CompInArtImp = []
+    #ciclo tutti i componenti
+    flag = False
+    for row in risultato:
+        flag = True
+        #controllo se serve per Acquisti
+        if row["id_produzione"] == 3 or row["id_produzione"] == 14 or row["id_produzione"] == 15:
+            #controllo date
+            if row["scadenza"]:
+                data = row["scadenza"].strftime("%d/%m/%Y")
+            else:
+                data = None
+            arr_CompInArtImp.append({"id_riga_dett": row["id_riga_dett"], "cod_comp": row["cod_comp"],"id_comp": row["id_comp"],"desc_comp": row["desc_comp"],"dim_comp": row["dim_comp"],"mat_comp": row["mat_comp"],"qt_comp": row["qt_comp"],"id_produzione": row["id_produzione"],"pos_comp_imp": row["pos_comp_imp"], "cod_ordine": row["cod_ordine"], "grezzo": row["grezzo"], "scadenza": data})
+    #chiusura
+    mydb.close()
+    return arr_CompInArtImp
+
+#SALVO IL MAGAZZINO
+def setAzioneMagazzino(namePage, articolo):
+    #articolo con componenti
+    componenti = articolo["t_Mag"]
+    for x in componenti:
+        if x["id_produzione"] != 0:
+            #salvo nel DB Backup
+            saveBackupDett(x)
+            #salvo la nuova Azione
+            #apro la connessione al database
+            mydb = connessione()
+            mioDB = mydb.cursor(dictionary=True)
+            sql = "UPDATE riga_dett SET id_produzione = %s WHERE id_riga_dett = %s"
+            val = (x["id_produzione"], x["id_riga_dett"])
+            mioDB.execute(sql, val)
+    #fine
+    risposta = {"pagina": namePage,"azione": "aggiorna_comp" , "messaggio": "AGGIORNATO CON SUCCESSO"}
     return risposta
