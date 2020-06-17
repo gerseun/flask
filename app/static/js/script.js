@@ -81,8 +81,8 @@ $(document).ready(function() {
               send2['messaggio'] = $(this).find('.search_imp_av').text();
 
               $.post('/test', JSON.stringify(send2), function(data2, textStatus, xhr) {
-                var arr = JSON.parse(data2);
-                console.log(arr);
+                var arr2 = JSON.parse(data2);
+                //console.log(arr2);
                 var $clone = $('#dialog_Avanzamento').clone(true, true).removeClass('hide');
                 $clone.attr('id', 'dialog'+index+'');
                 $clone.dialog({
@@ -94,6 +94,8 @@ $(document).ready(function() {
                   create: function(event,ui){
                     $('.container .t_Avanzamento').eq(0).find('tr:not(:hidden)').eq(index).find('.open-dialog').click(function(event) {
                       $('#dialog'+index+'').dialog( "open" );
+
+
                     });
                   },
                   buttons:{
