@@ -234,6 +234,9 @@ def test():
         #pagina avanzamento PRODUZIONE
         if (formatted_data['azione'] == 'azioneAvanzamento') and (formatted_data['pagina'] == 'PageAvanzamento'):
             risposta = json.dumps(f.get_Avanzamento(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'azioneAvanzamento2') and (formatted_data['pagina'] == 'PageAvanzamento'):
+            risposta = json.dumps(f.getAvanzamentoFromID(formatted_data['pagina'], formatted_data['messaggio']))
+            #risporta = "risposta"
 
         return risposta
 

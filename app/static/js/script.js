@@ -74,24 +74,34 @@ $(document).ready(function() {
           $('.container .t_Avanzamento').eq(0).find('tr:not(:hidden)').each(function(index, el) {
             if (index > 0){
               $(this).addClass('dialog'+index+'');
-              var $clone = $('#dialog_Avanzamento').clone(true, true).removeClass('hide');
-              $clone.attr('id', 'dialog'+index+'');
-              $clone.dialog({
-                autoOpen: false,
-                height: 'auto',
-                width:'auto',
-                resizable:false,
-                modal:true,
-                create: function(event,ui){
-                  $('.container .t_Avanzamento').eq(0).find('tr:not(:hidden)').eq(index).find('.open-dialog').click(function(event) {
-                    $('#dialog'+index+'').dialog( "open" );
-                  });
-                },
-                buttons:{
-                  'Salva': function() {
-                    $( this ).dialog( "close" );
+
+              var send2 = {};
+              send2['pagina'] = $('.container').attr('id');
+              send2['azione'] = 'azioneAvanzamento2';
+              send2['messaggio'] = $(this).find('.search_imp_av').text();
+
+              $.post('/test', JSON.stringify(send2), function(data2, textStatus, xhr) {
+                var arr = JSON.parse(data2);
+                console.log(arr);
+                var $clone = $('#dialog_Avanzamento').clone(true, true).removeClass('hide');
+                $clone.attr('id', 'dialog'+index+'');
+                $clone.dialog({
+                  autoOpen: false,
+                  height: 'auto',
+                  width:'auto',
+                  resizable:false,
+                  modal:true,
+                  create: function(event,ui){
+                    $('.container .t_Avanzamento').eq(0).find('tr:not(:hidden)').eq(index).find('.open-dialog').click(function(event) {
+                      $('#dialog'+index+'').dialog( "open" );
+                    });
+                  },
+                  buttons:{
+                    'Salva': function() {
+                      $( this ).dialog( "close" );
+                    }
                   }
-                }
+                });
               });
             }
           });
