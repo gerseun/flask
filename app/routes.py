@@ -116,6 +116,11 @@ def ProduzIso():
 def Magazzino():
     return render_template('Magazzino.html', title='PREPARAZIONE MAGAZZINO')
 
+@app.route('/Manuale', methods=['GET', 'POST'])
+def Manuale():
+    return render_template('Manuale.html', title='INSERIMENTO MANUALE OPERAZIONE')
+
+
 @app.route('/Avanzamento', methods=['GET', 'POST'])
 def Avanzamento():
     return render_template('Avanzamento.html', title='STATO AVANZAMENTO PRODUZIONE')
@@ -240,6 +245,14 @@ def test():
             risposta = json.dumps(f.setAzioneMagazzino(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'azioneMagazzino') and (formatted_data['pagina'] == 'newMagazzino'):
             risposta = json.dumps(f.get_DaMagazzino(formatted_data['pagina'], formatted_data['messaggio']))
+
+        #pagina inserimento manuale
+        if (formatted_data['azione'] == 'azioneAvanzamento') and (formatted_data['pagina'] == 'insManuale'):
+            risposta = json.dumps(f.get_Avanzamento(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'azioneAvanzamento2') and (formatted_data['pagina'] == 'insManuale'):
+            risposta = json.dumps(f.getAvanzamentoFromID(formatted_data['pagina'], formatted_data['messaggio']))
+        if (formatted_data['azione'] == 'salva_file') and (formatted_data['pagina'] == 'insManuale'):
+            risposta = json.dumps(f.setAzioneArticolo(formatted_data['pagina'], formatted_data['messaggio']))
 
         #pagina avanzamento PRODUZIONE
         if (formatted_data['azione'] == 'azioneAvanzamento') and (formatted_data['pagina'] == 'PageAvanzamento'):

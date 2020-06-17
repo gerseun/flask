@@ -65,7 +65,7 @@ $(document).ready(function() {
     });
   }
 
-  if(page_class == "PageAvanzamento"){
+  if(page_class == "PageAvanzamento" || page_class == "insManuale"){
     $('#input_field').focus();
     $('#input_field').focusout(function(event) {
       var text = $(this).val();
@@ -141,6 +141,23 @@ $(document).ready(function() {
                   },
                   buttons:{
                     'Salva': function() {
+                      var arr = {};
+                      var send = {};
+                      arr["t_comp"] = get_table($(this).find('table.t_comp').eq(0));
+                      arr["t_art"] = get_table($(this).find('table.t_art').eq(0));
+                      arr["t_imp"] = get_table($('.container').find('table.t_imp').eq(0));
+
+                      send['pagina'] = $('.container').attr('id');
+                      send['azione'] = 'salva_file';
+                      send['messaggio'] = arr;
+
+                      if(page_class == "insManuale"){
+                        console.log(send);
+                        $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+                          console.log(data);
+                        });
+                      }
+
                       $( this ).dialog( "close" );
                     }
                   }
