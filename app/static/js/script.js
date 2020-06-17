@@ -69,6 +69,7 @@ $(document).ready(function() {
         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
           var arr = JSON.parse(data);
           console.log(arr);
+
           fill_tables(arr['messaggio'], $('.container'));
 
           $('.container .t_Avanzamento').eq(0).find('tr:not(:hidden)').each(function(index, el) {
@@ -81,10 +82,38 @@ $(document).ready(function() {
               send2['messaggio'] = $(this).find('.search_imp_av').text();
 
               $.post('/test', JSON.stringify(send2), function(data2, textStatus, xhr) {
-                var arr = JSON.parse(data2);
-                console.log(arr);
+                var arr2 = JSON.parse(data2);
+                console.log(arr2);
                 var $clone = $('#dialog_Avanzamento').clone(true, true).removeClass('hide');
                 $clone.attr('id', 'dialog'+index+'');
+
+                $t_art = $clone.find('.t_art');
+                $t_art_rows = $t_art.find('tr');
+                fill_row($t_art_rows.eq(1), arr2['messaggio']['t_art'][0]);
+
+                $t_imp = $clone.find('.t_imp');
+                $t_imp_rows = $t_imp.find('tr');
+                fill_row($t_imp_rows.eq(1), arr2['messaggio']['t_imp'][0]);
+
+                $t_comp = $clone.find('.t_comp');
+                $t_comp_rows = $t_comp.find('tr');
+                if ($t_comp_rows.length-2 < arr2['messaggio']['t_art'][0]['t_comp'].length) {
+                  add_row($t_comp, arr2['messaggio']['t_art'][0]['t_comp'].length);
+                }
+                $t_comp.find('tr').each(function(index, el) {
+                  if (index>1) {
+                    fill_row($(this), arr2['messaggio']['t_art'][0]['t_comp'][index-2]);
+                    $(this).find('td[headers*="qt_comp"]').each(function(index, el) {
+                      //if ($(this).text()=="") {
+                        //$(this).text(qt);
+                      //}else {
+                        $(this).attr('contenteditable', 'true');
+                        //$(this).text($(this).text()*qt);
+                      //}
+                    });
+                  }
+                });
+
                 $clone.dialog({
                   autoOpen: false,
                   height: 'auto',
