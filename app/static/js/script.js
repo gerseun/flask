@@ -121,8 +121,12 @@ $(document).ready(function() {
                 }
                 $t_comp.find('tr').each(function(index, el) {
                   if (index>1) {
-                    fill_row($(this), arr2['messaggio']['t_art'][0]['t_comp'][index-2]);
-
+                    if(page_class == "insManuale"){
+                      fill_row($(this), arr2['messaggio']['t_art'][0]['t_comp'][index-2]);
+                    }
+                    else{
+                      fill_row_avanzamento($(this), arr2['messaggio']['t_art'][0]['t_comp'][index-2]);
+                    }
                   }
                 });
 
@@ -296,6 +300,37 @@ $(document).ready(function() {
       }
     });
   };
+
+
+  function fill_row_avanzamento($row, arr) {
+    //console.log(arr)
+    $.each(arr, function(index, el) {
+      var $cell = $row.find('td[headers*="'+index+'"]');
+      if (index != "id_produzione") {
+        $cell.text(el);
+      } else {
+        $cell.find('select').val(el);
+      }
+      if (['cod_imp', 'cod_comp', 'cod_art'].includes(index)) {
+        $row.addClass(index);
+      }
+      if (['newImpegno','newArticolo','newComponente'].includes($('.container').attr('id'))) {
+        if (['qt_comp', 'qt_art','data_cons_art','data_cons_comp', 'cod_ordine', 'scadenza'].includes(index)) {
+          $cell.attr('contenteditable', 'true');
+        }else {
+          $cell.attr('contenteditable', 'false');
+        }
+      }
+      else if (['newOrdine'].includes($('.container').attr('id'))) {
+        if (['cod_ordine', 'scadenza'].includes(index)) {
+          $cell.attr('contenteditable', 'true');
+        }else {
+          $cell.attr('contenteditable', 'false');
+        }
+      }
+    });
+  };
+
 
   function fill_tables(arr, $div){
     $.each(arr, function(t_ind, t_arr) {
