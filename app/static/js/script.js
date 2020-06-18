@@ -303,9 +303,13 @@ $(document).ready(function() {
 
 
   function fill_row_avanzamento($row, arr) {
-    //console.log(arr)
+
+    console.log(arr)
     $.each(arr, function(index, el) {
       var $cell = $row.find('td[headers*="'+index+'"]');
+
+      //$cell.style.backgroundColor = "red";
+
       if (index != "id_produzione") {
         $cell.text(el);
       } else {
