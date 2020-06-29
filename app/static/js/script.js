@@ -304,17 +304,19 @@ $(document).ready(function() {
 
   function fill_row_avanzamento($row, arr) {
 
-    console.log(arr)
-    $.each(arr, function(index, el) {
-      var $cell = $row.find('td[headers*="'+index+'"]');
+    var prod =  arr["id_produzione"];
 
-      //$cell.style.backgroundColor = "red";
+    $.each(arr, function(index, el) {
+
+      var $cell = $row.find('td[headers*="'+index+'"]');
+      $cell.addClass('color_' + prod);
 
       if (index != "id_produzione") {
         $cell.text(el);
       } else {
         $cell.find('select').val(el);
       }
+
       if (['cod_imp', 'cod_comp', 'cod_art'].includes(index)) {
         $row.addClass(index);
       }

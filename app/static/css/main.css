@@ -217,3 +217,67 @@ td[contenteditable="false"] {
 .open-dialog:hover, .open-dialog-comp:hover {
   color: #0000ff;
 }
+
+.color_0 {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.color_1 {
+  background: rgba(83, 141, 213, 0.5);
+}
+
+.color_2 {
+  background: rgba(179, 198, 231, 0.5);
+}
+
+.color_3 {
+  background: rgba(10, 210, 230, 0.5);
+}
+
+.color_4 {
+  background: rgba(48, 166, 194, 0.5);
+}
+
+.color_5 {
+  background: rgba(167, 99, 216, 0.5);
+}
+
+.color_6 {
+  background: rgba(90, 139, 37, 0.5);
+}
+
+.color_7 {
+  background: rgba(217, 151, 149, 0.5);
+}
+
+.color_8 {
+  background: rgba(237, 89, 89, 0.5);
+}
+
+.color_9 {
+  background: rgba(255, 192, 0, 0.5);
+}
+
+.color_10 {
+  background: rgba(146, 208, 80, 0.5);
+}
+
+.color_11 {
+  background: rgba(146, 208, 80, 0.5);
+}
+
+.color_12 {
+  background: rgba(250, 192, 144, 0.5);
+}
+
+.color_13 {
+  background: rgba(232, 98, 24, 0.5);
+}
+
+.color_14 {
+  background: rgba(69, 219, 119, 0.5);
+}
+
+.color_15 {
+  background: rgba(146, 255, 1, 0.5);
+}

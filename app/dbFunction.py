@@ -124,6 +124,7 @@ FUNZIONI CHE RIUTILIZZO IN QUESTA PAGINA
 ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 '''
 #funzione per la connessione al database
+
 def connessione():
     mydb = mysql.connector.connect(
     host="remotemysql.com",
@@ -133,6 +134,16 @@ def connessione():
     )
     return mydb;
 
+'''
+    def connessione():
+        mydb = mysql.connector.connect(
+        host="89.46.111.11",
+        user="Sql940030",
+        passwd="tq461ic7ra",
+        database="Sql940030_4"
+        )
+        return mydb;
+'''
 '''
 FUNZIONI GET
 '''

@@ -1,5 +1,5 @@
 import openpyxl
-from openpyxl.styles import Font
+from openpyxl.styles import Font, Fill, Alignment
 import os
 from datetime import datetime
 from shutil import copy2
@@ -105,7 +105,7 @@ def popolateFile(insieme, fileName):
             ws["AI" + str(contRow)] = comp["grezzo"]                            #COD GREZZO
 
     #fine ciclo componenti
-    wb.active = ws["TAGLIO"]
+    #wb.active = ws["TAGLIO"]
     wb.save(fileName)
     return "OK"
 
@@ -124,7 +124,7 @@ def get_cell_coord(wb, range_name):
 
 #STAMPO IL MATERIALE TAGLIATO
 def save_xlsx_Taglio(array):
-    t_comp = array["t_compTaglio"]
+    t_comp = array["t_compIsorella"]
     #OTTENGO UN INSIEME DI COMPONENTI
     #1 - creo DIR
     s.setFolder("cassone")
@@ -145,12 +145,11 @@ def save_xlsx_Taglio(array):
         ws["E" + str(contRow)] = str(comp["dim_comp"])                          #DIMENSIONI
         ws["F" + str(contRow)] = str(comp["mat_comp"])                          #MATERIALE
         ws["F" + str(contRow)] = str(comp["cod_imp"])                           #IMPEGNO
-        contRow = contRow +1
+        contRow = contRow + 2
 
     #fine ciclo componenti
-    wb.active = ws
     wb.save(path)
     #stampo
     os.startfile(path,'print')
-    
+
     return 'file excel modificato'
