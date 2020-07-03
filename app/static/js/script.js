@@ -459,8 +459,16 @@ $(document).ready(function() {
       send['messaggio'] = page_arr;
       $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
         console.log(data);
-      }).done(function(){
-        $('#downloadFile').submit();
+      }).done(function(res){
+        const a = document.createElement('a');
+        a.style = 'display: none';
+        document.body.appendChild(a);
+        const blob = new Blob([res], {type: 'octet/stream'});
+        const url = URL.createObjectURL(blob);
+        a.href = url;
+        a.download = 'file.dat';
+        a.click();
+        URL.revokeObjectURL(url);
       });
     }
   });
