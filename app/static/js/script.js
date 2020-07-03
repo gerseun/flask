@@ -460,15 +460,7 @@ $(document).ready(function() {
       $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
         console.log(data);
       }).done(function(res){
-        const a = document.createElement('a');
-        a.style = 'display: none';
-        document.body.appendChild(a);
-        const blob = new Blob([res], {type: 'octet/stream'});
-        const url = URL.createObjectURL(blob);
-        a.href = url;
-        a.download = 'file.dat';
-        a.click();
-        URL.revokeObjectURL(url);
+        $("#tmpFrame").attr('src', 'URL-TO-EXCEL-FILE');
       });
     }
   });
