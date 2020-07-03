@@ -7,6 +7,8 @@ import datetime
 import pprint
 import os.path
 from app import set_folder as s     #s verrà usata per richiamare le funzioni in set_folder
+from flask import send_file
+import urllib.request
 
 def save_xlsx_Produzione(array):
     #OTTENGO UN SINGOLO ARTICOLO
@@ -149,7 +151,13 @@ def save_xlsx_Taglio(array):
 
     #fine ciclo componenti
     wb.save(path)
-    #stampo
-    os.startfile(path,'print')
 
-    return 'file excel modificato'
+    #scarico il file
+    Save_url = 'C:/stampoTaglio.xlsx'
+    urllib.request.urlretrieve(path, Save_url)
+
+    return path
+
+    #stampo
+    #os.startfile(path,'print')
+    #return 'file excel modificato'

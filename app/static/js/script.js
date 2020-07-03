@@ -440,6 +440,32 @@ $(document).ready(function() {
     }
   });
 
+  $('#downloadFile').click(function(){
+    var page_arr = {};
+    var bool_arr = [];
+    $('.container').find('table').each(function(index, el) {
+      var t_arr = get_table($(this));
+      if (check_array(t_arr)){
+        page_arr[$(this).attr('class')] = t_arr;
+        bool_arr[index] = true;
+      }else {
+        bool_arr[index] = false;
+      }
+    });
+    if (!(bool_arr.includes(false))) {
+      var send = {};
+      send['pagina'] = $('.container').attr('id');;
+      send['azione'] = 'ins_nuovo';
+      send['messaggio'] = page_arr;
+      $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+        console.log(data);
+      }).done(function(){
+        $('#downloadFile').submit();
+      });
+    }
+  });
+
+
   if (['newArticolo','newComponente','newImpegno', 'listaTaglio'].includes($('.container').attr('id'))) {
     first_call();
   }

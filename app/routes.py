@@ -1,4 +1,5 @@
 from flask import render_template, flash, redirect, request
+from flask import send_file
 import ast
 try:
     import simplejson as json
@@ -147,8 +148,9 @@ def ListaTaglio():
         formatted_data = json.loads(content)    #Trasforma la stringa in dizionario pythons
         print('Dati ricevuti:')
         pprint.pprint(formatted_data)
-        risposta = 'ok'
+        risposta = "ok"
         return risposta  #risponde al client
+
     else:
         return render_template('ListaTaglio.html', title='CREAZIONE COMPONENTE SINGOLO PER PRODUZIONE')
 
@@ -225,8 +227,10 @@ def test():
             #salvo il taglio
             risposta = json.dumps(f.setAzioneIsorella(formatted_data['pagina'], formatted_data['messaggio']))
             #stampo il taglio
-            risposta = json.dumps(save.save_xlsx_Taglio(formatted_data['messaggio']))
-            #risposta = 'ok'
+            risposta = save.save_xlsx_Taglio(formatted_data['messaggio'])
+            #return send_file(risposta, as_attachment=True)
+            risposta = 'ok'
+
         #pagina isorella - carico
         if (formatted_data['azione'] == 'azioneIsorella') and (formatted_data['pagina'] == 'newCarico'):
             risposta = json.dumps(f.get_DaIsorella(formatted_data['pagina'], formatted_data['messaggio']))
