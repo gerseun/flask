@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<div class="loader" hidden=true></div>
 <div class="container" id="newTaglio">
   <p>Per apportare modifiche contattare Simone</p>
   <p>Timbrare il codice dei componenti tagliati in un cassone.</p>
@@ -46,6 +46,8 @@
       </tr>
     </table>
   </div>
+  <br>
+  <button id="test_btn">Export Data</button>
 </div>
 <br>
 <iframe name="tmpFrame" id="tmpFrame" width="1" height="1" style="visibility:hidden;position:absolute;display:none"></iframe>

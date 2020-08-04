@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-<div class="container" id="newImpegno">
+<div class="loader"></div>
+<div class="container" id="newImpegno" hidden=true>
   <p>Per apportare modifiche contattare Simone</p>
   <p>Inserire i dati relativi all' ordine.</p>
   <div id="">
@@ -46,9 +46,9 @@
         <td class="control"><i class="table-remove fa fa-times"></i></td>
       </tr>
     </table>
-
-    <br>
   </div>
+  <br>
+  <button id="export_btn">Export Data</button>
 </div>
 
 {% endblock %}

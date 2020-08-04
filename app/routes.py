@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, request
+from flask import render_template, flash, redirect, request, url_for
 from flask import send_file
 import ast
 try:
@@ -14,7 +14,7 @@ import pprint
 from app import save_to_excel as save
 
 #first = '{"firstCall":{"list_imp":["123","321","145","167"],"list_art":["1ABC00100","1ABC00200","1BCA00100","1BCA00200"],"list_comp":["1ABC00102","1ABC00110","1ABC00201","1BCA00120","1BCA00230"]}}'
-
+arr_cassone = []
 @app.route('/')
 @app.route('/index')
 
@@ -224,10 +224,12 @@ def test():
         if (formatted_data['azione'] == 'azioneIsorella') and (formatted_data['pagina'] == 'newTaglio'):
             risposta = json.dumps(f.get_DaIsorella(formatted_data['pagina'], formatted_data['messaggio']))
         if (formatted_data['azione'] == 'ins_nuovo') and (formatted_data['pagina'] == 'newTaglio'):
+            global arr_cassone
+            arr_cassone = formatted_data['messaggio']
             #salvo il taglio
-            risposta = json.dumps(f.setAzioneIsorella(formatted_data['pagina'], formatted_data['messaggio']))
+            #risposta = json.dumps(f.setAzioneIsorella(formatted_data['pagina'], formatted_data['messaggio']))
             #stampo il taglio
-            risposta = save.save_xlsx_Taglio(formatted_data['messaggio'])
+            #risposta = save.save_xlsx_Taglio(formatted_data['messaggio'])
             #return send_file(risposta, as_attachment=True)
             risposta = 'ok'
 
@@ -264,8 +266,15 @@ def test():
         if (formatted_data['azione'] == 'azioneAvanzamento2') and (formatted_data['pagina'] == 'PageAvanzamento'):
             risposta = json.dumps(f.getAvanzamentoFromID(formatted_data['pagina'], formatted_data['messaggio']))
 
+        if (formatted_data['azione'] == 'crea_cassone') and (formatted_data['pagina'] == 'Cassone'):
+            risposta = json.dumps(arr_cassone)
+        #    return webbrowser.open_new_tab('http://mylink.com')
         #risporta = "risposta"
         return risposta
+
+@app.route('/cassone', methods=['GET', 'POST'])
+def cassone():
+    return render_template('Cassone.html', title='test tabella')
 
 @app.route('/tabella', methods=['GET', 'POST'])
 def tabella():

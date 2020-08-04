@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <title></title>
+  </head>
+  <body>
+    <div class="container" id='Cassone'>
+      <table class="t_compIsorella">
+        <thead>
+          <th id="id_riga_dett">ID PROD</th>
+          <th id="qt_comp">Q.tà</th>
+          <th id="cod_comp">Dis. Particolare</th>
+          <th id="desc_comp">Descrizione</th>
+          <th id="dim_comp">Dimensioni</th>
+          <th id="mat_comp">Materiale</th>
+          <th id="cod_imp">ORD</th>
+        </thead>
+        <tbody>
+          <tr class="hide">
+            <td headers="id_riga_dett" style="font-family:'Free 3 of 9'"></td>
+            <td headers="qt_comp"></td>
+            <td headers="cod_comp"></td>
+            <td headers="desc_comp"></td>
+            <td headers="dim_comp"></td>
+            <td headers="mat_comp"></td>
+            <td headers="cod_imp"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        function add_row($table, n) {
+          for (var i = 0; i < n; i++) {
+            var $clone = $table.find('tr.hide').clone(true, true).removeClass('hide');
+            $table.append($clone);
+          }
+        };
+        function fill_tables(arr, $div){
+          $.each(arr, function(t_ind, t_arr) {
+            var $table = $div.find('.'+t_ind+'');
+            var $rows = $table.find('tr:not(:hidden)');
+            if ($rows.length-1 < t_arr.length) {
+              add_row($table, t_arr.length-($rows.length-1));
+            } else {
+              $rows.each(function(index, el) {
+                if (index > t_arr.length) {
+                  $(this).detach();
+                }
+              });
+            }
+            $table.find('tr:not(:hidden)').each(function(index, el) {
+              if (index > 0) {
+                fill_row($(this), t_arr[index-1]);
+              }
+            });
+          });
+        };
+        function fill_row($row, arr) {
+          $.each(arr, function(index, el) {
+            var $cell = $row.find('td[headers*="'+index+'"]');
+            if (index != "id_produzione") {
+              if (index == 'id_riga_dett') {
+                $cell.text('*'+el+'*');
+              }else{
+                $cell.text(el);
+              }
+            } else {
+              $cell.find('select').val(el);
+            }
+          });
+        };
+        var send = {};
+        send['pagina'] = 'Cassone';
+        send['azione'] = 'crea_cassone';
+        send['messaggio'] = '';
+        $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+          arr = JSON.parse(data);
+          console.log(arr);
+          fill_tables(arr, $('.container'));
+
+        });
+      });
+    </script>
+  </body>
+</html>

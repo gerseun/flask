@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<div class="loader" hidden=true></div>
 <div class="container" id="newCarico">
   <p>Per apportare modifiche contattare Simone</p>
   <p>Timbrare i codici dei componenti trasportati.</p>
@@ -16,7 +16,7 @@
   </div>
   <br>  <br>
   <div class="">
-    <table id="tabella_taglio" class="t_compTaglio"><!-- è la tabella è uguale a quella del taglio -->
+    <table id="tabella_isorella" class="t_compIsorella"><!-- è la tabella è uguale a quella del taglio -->
       <tr>
         <th id="cod_comp">Codice Componente</th>
         <th id="desc_comp">Descrizione</th>
@@ -61,8 +61,9 @@
       </tr>
     </table>
   </div>
+  <br>
+  <button id="export_btn">Salva e stampa</button>
 </div>
-<br>
 
 
 {% endblock %}

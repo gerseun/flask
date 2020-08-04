@@ -18,6 +18,7 @@ $(document).ready(function() {
     send['messaggio'] = text;
     $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
       var arr = JSON.parse(data);
+      $('.loader').hide();
       console.log(arr);
       fill_tables(arr['messaggio'], $('.container'));
     });
@@ -35,9 +36,11 @@ $(document).ready(function() {
         send['pagina'] = $('.container').attr('id');
         send['azione'] = 'azioneOrdine';
         send['messaggio'] = text;
+        $('.loader').show();
         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
           var arr = JSON.parse(data);
           console.log(arr);
+          $('.loader').hide();
           fill_tables(arr['messaggio'], $('.container'));
         });
       }
@@ -56,8 +59,10 @@ $(document).ready(function() {
         send['pagina'] = $('.container').attr('id');
         send['azione'] = 'azioneMagazzino';
         send['messaggio'] = text;
+        $('.loader').show();
         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
           var arr = JSON.parse(data);
+          $('.loader').hide();
           console.log(arr);
           fill_tables(arr['messaggio'], $('.container'));
         });
@@ -85,7 +90,9 @@ $(document).ready(function() {
         send['pagina'] = $('.container').attr('id');
         send['azione'] = 'azioneAvanzamento';
         send['messaggio'] = text;
+        $('.loader').show();
         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+          $('.loader').hide();
           var arr = JSON.parse(data);
           console.log(arr);
 
@@ -179,6 +186,7 @@ $(document).ready(function() {
     $('#input_field').focus();
     $('#input_field').focusout(function(event) {
       var text = $(this).val();
+      $(this).val('');
       if (text == '') {
 
       }else {
@@ -187,6 +195,7 @@ $(document).ready(function() {
         send['pagina'] = $('.container').attr('id');
         send['azione'] = 'azioneIsorella';
         send['messaggio'] = text;
+        $('.loader').show();
         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
           var arr = JSON.parse(data);
           //console.log(arr['messaggio']['t_compTaglio'][0]);
@@ -200,6 +209,8 @@ $(document).ready(function() {
             console.log($rows);
             var $row = $rows.eq($rows.length-1)
             fill_row($row, arr['messaggio']['t_compIsorella'][0]);
+            $('.loader').hide();
+            $('#input_field').focus();
           }
         });
       }
@@ -301,7 +312,6 @@ $(document).ready(function() {
     });
   };
 
-
   function fill_row_avanzamento($row, arr) {
 
     var prod =  arr["id_produzione"];
@@ -336,7 +346,6 @@ $(document).ready(function() {
       }
     });
   };
-
 
   function fill_tables(arr, $div){
     $.each(arr, function(t_ind, t_arr) {
@@ -383,6 +392,7 @@ $(document).ready(function() {
             send['pagina'] = $('.container').attr('id');;
             send['azione'] = $(this).attr('class').split(' ')[0];
             send['messaggio'] = ui.item.value;
+            $('.loader').show();
             $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
               var arr = JSON.parse(data);
               //console.log(arr);
@@ -391,12 +401,18 @@ $(document).ready(function() {
               } else {
                 fill_row($cell.parent('tr'), arr['messaggio'][$cell.parents('table').attr('class')][0]);
               }
+              $('.loader').hide();
+            })
+            .fail(function(){
+              alert('Errore autocompletamento');
             });
           }
         });
-        console.log('Search added to:');
+        console.log('Search added');
       }
     });
+    $('.loader').hide();
+    $('.container').show();
   };
 
   function first_call(){
@@ -414,6 +430,9 @@ $(document).ready(function() {
       } else {
         add_autocomp($('.container'));
       }
+    })
+    .fail(function() {
+      alert('Errore importazione array autocompletamento');
     });
   };
 
@@ -431,16 +450,22 @@ $(document).ready(function() {
     });
     if (!(bool_arr.includes(false))) {
       var send = {};
-      send['pagina'] = $('.container').attr('id');;
+      send['pagina'] = $('.container').attr('id');
       send['azione'] = 'ins_nuovo';
       send['messaggio'] = page_arr;
+      $('.loader').show();
+      $('.container').hide();
       $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
         console.log(data);
+        location.reload();
+      })
+      .fail(function(){
+        alert('Errore invio dati');
       });
     }
   });
 
-  $('#downloadFile').click(function(){
+  /*$('#downloadFile').click(function(){
     var page_arr = {};
     var bool_arr = [];
     $('.container').find('table').each(function(index, el) {
@@ -463,8 +488,32 @@ $(document).ready(function() {
         $("#tmpFrame").attr('src', 'URL-TO-EXCEL-FILE');
       });
     }
-  });
+  });*/
 
+  $('#test_btn').click(function(event) {
+    var page_arr = {};
+    var bool_arr = [];
+    $('.container').find('table').each(function(index, el) {
+      var t_arr = get_table($(this));
+      if (check_array(t_arr)){
+        page_arr[$(this).attr('class')] = t_arr;
+        bool_arr[index] = true;
+      }else {
+        bool_arr[index] = false;
+      }
+    });
+    if (!(bool_arr.includes(false))) {
+      var send = {};
+      send['pagina'] = $('.container').attr('id');
+      send['azione'] = 'ins_nuovo';
+      send['messaggio'] = page_arr;
+      $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
+        console.log(data);
+        window.open('http://localhost:5000/cassone');
+        //window.location('http://localhost:5000/cassone');
+      });
+    }
+  });
 
   if (['newArticolo','newComponente','newImpegno', 'listaTaglio'].includes($('.container').attr('id'))) {
     first_call();
@@ -539,14 +588,21 @@ $(document).ready(function() {
             send['pagina'] = $('.container').attr('id');
             send['azione'] = 'salva_file';
             send['messaggio'] = arr;
-            console.log(send);
             $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
               console.log(data);
+              $('.loader').hide();
+            })
+            .fail(function() {
+              alert('Errore salvataggio lista taglio');
             });
             $( this ).dialog( "close" );
+            $('.loader').show();
           }
         }
       });
+    })
+    .fail(function() {
+      alert('Errore invio lista taglio');
     });
   };
 
@@ -565,6 +621,7 @@ $(document).ready(function() {
             send['pagina'] = $('.container').attr('id');;
             send['azione'] = $(this).attr('class').split(' ')[0];
             send['messaggio'] = ui.item.value;
+            $('.loader').show();
             $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
               var arr = JSON.parse(data);
               //console.log(arr['messaggio']);
@@ -591,7 +648,9 @@ $(document).ready(function() {
                   $(this).addClass('dialog'+index+'');
                   create_dialog(index, arr['messaggio']['t_art'][index-1]);
                 }
-              });/*
+              });
+              $('.loader').hide();
+              /*
               if (arr['messaggio']['t_comp'].length > 0) {
                 var $comp_dg = $('#dialog_comp').removeClass('hide');
                 $comp_dg.dialog({
@@ -635,10 +694,15 @@ $(document).ready(function() {
                   }
                 });
               }*/
+            })
+            .fail(function() {
+              alert('Errore autocompletamento');
             });
           }
         });
         console.log('Search added to: lt');
+        $('.loader').hide();
+        $('.container').show();
       }
     });
   };

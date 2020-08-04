@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container" id="newArticolo">
+
+<div class="loader"></div>
+<div class="container" id="newArticolo" hidden=true>
   <p>Per apportare modifiche contattare Simone</p>
   <p>Inserire i dati relativi al cilindro.</p>
   <div id="">
@@ -61,6 +63,8 @@
       </tr>
     </table>
   </div>
+  <br>
+  <button id="export_btn">Export Data</button>
 </div>
 
 {% endblock %}

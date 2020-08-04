@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<div class="loader" hidden=true></div>
 <div class="container" id="newOrdine">
   <p>Per apportare modifiche contattare Simone</p>
   <p>Timbrare il codice dell' articolo da ordinare.</p>
@@ -79,8 +79,10 @@
       </tr>
     </table>
   </div>
+  <br>
+  <button id="export_btn">Export Data</button>
 </div>
-<br>
+
 
 
 {% endblock %}

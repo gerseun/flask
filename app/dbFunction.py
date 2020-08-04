@@ -812,12 +812,12 @@ def get_Avanzamento(namePage, codArt):
     #cerco ID_articolo
     articoloRicerca = getArticolo(codArt)
     articoliImpegno = getArticoliImpegnoFromIDART(articoloRicerca["id_art"])
-    impegno = getImpegnoFromID(articoliImpegno[0]["id_imp"])
 
     #ciclo i vari impegni in cui è presente l' articolo
     cont = 0
     arrayRisp = []
     for artImp in articoliImpegno:
+        impegno = getImpegnoFromID(articoliImpegno[cont]["id_imp"])
         #riga tabella
         arrayRisp.append({"cod_imp": impegno["cod_imp"], "cliente": impegno["cliente"], "cod_art": articoloRicerca["cod_art"], "desc_art": articoloRicerca["desc_art"], "data_cons_art": articoliImpegno[cont]["data_cons_art"], "qt_art": articoliImpegno[cont]["qt_art"], "id_riga_imp": articoliImpegno[cont]["id_riga_imp"]})
         cont = cont + 1
