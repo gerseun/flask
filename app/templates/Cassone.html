@@ -7,10 +7,10 @@
     <title></title>
   </head>
   <body>
-    <div class="container" id='Cassone'>
-      <table class="t_compIsorella">
+    <div class="container" id='Cassone' style="margin-left:25px ; margin-right:25px ; margin-top:25px ">
+      <table class="t_compIsorella" align="center">
         <thead>
-          <th id="id_riga_dett">ID PROD</th>
+          <th id="id_riga_dett" style="text-align: center">ID PROD</th>
           <th id="qt_comp">Q.tà</th>
           <th id="cod_comp">Dis. Particolare</th>
           <th id="desc_comp">Descrizione</th>
@@ -19,8 +19,8 @@
           <th id="cod_imp">ORD</th>
         </thead>
         <tbody>
-          <tr class="hide">
-            <td headers="id_riga_dett" style="font-family:'Free 3 of 9'"></td>
+          <tr class = "hide">
+            <td headers="id_riga_dett" style="font-family:'Free 3 of 9' ; font-size: 40px ; text-align: center" ></td>
             <td headers="qt_comp"></td>
             <td headers="cod_comp"></td>
             <td headers="desc_comp"></td>
@@ -66,7 +66,7 @@
             var $cell = $row.find('td[headers*="'+index+'"]');
             if (index != "id_produzione") {
               if (index == 'id_riga_dett') {
-                $cell.text('*'+el+'*');
+                $cell.text('*C.'+el+'*');
               }else{
                 $cell.text(el);
               }
