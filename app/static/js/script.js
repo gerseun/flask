@@ -21,6 +21,10 @@ $(document).ready(function() {
       $('.loader').hide();
       console.log(arr);
       fill_tables(arr['messaggio'], $('.container'));
+    })
+    .fail(function(){
+      alert('Errore invio dati');
+      location.reload();
     });
   }
 
@@ -42,6 +46,10 @@ $(document).ready(function() {
           console.log(arr);
           $('.loader').hide();
           fill_tables(arr['messaggio'], $('.container'));
+        })
+        .fail(function(){
+          alert('Errore invio dati');
+          location.reload();
         });
       }
     });
@@ -65,6 +73,10 @@ $(document).ready(function() {
           $('.loader').hide();
           console.log(arr);
           fill_tables(arr['messaggio'], $('.container'));
+        })
+        .fail(function(){
+          alert('Errore invio dati');
+          location.reload();
         });
       }
     });
@@ -166,6 +178,9 @@ $(document).ready(function() {
                         console.log(send);
                         $.post('/test', JSON.stringify(send), function(data, textStatus, xhr) {
                           console.log(data);
+                        }).fail(function(){
+                          alert('Errore invio dati');
+                          location.reload();
                         });
                       }
 
@@ -173,9 +188,16 @@ $(document).ready(function() {
                     }
                   }
                 });
+              }).fail(function(){
+                alert('Errore invio dati');
+                location.reload();
               });
             }
           });
+        })
+        .fail(function(){
+          alert('Errore invio dati');
+          location.reload();
         });
       }
     });
@@ -212,6 +234,9 @@ $(document).ready(function() {
             $('.loader').hide();
             $('#input_field').focus();
           }
+        }).fail(function(){
+          alert('Errore invio dati');
+          location.reload();
         });
       }
     });
@@ -461,6 +486,7 @@ $(document).ready(function() {
       })
       .fail(function(){
         alert('Errore invio dati');
+        location.reload();
       });
     }
   });
@@ -594,6 +620,7 @@ $(document).ready(function() {
             })
             .fail(function() {
               alert('Errore salvataggio lista taglio');
+              location.reload();
             });
             $( this ).dialog( "close" );
             $('.loader').show();
@@ -603,6 +630,7 @@ $(document).ready(function() {
     })
     .fail(function() {
       alert('Errore invio lista taglio');
+      location.reload();
     });
   };
 
@@ -697,6 +725,7 @@ $(document).ready(function() {
             })
             .fail(function() {
               alert('Errore autocompletamento');
+              location.reload();
             });
           }
         });
