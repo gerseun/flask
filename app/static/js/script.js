@@ -385,7 +385,7 @@ $(document).ready(function() {
         $cell.autocomplete({
           autoFocus: true,
           source: arr,
-          minLength: 1,
+          minLength: 3,
           select: function(event, ui) {
             $cell = $(this);
             var send = {};
@@ -614,7 +614,7 @@ $(document).ready(function() {
         $cell.autocomplete({
           autoFocus: true,
           source: list_imp,
-          minLength: 1,
+          minLength: 3,
           select: function(event, ui) {
             $cell = $(this);
             var send = {};
